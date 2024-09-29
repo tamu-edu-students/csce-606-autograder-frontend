@@ -7,8 +7,8 @@ Feature: Grant or revoke a user's write permissions to an assignment
         Given the following assignments exist:
             | assignment_name | repository_name   |
             | assignment1     | assignment-1-repo |
-            | assignment3     | assignment-2-repo |
             | assignment2     | assignment-2-repo |
+            | assignment3     | assignment-3-repo |
         And the following users exist:
             | username       | role       | assignment1_access | assignment2_access | assignment3_access |
             | alice          | ta         | read               | read               | read               |
