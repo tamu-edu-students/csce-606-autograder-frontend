@@ -119,7 +119,7 @@ Feature: Create a new test case
 
     Scenario: Test names are not unique
       When I create a new test with type "unit"
-      And with the name "test"
+      And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
       Then I should see an error message saying "Test name must be unique"

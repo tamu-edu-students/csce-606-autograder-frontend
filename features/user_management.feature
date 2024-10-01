@@ -23,8 +23,7 @@ Feature: User management
     And I am am logged in as "charlie"
     And I am on the "Manage Users"
     When I click on the "alice" user
-    Then I should see a list of checkboxes indicating the assignments
-    that "alice" has write access to
+    Then I should see a list of checkboxes indicating the assignments that "alice" has write access to
     And I should see a "Give write access to all assignments" button
     And I should see a "Revoke write access to all assignments" button
 

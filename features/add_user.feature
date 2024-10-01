@@ -8,7 +8,7 @@ Feature: Add a user to the organization
     And I am on the "Manage Users" page
 
   Scenario Outline: Add a user to the organization
-    When I add a new user with the username "<username>" and the role "<role>"
+    When I add a new user with the GitHub username "<username>" and the role "<role>"
     Then I should see that "<username>" is now a member of the GitHub organization
     And I should see that "<username>" has "<access>" access to all repositories
 

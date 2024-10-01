@@ -20,9 +20,9 @@ Feature: Regenerate .tests file on test creation/update/deletion
 
     Examples:
       | type      | name  | points | target   | test_code                                               |
-      | unit_test | test1 | 1      | code.cpp | EXPECT_FALSE(is_prime(867));                            |
-      | unit_test | test2 | 1      | code.cpp |                                                         |
-      | unit_test | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
+      | unit      | test1 | 1      | code.cpp | EXPECT_FALSE(is_prime(867));                            |
+      | unit      | test2 | 1      | code.cpp |                                                         |
+      | unit      | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
 
   Scenario Outline: Create a valid unit test for non-empty assignment
     Given the following assignments exist:
