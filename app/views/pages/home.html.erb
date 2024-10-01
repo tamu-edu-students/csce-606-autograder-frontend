@@ -7,8 +7,16 @@
   <%= stylesheet_link_tag 'home', media: 'all' %>
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to Autograder</h1>
-  </div>
+  <<h1>Welcome to Our Awesome App!</h1>
+
+  <p>This app does amazing things with GitHub! To get started:</p>
+
+  <% if current_user %>
+    <p>You are already logged in as <%= current_user.name %>!</p>
+  <% else %>
+    <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
+      <button type="submit">Login With GitHub</button> 
+    <% end %>
+  <% end %>
 </body>
 </html>

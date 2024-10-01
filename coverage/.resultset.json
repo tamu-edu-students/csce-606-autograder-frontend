@@ -1,0 +1,149 @@
+{
+  "RSpec": {
+    "coverage": {
+      "/Users/riddhighate/csce-606-autograder-frontend/app/helpers/application_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/helpers/pages_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/helpers/sessions_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/controllers/sessions_controller.rb": {
+        "lines": [
+          1,
+          1,
+          3,
+          null,
+          3,
+          3,
+          3,
+          3,
+          2,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          3,
+          3,
+          3,
+          null,
+          null,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/controllers/application_controller.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/models/user.rb": {
+        "lines": [
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          null,
+          null
+        ]
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/channels/application_cable/channel.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/channels/application_cable/connection.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/controllers/pages_controller.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/jobs/application_job.rb": {
+        "lines": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/mailers/application_mailer.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
+      "/Users/riddhighate/csce-606-autograder-frontend/app/models/application_record.rb": {
+        "lines": [
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      }
+    },
+    "timestamp": 1727810174
+  }
+}
