@@ -14,7 +14,7 @@ Feature: Create a new assignment
     And I should see the "csce-120-hw1" repository in the CSCE 120 GitHub organization
     And I should see a local clone of the "csce-120-hw1" repository
     And I should see the "autograder_core_deploy_key" in "/secrets" of the "csce-120-hw1" repository
-    And I should see the deploy_key in "/secrets" of the "csce-120-hw1" repository
+    And I should see the "deploy_key" in "/secrets" of the "csce-120-hw1" repository
 
   Scenario: Duplicate repository names should not be allowed
     Given An assignment with the name "csce-120-hw1"
@@ -22,11 +22,11 @@ Feature: Create a new assignment
     Then I should see an error message
 
   Scenario: TAs with read-only access should not see the "Create Assignment" button
-    Given I am logged in as a "ta-read-write"
+    Given I am logged in as a "ta"
     Then I should not see the "Create Assignment" button
 
   Scenario: TAs with read-only access cannot visit the "Create Assignment" page
-    Given I am logged in as a "ta-read-only"
+    Given I am logged in as a "ta"
     When I try to visit the "Create Assignment" page
     Then I should see an error message
 
