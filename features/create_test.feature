@@ -1,6 +1,6 @@
 Feature: Create a new test case
   As an instructor or TA with write access to an assignment
-  So that I can test some functionality of a student code
+  So that I can test some functionality of student code
   I want to add a new test case to an assignment
 
   Scenario: Tests with unknown type
