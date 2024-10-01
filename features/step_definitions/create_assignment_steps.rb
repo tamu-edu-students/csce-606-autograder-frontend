@@ -1,10 +1,10 @@
-Given('I am logged in as an {string}') do |string|
+  Given('I am logged in as an {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
   
   When('I click the {string} button') do |string|
     pending # Write code here that turns the phrase above into concrete actions
-  endgit add .
+  end
   
   When('I fill in the repository name with {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
