@@ -1,4 +1,4 @@
-Feature: Log in to the
+Feature: Log in to the application
   As a CSCE 120 GitHub Organization member
   So that I can create, modify, and view autograded assignments
   I want to authenticate with a third-party service and login to the system
