@@ -16,6 +16,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_01_164539) do
     t.string "email"
     t.string "provider"
     t.string "uid"
+    
+ActiveRecord::Schema[7.2].define(version: 2024_10_01_193254) do
+  create_table "assignments", force: :cascade do |t|
+    t.string "assignment_name"
+    t.string "repository_name"
+    t.string "repository_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
