@@ -13,4 +13,8 @@ module AssignmentsHelper
         new_repo = client.create_repo_from_template(template_repo, new_repo_name, options)
         assignment.update(repository_url: new_repo[:html_url])
     end
+
+    def clone_repo_to_local(assignment)
+        git = Git.clone(assignment.repository_url, ENV['ASSIGNMENTS_BASE_PATH'] + '/' + assignment.repository_name)
+    end
 end
