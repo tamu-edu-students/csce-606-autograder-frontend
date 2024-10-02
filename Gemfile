@@ -69,3 +69,5 @@ group :test do
   gem 'simplecov', require: false
   gem 'ZenTest'
 end
+
+gem "git", "~> 2.3"
