@@ -1,0 +1,126 @@
+app/assets/stylesheets/user_show.css
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .users-show h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-align: center;
+  }
+  
+  .users-show form {
+    margin-bottom: 20px;
+  }
+  
+  .users-show #select-all {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .users-show #select-all:hover, #select-all:focus {
+    background-color: #2980b9;
+  }
+  
+  .users-show ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .users-show li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  
+  .users-show li:last-child {
+    border-bottom: none;
+  }
+  
+  .users-show li:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+  
+  .users-show li:hover {
+    background-color: #e8e8e8;
+  }
+  
+  .users-show input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .users-show label {
+    font-size: 1.1em;
+    cursor: pointer;
+    flex-grow: 1;
+  }
+  
+  .users-show input[type="submit"] {
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .users-show input[type="submit"]:hover, input[type="submit"]:focus {
+    background-color: #27ae60;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .container {
+      width: 95%;
+      padding: 20px;
+    }
+  
+    .users-show h1 {
+      font-size: 2em;
+    }
+  
+    .users-show li {
+      padding: 12px 15px;
+    }
+  
+    .users-show label {
+      font-size: 1em;
+    }
+  
+    .users-show #select-all, input[type="submit"] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }

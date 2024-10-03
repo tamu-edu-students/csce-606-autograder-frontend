@@ -1,0 +1,29 @@
+<!-- app/views/users/show.html.erb -->
+<div class="container users-show">
+    <h1><%= @user.name %>'s Assignments</h1>
+
+    <%= form_tag update_user_assignments_path(@user), method: :post do %>
+    <button type="button" id="select-all">Select All</button>
+    
+    <ul>
+        <% @assignments.each do |assignment| %>
+        <li>
+            <%= check_box_tag 'assignment_ids[]', assignment.id, @user.assignments.include?(assignment), id: "assignment_#{assignment.id}" %>
+            <%= label_tag "assignment_#{assignment.id}", assignment.repository_name %>
+        </li>
+        <% end %>
+    </ul>
+
+    <%= submit_tag 'Save Changes' %>
+    <% end %>
+
+    <script>
+    document.getElementById('select-all').addEventListener('click', function() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        checkboxes.forEach(function(checkbox) {
+        checkbox.checked = !allChecked;
+        });
+    });
+    </script>
+</div>

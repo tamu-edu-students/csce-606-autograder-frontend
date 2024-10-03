@@ -3,10 +3,26 @@ Rails.application.routes.draw do
   get "pages/home"
 
   resources :assignments
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+ 
   get '/auth/github/callback', to: 'sessions#create'
   get '/auth/failure', to: redirect('/')
-  delete '/logout', to: 'sessions#destroy'
+  delete 'logout', to: 'sessions#destroy'
+
+  # resources :users do
+  #   member do
+  #     patch :update_multiple_repo_permissions
+  #   end
+  # end
+
+  # resources :users do
+  #   resources :assignments, only: [:index] 
+  # end
+  # get 'users/:user_id/assignments/view', to: 'assignments#user_assignments', as: :user_assignment_view
+
+  resources :users, only: [:index, :show]
+  resources :assignments, only: [:index]
+  post 'users/:id/update_assignments', to: 'users#update_assignments', as: 'update_user_assignments'
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
