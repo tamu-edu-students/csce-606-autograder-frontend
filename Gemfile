@@ -56,4 +56,5 @@ group :test do
   gem "capybara"
   gem 'cucumber-rails', require: false
   gem "selenium-webdriver"
+  gem 'rspec-rails'
 end
