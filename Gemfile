@@ -68,6 +68,7 @@ group :test do
   gem "rspec-rails"
   gem "simplecov", require: false
   gem "ZenTest"
+  gem "webmock", "~> 3.0"
 end
 
 gem "git", "~> 2.3"

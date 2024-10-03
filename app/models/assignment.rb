@@ -8,13 +8,14 @@ class Assignment < ActiveRecord::Base
     def create_repo_from_template
         client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
         template_repo = ENV["GITHUB_TEMPLATE_REPO_URL"]
-        new_repo_name = repository_name.downcase.gsub(" ", "-")
+        new_repo_name = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
         options = {
             owner: ENV["GITHUB_COURSE_ORGANIZATION"],
             name: assignment_name,
             private: true
         }
         new_repo = client.create_repo_from_template(template_repo, new_repo_name, options)
+        puts "New repo created: #{new_repo}"
         self.repository_url = new_repo[:html_url]
     end
 
