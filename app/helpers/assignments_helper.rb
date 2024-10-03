@@ -1,4 +1,4 @@
-require 'octokit'
+require "octokit"
 
 module AssignmentsHelper
 end
