@@ -3,7 +3,8 @@ class User < ActiveRecord::Base
         user = where(provider: auth_hash.provider, uid: auth_hash.uid).first_or_initialize
         user.name = auth_hash.info.name
         user.email = auth_hash.info.email
+        user.role = auth_hash.info.role
         user.save!
         user
-      end
+    end
 end
