@@ -79,6 +79,28 @@ RSpec.describe Assignment, type: :model do
       assignment = Assignment.new(repository_name: repository_name)
       expect(assignment.send(:remote_repo_created?)).to be true
     end
+
+    it 'returns false if the repo does not exist on GitHub' do
+      repository_name = 'test-repository'
+      organization = 'AutograderFrontend'
+
+      allow(ENV).to receive(:[]).and_return(nil)
+      allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
+      allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
+
+      stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}").
+        with(
+          headers: {
+            'Accept'=>'application/vnd.github.v3+json',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization'=>'token test_token',
+            'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+          }).
+        to_return(status: 404, body: '', headers: {})
+
+      assignment = Assignment.new(repository_name: repository_name)
+      expect(assignment.send(:remote_repo_created?)).to be false
+    end
   end
 
   describe 'assignment_repo_init' do
