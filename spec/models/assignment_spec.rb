@@ -46,11 +46,12 @@ RSpec.describe Assignment, type: :model do
       )
 
       allow(ENV).to receive(:[]).and_return(nil)
-      allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignments-repos')
+      allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos')
 
+      allow(Git).to receive(:clone)
       expect(Git).to receive(:clone).with(
         'https://github.com/AutograderFrontend/test-repository.git',
-        'assignments-repos/test-repository'
+        'assignment-repos/test-repository'
       )
 
       assignment.send(:clone_repo_to_local)
