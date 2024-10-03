@@ -1,5 +1,4 @@
 class Assignment < ActiveRecord::Base
-
     has_many :tests
     def generate_tests_file
         # should determine the language that is wanted
