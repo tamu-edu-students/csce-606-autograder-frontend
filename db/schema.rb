@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_01_193254) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_02_232214) do
   create_table "assignments", force: :cascade do |t|
     t.string "assignment_name"
     t.string "repository_name"
@@ -18,4 +18,23 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_01_193254) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "tests", force: :cascade do |t|
+    t.string "name"
+    t.float "points"
+    t.string "type"
+    t.string "target"
+    t.text "include"
+    t.string "number"
+    t.boolean "show_output"
+    t.boolean "skip"
+    t.float "timeout"
+    t.string "visibility"
+    t.integer "assignment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id"], name: "index_tests_on_assignment_id"
+  end
+
+  add_foreign_key "tests", "assignments"
 end

@@ -1,4 +1,5 @@
 class Assignment < ActiveRecord::Base
+    has_many :tests
     validates :repository_name, uniqueness: true
     validates :assignment_name, :repository_name, presence: true    
     after_validation :assignment_repo_init, on: :create
