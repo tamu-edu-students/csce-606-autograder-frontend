@@ -26,7 +26,6 @@ class Assignment < ActiveRecord::Base
         /*
         @name: #{test.name}
         @points: #{test.points}
-        @target: #{test.target}
         @type: #{test.test_type}
         #{format_optional_attributes(test)}
         */
@@ -38,8 +37,12 @@ class Assignment < ActiveRecord::Base
         return test_spec
     end
 
+    # @target is semi-optional (depending on type), but whether it
+    # is required or not is checked elsewhere, so it is safe to treat
+    # it as optional
     def format_optional_attributes(test)
         optional_attrs = ""
+        optional_attrs += "@target: #{test.target}\n" if test.target.present?
         optional_attrs += "@include: #{test.include_files}\n" if test.include_files.present?
         optional_attrs += "@number: #{test.number}\n" if test.number.present?
         optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
