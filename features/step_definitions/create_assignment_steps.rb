@@ -58,12 +58,9 @@ Then('I should see a local clone of the {string} repository') do |repository_nam
   expect(Dir.exist?("#{ENV["ASSIGNMENTS_BASE_PATH"]}/#{repository_name}")).to be true
 end
 
-Then('I should see the {string} in {string} of the {string} repository') do |file, dir, repository_name|
-  expect(File.exist?("#{ENV["ASSIGNMENTS_BASE_PATH"]}/#{repository_name}/#{dir}/#{file}")).to be true
-end
-
-Then('I should see the deploy_key in {string} of the {string} repository') do |string, string2|
-  expect(File.exist?("#{ENV["ASSIGNMENTS_BASE_PATH"]}/#{repository_name}/#{dir}/deploy_key")).to be true
+Then('I should see {string} in {string}') do |deploy_key, base_path|
+  # wait for deploy keys to be created
+  expect(File.exist?(File.join(base_path, deploy_key))).to be true
 end
 
 Given('I create an assignment with the name {string} and the repository {string}') do |assignment_name, repository_name|
@@ -92,7 +89,7 @@ When('I try to visit the {string} page') do |string|
   when 'Create Assignment' then new_assignment_path
   when 'Login' then root_path
   else
-           raise "Unknown page: #{string}"
+    raise "Unknown page: #{string}"
   end
   visit path
 end
