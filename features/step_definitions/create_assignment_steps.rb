@@ -15,7 +15,7 @@
   end
 
   Then('I should see the {string} repository in the CSCE {int} GitHub organization') do |string, int|
-  # Then('I should see the {string} repository in the CSCE {float} GitHub organization') do |string, float|
+    # Then('I should see the {string} repository in the CSCE {float} GitHub organization') do |string, float|
     pending # Write code here that turns the phrase above into concrete actions
   end
 

@@ -4,45 +4,24 @@ Feature: Log in to the application
   I want to authenticate with a third-party service and login to the system
 
   Background: Users in the GitHub organization
-    Given the following users are in the GitHub organization:
-      | username | password | role          |
-      | alice    | password | instructor    |
-      | bob      | password | ta-read-only  |
-      | charlie  | password | ta-read-write |
-      | dave     | password |               |
-    And I am on the "Login" page
+    Given I am on the "Login" page
 
   Scenario: Instructor logs in with valid credentials
-    When I fill in "username" with "alice"
-    And I fill in "password" with "password"
-    And I press "Log in"
-    Then I should see the course dashboard page
+    When I log in with GitHub as "alice" who has the role of "instructor"
+    Then I should see the "Course Dashboard" page
     And I should have the role "instructor"
 
-  Scenario: TA with write privileges logs in with valid credentials
-    When I fill in "username" with "bob"
-    And I fill in "password" with "password"
-    And I press "Log in"
-    Then I should see the course dashboard page
-    And I should have the role "manager"
-
-  Scenario: TA with read-only privileges logs in with valid credentials
-    When I fill in "username" with "charlie"
-    And I fill in "password" with "password"
-    And I press "Log in"
-    Then I should see the course dashboard page
-    And I should have the role "ta-read-write"
+  Scenario: TA logs in with valid credentials
+    When I log in with GitHub as "bob" who has the role of "ta"
+    Then I should see the "Course Dashboard" page
+    And I should have the role "ta"
 
   Scenario: Non-organization user logs in with valid credentials
-    When I fill in "username" with "dave"
-    And I fill in "password" with "password"
-    And I press "Log in"
-    Then I should see the login page
-    And I should see the error message "Invalid username or password"
+    When I log in with GitHub as "dave" who has the role of ""
+    Then I should see the "Login" page
+    And I should see the error message "You must be a member of CSCE-120 organization to access this application."
 
   Scenario: User logs in with invalid credentials
-    When I fill in "username" with "alice"
-    And I fill in "password" with "wrongpassword"
-    And I press "Log in"
-    Then I should see the login page
-    And I should see the error message "Invalid username or password"
+    When I attempt to log in with GitHub with invalid credentials
+    Then I should see the "Login" page
+    And I should see the error message "GitHub authentication failed. Please try again."

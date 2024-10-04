@@ -1,7 +1,3 @@
-Given('I am on the {string} page') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   When('I add a new user with the (GitHub )username {string} and the role {string}') do |string, string2|
     pending # Write code here that turns the phrase above into concrete actions
   end
@@ -19,10 +15,6 @@ Given('I am on the {string} page') do |string|
   end
 
   Given('A user with the username {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should see the error message {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
 
@@ -209,28 +201,11 @@ Given('I am on the {string} page') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Given('the following users are in the GitHub organization:') do |table|
-    # table is a Cucumber::MultilineArgument::DataTable
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   When('I fill in {string} with {string}') do |string, string2|
     pending # Write code here that turns the phrase above into concrete actions
   end
 
   When('I press {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should see the course dashboard page') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should have the role {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should see the login page') do
     pending # Write code here that turns the phrase above into concrete actions
   end
 
@@ -355,10 +330,6 @@ Given('I am on the {string} page') do |string|
   end
 
   Given('I am am logged in with the {string} role') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should see the {string} page') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
 
