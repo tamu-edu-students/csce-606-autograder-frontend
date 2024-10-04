@@ -1,5 +1,13 @@
 source "https://rubygems.org"
 
+ruby "3.3.2"
+gem "omniauth"
+gem "omniauth-github"
+gem "omniauth-rails_csrf_protection"
+
+gem "faraday-retry"
+gem "faraday-multipart"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -46,11 +54,14 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem 'rubocop', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
-  gem 'rubycritic', require: false
+  gem "rubocop", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
+  gem "rubycritic", require: false
+
+  gem "factory_bot_rails"
+  gem "dotenv-rails"
 end
 
 group :development do
@@ -60,13 +71,19 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'database_cleaner'
+  gem "action-cable-testing"
   gem "capybara"
-  gem 'cucumber-rails', require: false
+  gem "cucumber-rails", require: false
+  gem "database_cleaner"
+  gem "rack_session_access"
+  gem "rails-controller-testing"
+  gem "rspec-rails"
   gem "selenium-webdriver"
-  gem 'octokit'  # For interacting with GitHub API
-  gem 'rails-controller-testing'
-  gem 'rspec-rails'
-  gem 'simplecov', require: false
-  gem 'ZenTest'
+  gem "simplecov", require: false
+  gem "ZenTest"
+end
+
+group :production do
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "pg"
 end

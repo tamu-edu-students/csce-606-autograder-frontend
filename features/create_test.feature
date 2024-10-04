@@ -13,7 +13,7 @@ Feature: Create a new test case
     And there is text in the test block
     When I change the test type to "compile"
     Then I should be prompted with a warning that the test block will be cleared
-    And I should see a button to confirm
+    And I should see a "confirm" button
 
   Rule: All tests must have non-empty name, points, type, and if applicable, target attributes
     Background:
