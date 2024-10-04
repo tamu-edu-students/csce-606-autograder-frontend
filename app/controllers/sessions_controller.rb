@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
     def create
-        auth_hash = request.env['omniauth.auth']
+        auth_hash = request.env["omniauth.auth"]
 
         if auth_hash
             if user_belongs_to_organization?(auth_hash)
@@ -13,16 +13,15 @@ class SessionsController < ApplicationController
         else
             redirect_to root_path, alert: "GitHub authentication failed. Please try again."
         end
-
     end
-  
+
     private
-  
+
     def user_belongs_to_organization?(auth_hash)
       access_token = auth_hash.credentials.token
       client = Octokit::Client.new(access_token: access_token)
-      client.organization_member?('AutograderFrontend', auth_hash.info.nickname)
+      client.organization_member?("AutograderFrontend", auth_hash.info.nickname)
     rescue Octokit::Unauthorized
         false
     end
-  end
+end

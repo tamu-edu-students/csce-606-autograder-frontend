@@ -1,13 +1,13 @@
 source "https://rubygems.org"
 
 ruby "3.3.2"
-gem 'octokit'
-gem 'omniauth'
-gem 'omniauth-github'
-gem 'omniauth-rails_csrf_protection'
+gem "octokit"
+gem "omniauth"
+gem "omniauth-github"
+gem "omniauth-rails_csrf_protection"
 
-gem 'faraday-retry'
-gem 'faraday-multipart'
+gem "faraday-retry"
+gem "faraday-multipart"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -52,7 +52,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem 'factory_bot_rails'
+  gem "factory_bot_rails"
   gem "rails-controller-testing"
 end
 
@@ -63,12 +63,12 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'database_cleaner'
+  gem "database_cleaner"
   gem "capybara"
-  gem 'cucumber-rails', require: false
+  gem "cucumber-rails", require: false
   gem "selenium-webdriver"
-  gem 'rspec-rails'
-  gem 'simplecov', require: false
+  gem "rspec-rails"
+  gem "simplecov", require: false
 end
 
 group :production do

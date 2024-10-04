@@ -78,5 +78,4 @@ RSpec.describe SessionsController, type: :controller do
       expect(flash[:alert]).to eq('You must be a member of CSCE-120 organization to access this application.')
     end
   end
-
 end
