@@ -4,7 +4,7 @@ Feature: Delete a test case
     I want to delete a test case in an assignment
 
     Scenario: Delete a test case
-        Given I am logged in as an instructor
+        Given I am logged in as an "instructor"
         And I have created an assignment with a test case of type "<type>"
         When I delete the test case
         Then I should be prompted to confirm the deletion

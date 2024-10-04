@@ -17,16 +17,25 @@ Given('the following users are in the GitHub organization:') do |users_table|
     end
 end
 
-Given('I am on the login page') do
-    visit root_path
+Given('I am on the {string} page') do |page_name|
+    path = case page_name
+    when
+        'Login' then root_path
+    else
+        raise "Unknown page: #{page_name}"
+    end
+    visit path
 end
 
-Then('I should see the course dashboard page') do
-    expect(current_path).to eq(assignments_path)
-end
+Then('I should see the {string} page') do |page_name|
+    expected_path = case page_name
+    when
+        "Course Dashboard" then assignments_path
+    when
+        "Login" then root_path
+    end
 
-Then('I should see the login page') do
-    expect(current_path).to eq(root_path)
+    expect(current_path).to eq(expected_path)
 end
 
 Then('I should see the error message {string}') do |string|
@@ -71,5 +80,4 @@ When('I log in with GitHub as {string}') do |username|
     end
     
     visit '/auth/github/callback' # Triggers OmniAuth GitHub login
-  end
-  
+end
