@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <%= stylesheet_link_tag 'home', media: 'all' %>
+</head>
+<body>
+  <h1>Welcome to Autograder!</h1>
+
+  <p>This autograding system allows for an easier creation and maintenance of assignments and their constituent tests</p>
+
+  <% if current_user %>
+    <p>You are logged in as <%= current_user.name %>!</p>
+  <% else %>
+    <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
+      <button type="submit">Login With GitHub</button> 
+    <% end %>
+  <% end %>
+</body>
+</html>
