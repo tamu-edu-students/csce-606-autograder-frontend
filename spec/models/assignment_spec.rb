@@ -27,19 +27,20 @@ RSpec.describe Assignment, type: :model do
 
     it 'generates an SSH key' do
       expect(Open3).to receive(:capture3).with('ssh-keygen', '-t', 'ed25519', '-C', 'gradescope', '-f', key_path)
-      assignment.create_and_add_deploy_key
+      assignment.send(:create_and_add_deploy_key)
+
     end
 
     it 'reads the generated public key' do
       expect(File).to receive(:read).with("#{key_path}.pub")
-      assignment.create_and_add_deploy_key
+      assignment.send(:create_and_add_deploy_key)
     end
 
     it 'adds a deploy key to the GitHub repository' do
       client = double('OctokitClient')
       allow(Octokit::Client).to receive(:new).and_return(client)
       expect(client).to receive(:add_deploy_key).with(assignment.repository_name, 'Gradescope Deploy Key', 'mock_public_key_content', read_only: true)
-      assignment.create_and_add_deploy_key
+      assignment.send(:create_and_add_deploy_key)
     end
 
     context 'when SSH key generation fails' do
@@ -48,7 +49,7 @@ RSpec.describe Assignment, type: :model do
       end
 
       it 'logs an error message' do
-        expect { assignment.create_and_add_deploy_key }.to output(/Error generating key/).to_stdout
+        expect { assignment.send(:create_and_add_deploy_key) }.to output(/Error generating key/).to_stdout
       end
     end
 
@@ -58,7 +59,7 @@ RSpec.describe Assignment, type: :model do
       end
 
       it 'logs an error message' do
-        expect { assignment.create_and_add_deploy_key }.to output(/Failed to read public key: File read error/).to_stdout
+        expect { assignment.send(:create_and_add_deploy_key) }.to output(/Failed to read public key: File read error/).to_stdout
       end
     end
 
@@ -73,7 +74,7 @@ RSpec.describe Assignment, type: :model do
         end
 
       it 'logs an error message' do
-        expect { assignment.create_and_add_deploy_key }.to output(/Failed to add deploy key to GitHub: GitHub API error/).to_stdout
+        expect { assignment.send(:create_and_add_deploy_key) }.to output(/Failed to add deploy key to GitHub: GitHub API error/).to_stdout
       end
     end
   end
