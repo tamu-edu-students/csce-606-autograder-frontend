@@ -4,10 +4,13 @@ Given(/^I am logged in as an instructor or TA$/) do
   end
   
   Given(/^I am on the "Assignment Management" page for "(.*)"$/) do |assignment_name|
-    assignment = Assignment.find_by!(name: assignment_name)
-    visit assignment_management_path(assignment)
+    @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name) do |assignment|
+      assignment.repository_name = 'assignment-1-repo'
+      assignment.repository_url = 'http://example.com/repo'
+    end
+    visit assignment_path(@assignment)
   
-    expect(page).to have_content(assignment.name)
+    expect(page).to have_content(@assignment.assignment_name)
   end
   
   Given(/^there is a test case of type "(.*)"$/) do |type|

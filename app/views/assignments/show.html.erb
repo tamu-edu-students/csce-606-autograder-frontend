@@ -1,18 +1,90 @@
-<h1>Tests for <%= @assignment.assignment_name %></h1>
+<h1>Assignment: <%= @assignment.assignment_name %></h1>
 
-<% if @tests.any? %>
-  <ul>
-    <% @tests.each do |test| %>
-      <li>
-        <%= test.name %> - <%= test.points %> points - <%= test.test_type %> 
-        <%= link_to "Edit", edit_assignment_test_path(@assignment, test) %> |
-        <%= link_to "Delete", assignment_test_path(@assignment, test), method: :delete, data: { confirm: "Are you sure?" } %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No tests available for this assignment.</p>
-<% end %>
+<!-- Display tests for the assignment -->
+<h2>Tests for <%= @assignment.assignment_name %></h2>
+<ul>
+  <% @tests.each do |test| %>
+    <li>
+      <%= test.name %> - <%= test.points %> points - <%= test.test_type %>
+      <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
+      <%= link_to 'Delete', assignment_test_path(@assignment, test), method: :delete, data: { confirm: 'Are you sure?' } %> <!-- Link to delete test -->
+    </li>
+  <% end %>
+</ul>
 
-<%= link_to "Add new test", new_assignment_test_path(@assignment), class: "btn btn-primary" %>
-<%= link_to "Back to assignments", assignments_path %>
+<!-- Link to add a new test -->
+<%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
+<%= link_to 'Back to assignments', assignments_path %>
+
+<hr>
+
+<!-- Render details of a selected test or show a form to create a new test -->
+<div class="test-details">
+  <% if @test && @test.persisted? %>
+    <h2>Details of the Test</h2>
+    <p><strong>Name:</strong> <%= @test.name %></p>
+    <p><strong>Points:</strong> <%= @test.points %></p>
+    <p><strong>Type:</strong> <%= @test.test_type %></p>
+    <p><strong>Target:</strong> <%= @test.target %></p>
+    <p><strong>Include:</strong> <%= @test.include %></p>
+    <p><strong>Show Output:</strong> <%= @test.show_output %></p>
+    <p><strong>Skip:</strong> <%= @test.skip %></p>
+    <p><strong>Timeout:</strong> <%= @test.timeout %></p>
+    <%= link_to 'Back to Tests', assignment_path(@assignment) %>
+    <%= link_to 'Destroy this Test', assignment_test_path(@assignment, @test), method: :delete, data: { confirm: 'Are you sure?' }, class: "button-danger" %>
+  <% end %>
+</div>
+
+<hr>
+
+<!-- Form to create or edit a test -->
+<div class="test-form">
+  <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
+  
+  <%= form_with model: [@assignment, @test], local: true do |form| %>
+    <div class="form-grid">
+      <div>
+        <%= form.label :name %>
+        <%= form.text_field :name %>
+      </div>
+      <div>
+        <%= form.label :points %>
+        <%= form.number_field :points %>
+      </div>
+      <div>
+        <%= form.label :test_type %>
+        <%= form.select :test_type, options_for_select([['Coverage', 'coverage'], ['Compile', 'compile'], ['Approved Includes', 'approved_includes']]) %>
+      </div>
+      <div>
+        <%= form.label :target %>
+        <%= form.text_field :target %>
+      </div>
+      <div>
+        <%= form.label :show_output %>
+        <%= form.check_box :show_output %>
+      </div>
+      <div>
+        <%= form.label :skip %>
+        <%= form.check_box :skip %>
+      </div>
+      <div>
+        <%= form.label :timeout %>
+        <%= form.number_field :timeout %>
+      </div>
+      <div>
+        <%= form.label :visibility %>
+        <%= form.text_field :visibility %>
+      </div>
+      <div>
+        <%= form.label :include %>
+        <%= form.text_area :include %>
+      </div>
+    </div>
+    <div class="form-actions">
+      <%= form.submit @test.persisted? ? "Update Test" : "Create Test" %>
+    </div>
+  <% end %>
+
+  <%= link_to 'Back to Assignment', assignment_path(@assignment) %>
+</div>
+

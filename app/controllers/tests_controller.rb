@@ -31,6 +31,8 @@ class TestsController < ApplicationController
         format.html { redirect_to assignment_tests_path(@assignment), notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
+        flash.now[:alert] = @test.errors.full_messages.to_sentence  # Store error messages in flash
+        logger.debug "Flash message: #{flash[:alert]}"
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @test.errors, status: :unprocessable_entity }
       end

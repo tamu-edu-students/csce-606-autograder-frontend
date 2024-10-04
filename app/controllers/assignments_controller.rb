@@ -6,10 +6,11 @@ class AssignmentsController < ApplicationController
     @assignments = Assignment.all
   end
 
-  # GET /assignments/1 or /assignments/1.json
   def show
     @assignment = Assignment.find(params[:id])
-    @tests = @assignment.tests # Fetch all tests associated with this assignment
+    @tests = @assignment.tests
+    @test = Test.find(params[:test_id]) if params[:test_id]  # If a specific test is selected
+    @test ||= Test.new(assignment: @assignment)  # Default to a new test if no test is selected
   end
 
   # GET /assignments/new
