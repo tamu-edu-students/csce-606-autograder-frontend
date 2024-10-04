@@ -57,13 +57,16 @@ class TestsController < ApplicationController
 
   # DELETE /tests/1 or /tests/1.json
   def destroy
-    @test.destroy!
-
+    @assignment = Assignment.find(params[:assignment_id])
+    @test = @assignment.tests.find(params[:id])
+    @test.destroy
+  
     respond_to do |format|
-      format.html { redirect_to tests_path, status: :see_other, notice: "Test was successfully destroyed." }
+      format.html { redirect_to assignment_tests_path(@assignment), status: :see_other, notice: "Test was successfully destroyed." }
       format.json { head :no_content }
     end
   end
+  
 
   private
 
@@ -72,11 +75,13 @@ class TestsController < ApplicationController
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_test
-      @test = Test.find(params[:id])
+      @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
+      @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
     end
+    
 
     # Only allow a list of trusted parameters through.
     def test_params
-      params.require(:test).permit(:name, :points, :test_type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id)
+      params.require(:test).permit(:name, :points, :test_type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id, :actual_test)
     end
 end

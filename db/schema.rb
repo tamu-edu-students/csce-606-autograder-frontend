@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_03_234802) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_04_005404) do
   create_table "assignments", force: :cascade do |t|
     t.string "assignment_name"
     t.string "repository_name"
@@ -33,6 +33,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_03_234802) do
     t.integer "assignment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "actual_test"
     t.index ["assignment_id"], name: "index_tests_on_assignment_id"
   end
 

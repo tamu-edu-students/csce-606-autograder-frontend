@@ -4,7 +4,7 @@
   <ul>
     <% @tests.each do |test| %>
       <li>
-        <%= test.name %> - <%= test.points %> points - <%= test.type %> 
+        <%= test.name %> - <%= test.points %> points - <%= test.test_type %> 
         <%= link_to "Edit", edit_assignment_test_path(@assignment, test) %> |
         <%= link_to "Delete", assignment_test_path(@assignment, test), method: :delete, data: { confirm: "Are you sure?" } %>
       </li>
