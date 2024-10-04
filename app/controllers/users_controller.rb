@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
     def update_assignments
         @user = User.find(params[:id])
-        new_assignment_ids = params[:assignment_ids] || []
+        new_assignment_ids = (params[:assignment_ids] || []).map(&:to_i)
         old_assignment_ids = @user.assignment_ids
 
 
@@ -40,11 +40,16 @@ class UsersController < ApplicationController
       private
 
       def update_github_permissions(user, new_assignment_ids, old_assignment_ids)
+        Rails.logger.info "#{session[:github_token]}"
         client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
         org_name = "AutograderFrontend"
 
         # All assignments that need to be updated
         all_assignments = Assignment.where(id: new_assignment_ids | old_assignment_ids)
+        Rails.logger.info "#{all_assignments}"
+        Rails.logger.info "#{new_assignment_ids}"
+        Rails.logger.info "#{old_assignment_ids}"
+
 
         all_assignments.each do |assignment|
           repo_identifier = "#{org_name}/#{assignment.repository_name}"

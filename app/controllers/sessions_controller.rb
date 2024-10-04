@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
     def create
         auth_hash = request.env["omniauth.auth"]
+        session[:github_token] = auth_hash.credentials.token
         if user_belongs_to_organization?(auth_hash)
             user = User.find_or_create_by_auth_hash(auth_hash)
             session[:user_id] = user.id
@@ -19,7 +20,7 @@ class SessionsController < ApplicationController
     private
 
     def user_belongs_to_organization?(auth_hash)
-      access_token = auth_hash.credentials.token
+      access_token = session[:github_token]
       client = Octokit::Client.new(access_token: access_token)
       client.organization_member?("AutograderFrontend", auth_hash.info.nickname)
     end
