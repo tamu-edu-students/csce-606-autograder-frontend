@@ -8,6 +8,7 @@ gem "omniauth-rails_csrf_protection"
 
 gem "faraday-retry"
 gem "faraday-multipart"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -63,6 +64,7 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "factory_bot_rails"
   gem "rails-controller-testing"
+  gem "dotenv-rails"
 end
 
 group :development do
