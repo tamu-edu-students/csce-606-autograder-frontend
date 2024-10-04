@@ -10,13 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_03_010141) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_03_005624) do
   create_table "assignments", force: :cascade do |t|
     t.string "assignment_name"
     t.string "repository_name"
     t.string "repository_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "assignments_users", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "assignment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id"], name: "index_assignments_users_on_assignment_id"
+    t.index ["user_id"], name: "index_assignments_users_on_user_id"
   end
 
   create_table "tests", force: :cascade do |t|
@@ -43,8 +52,22 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_03_010141) do
     t.string "uid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "username"
     t.string "role"
   end
 
+  create_table "users_assignments", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "assignment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id"], name: "index_users_assignments_on_assignment_id"
+    t.index ["user_id"], name: "index_users_assignments_on_user_id"
+  end
+
+  add_foreign_key "assignments_users", "assignments"
+  add_foreign_key "assignments_users", "users"
   add_foreign_key "tests", "assignments"
+  add_foreign_key "users_assignments", "assignments"
+  add_foreign_key "users_assignments", "users"
 end
