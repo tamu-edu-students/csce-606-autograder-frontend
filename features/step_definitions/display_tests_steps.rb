@@ -1,13 +1,10 @@
-Given(/^I am logged in as an instructor or TA$/) do
-    user = User.find_or_create_by!(role: ['instructor', 'TA'].sample)
-    login_as(user)
-  end
+Given(/^I am logged in as a (instructor|TA)$/) do |role|
+  user = User.find_or_create_by!(role: role)
+  login_as(user)
+end
   
   Given(/^I am on the "Assignment Management" page for "(.*)"$/) do |assignment_name|
-    @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name) do |assignment|
-      assignment.repository_name = 'assignment-1-repo'
-      assignment.repository_url = 'http://example.com/repo'
-    end
+    @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name)
     visit assignment_path(@assignment)
   
     expect(page).to have_content(@assignment.assignment_name)

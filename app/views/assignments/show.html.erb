@@ -7,35 +7,13 @@
     <li>
       <%= test.name %> - <%= test.points %> points - <%= test.test_type %>
       <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
-      <%= link_to 'Delete', assignment_test_path(@assignment, test), method: :delete, data: { confirm: 'Are you sure?' } %> <!-- Link to delete test -->
     </li>
   <% end %>
 </ul>
 
 <!-- Link to add a new test -->
 <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
-<%= link_to 'Back to assignments', assignments_path %>
 
-<hr>
-
-<!-- Render details of a selected test or show a form to create a new test -->
-<div class="test-details">
-  <% if @test && @test.persisted? %>
-    <h2>Details of the Test</h2>
-    <p><strong>Name:</strong> <%= @test.name %></p>
-    <p><strong>Points:</strong> <%= @test.points %></p>
-    <p><strong>Type:</strong> <%= @test.test_type %></p>
-    <p><strong>Target:</strong> <%= @test.target %></p>
-    <p><strong>Include:</strong> <%= @test.include %></p>
-    <p><strong>Show Output:</strong> <%= @test.show_output %></p>
-    <p><strong>Skip:</strong> <%= @test.skip %></p>
-    <p><strong>Timeout:</strong> <%= @test.timeout %></p>
-    <%= link_to 'Back to Tests', assignment_path(@assignment) %>
-    <%= link_to 'Destroy this Test', assignment_test_path(@assignment, @test), method: :delete, data: { confirm: 'Are you sure?' }, class: "button-danger" %>
-  <% end %>
-</div>
-
-<hr>
 
 <!-- Form to create or edit a test -->
 <div class="test-form">
@@ -53,12 +31,21 @@
       </div>
       <div>
         <%= form.label :test_type %>
-        <%= form.select :test_type, options_for_select([['Coverage', 'coverage'], ['Compile', 'compile'], ['Approved Includes', 'approved_includes']]) %>
+        <%= form.select :test_type, options_for_select([['coverage', 'coverage'], ['compile', 'compile'], ['approved_includes', 'approved_includes'], ['memory_errors', 'memory_errors'],['unit', 'unit'], ['i/o', 'i/o'], ['performance', 'performance'], ['script', 'script']]) %>
       </div>
       <div>
         <%= form.label :target %>
         <%= form.text_field :target %>
       </div>
+      <div>
+      <%= form.label :include %>
+      <%= form.text_area :include %>
+      </div>
+      <div>
+      <%= form.label :number %>
+      <%= form.text_field :number %>
+    </div>
+
       <div>
         <%= form.label :show_output %>
         <%= form.check_box :show_output %>
@@ -76,15 +63,20 @@
         <%= form.text_field :visibility %>
       </div>
       <div>
-        <%= form.label :include %>
-        <%= form.text_area :include %>
+        <%= form.label :actual_test %>
+        <%= form.text_area :actual_test %>
       </div>
     </div>
     <div class="form-actions">
       <%= form.submit @test.persisted? ? "Update Test" : "Create Test" %>
     </div>
+    <% if @test.persisted? %>
+      <div class="delete-actions">
+        <%= button_to 'Delete Test', assignment_path(@assignment, @test), method: :delete, data: { confirm: 'Are you sure you want to delete this test?' }, class: 'btn btn-danger' %>
+      </div>
+    <% end %>
   <% end %>
 
-  <%= link_to 'Back to Assignment', assignment_path(@assignment) %>
+  <%= link_to 'Back to Assignment', assignments_path %>
 </div>
 

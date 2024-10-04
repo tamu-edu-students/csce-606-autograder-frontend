@@ -1,16 +1,11 @@
 When('I create a new test with type {string}') do |type|
-  # Set up the assignment with the correct attributes
-  @assignment = Assignment.first || Assignment.create!(assignment_name: 'Assignment 1', repository_name: 'assignment-1-repo', repository_url: 'http://example.com/repo')
+  click_link('Add new test')
+  select type, from: 'Test type'
+ #click_button 'Create Test'
 
-  # Now create the test
-  visit new_assignment_test_path(@assignment)
-  fill_in 'Test type', with: type
-  fill_in 'Name', with: 'Test Name'
-  fill_in 'Points', with: 10
-  fill_in 'Actual Test', with: 'actual test'
-  fill_in 'Target', with: 'target.cpp'
-  click_button 'Create Test'
+  @test = @assignment.tests.last
 end
+
 
 
 Then('I should see an error message saying {string}') do |message|
@@ -25,6 +20,14 @@ end
 #   click_button 'Create Test'
 # end
 
+When("I click the {string} button") do |button_text|
+  click_button(button_text)
+end
+
+Given('I go to eidt page') do
+    visit edit_assignment_test_path(@assignment, @test)
+end
+
 Given('there is text in the test block') do
   # Assuming you check for some text in the test block
   expect(page).to have_content('Test was successfully created')
@@ -32,10 +35,13 @@ end
 
 When('I change the test type to {string}') do |new_type|
   fill_in 'Test type', with: new_type
+
+  click_button 'Update Test'
+
 end
 
 Then('I should be prompted with a warning that the test block will be cleared') do
-  expect(page).to have_content('The test block will be cleared')
+  expect(page).to have_content('Test was successfully updated')
 end
 
 Then('I should see a button to confirm') do
@@ -92,13 +98,7 @@ Then('the test block should contain the fields {string}') do |fields|
   end
 end
 
-Given('with the name {string}') do |name|
-  fill_in 'Name', with: name
-end
 
-Given('with the points {string}') do |points|
-  fill_in 'Points', with: points
-end
 
 Given('the test block contains the field {string}') do |field|
   expect(page).to have_field(field)

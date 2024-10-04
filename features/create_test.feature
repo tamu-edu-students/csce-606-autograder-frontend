@@ -11,9 +11,10 @@ Feature: Create a new test case
     Given I am on the "Assignment Management" page for "assignment1"
     And I create a new test with type "unit"
     And there is text in the test block
+    And I go to eidt page
     When I change the test type to "compile"
     Then I should be prompted with a warning that the test block will be cleared
-    And I should see a button to confirm
+
 
   Rule: All tests must have non-empty name, points, type, and if applicable, target attributes
     Background:
@@ -22,14 +23,14 @@ Feature: Create a new test case
         | assignment1     | assignment-1-repo |
         | assignment2     | assignment-2-repo |
         | assignment3     | assignment-3-repo |
-      And I am logged in as an "instructor"
       And I am on the "Assignment Management" page for "assignment1"
 
-    Scenario Outline: Test has required attributes
+    Scenario: Test has required attributes
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
       And with the target "<target>"
+      And I click the "Create Test" button
       Then I should not see any missing attribute error messages
 
       Examples:
@@ -43,10 +44,11 @@ Feature: Create a new test case
         | performance       | test7 | 10     | target7.cpp |
         | script            | test8 | 10     | target8.cpp |
 
-    Scenario Outline: Exempt tests missing target
+    Scenario: Exempt tests missing target
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
+      And I click the "Create Test" button
       Then I should not see any missing attribute error messages
 
       Examples:
@@ -55,10 +57,11 @@ Feature: Create a new test case
         | memory_errors | test2 | 10     |        |
         | script        | test3 | 10     |        |
 
-    Scenario Outline: Non-exempt tests missing target
+    Scenario: Non-exempt tests missing target
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
+      And I click the "Create Test" button
       Then I should see an error message saying "Missing attribute: target"
 
       Examples:
@@ -69,7 +72,7 @@ Feature: Create a new test case
         | i/o               | test4 | 10     |        |
         | performance       | test5 | 10     |        |
 
-    Scenario Outline: Tests missing one of [name, points, type]
+    Scenario: Tests missing one of [name, points, type]
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
   resources :assignments do
-    resources :tests
+    resources :tests 
   end
 end

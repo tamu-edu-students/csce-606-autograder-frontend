@@ -28,7 +28,7 @@ class TestsController < ApplicationController
   
     respond_to do |format|
       if @test.save
-        format.html { redirect_to assignment_tests_path(@assignment), notice: "Test was successfully created." }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
         flash.now[:alert] = @test.errors.full_messages.to_sentence  # Store error messages in flash
@@ -47,9 +47,11 @@ class TestsController < ApplicationController
   
     respond_to do |format|
       if @test.update(test_params)
-        format.html { redirect_to assignment_test_path(@assignment, @test), notice: "Test was successfully updated." }
+        format.html { redirect_to assignment_path(@assignment, @test), notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
+        flash.now[:alert] = @test.errors.full_messages.to_sentence  # Store error messages in flash
+        logger.debug "Flash message: #{flash[:alert]}"
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @test.errors, status: :unprocessable_entity }
       end
@@ -64,7 +66,7 @@ class TestsController < ApplicationController
     @test.destroy
   
     respond_to do |format|
-      format.html { redirect_to assignment_tests_path(@assignment), status: :see_other, notice: "Test was successfully destroyed." }
+      format.html { redirect_to assignment_path(@assignment), status: :see_other, notice: "Test was successfully destroyed." }
       format.json { head :no_content }
     end
   end
