@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_02_232214) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_03_234802) do
   create_table "assignments", force: :cascade do |t|
     t.string "assignment_name"
     t.string "repository_name"
@@ -22,7 +22,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_02_232214) do
   create_table "tests", force: :cascade do |t|
     t.string "name"
     t.float "points"
-    t.string "type"
+    t.string "test_type"
     t.string "target"
     t.text "include"
     t.string "number"

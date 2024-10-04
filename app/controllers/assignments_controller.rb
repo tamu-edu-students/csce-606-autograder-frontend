@@ -8,6 +8,8 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/1 or /assignments/1.json
   def show
+    @assignment = Assignment.find(params[:id])
+    @tests = @assignment.tests # Fetch all tests associated with this assignment
   end
 
   # GET /assignments/new

@@ -1,10 +1,18 @@
-<p style="color: green"><%= notice %></p>
+<h1>Tests for <%= @assignment.assignment_name %></h1>
 
-<%= render @assignment %>
+<% if @tests.any? %>
+  <ul>
+    <% @tests.each do |test| %>
+      <li>
+        <%= test.name %> - <%= test.points %> points - <%= test.type %> 
+        <%= link_to "Edit", edit_assignment_test_path(@assignment, test) %> |
+        <%= link_to "Delete", assignment_test_path(@assignment, test), method: :delete, data: { confirm: "Are you sure?" } %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No tests available for this assignment.</p>
+<% end %>
 
-<div>
-  <%= link_to "Edit this assignment", edit_assignment_path(@assignment) %> |
-  <%= link_to "Back to assignments", assignments_path %>
-
-  <%= button_to "Destroy this assignment", @assignment, method: :delete %>
-</div>
+<%= link_to "Add new test", new_assignment_test_path(@assignment), class: "btn btn-primary" %>
+<%= link_to "Back to assignments", assignments_path %>

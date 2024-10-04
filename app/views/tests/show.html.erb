@@ -3,8 +3,9 @@
 <%= render @test %>
 
 <div>
-  <%= link_to "Edit this test", edit_test_path(@test) %> |
-  <%= link_to "Back to tests", tests_path %>
+  <%= link_to "Edit this test", edit_assignment_test_path(@assignment, @test) %> |
+  <%= link_to "Back to tests", assignment_tests_path(@assignment) %>
 
-  <%= button_to "Destroy this test", @test, method: :delete %>
+  <%= button_to "Destroy this test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?" } %>
+
 </div>

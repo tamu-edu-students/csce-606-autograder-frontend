@@ -1,5 +1,7 @@
 class TestsController < ApplicationController
+  before_action :set_assignment
   before_action :set_test, only: %i[ show edit update destroy ]
+  
 
   # GET /tests or /tests.json
   def index
@@ -21,11 +23,12 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @test = Test.new(test_params)
-
+    @assignment = Assignment.find(params[:assignment_id])  # Find the relevant assignment
+    @test = @assignment.tests.new(test_params)  # Associate test with the assignment
+  
     respond_to do |format|
       if @test.save
-        format.html { redirect_to @test, notice: "Test was successfully created." }
+        format.html { redirect_to assignment_tests_path(@assignment), notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -33,12 +36,16 @@ class TestsController < ApplicationController
       end
     end
   end
+  
 
   # PATCH/PUT /tests/1 or /tests/1.json
   def update
+    @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
+    @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
+  
     respond_to do |format|
       if @test.update(test_params)
-        format.html { redirect_to @test, notice: "Test was successfully updated." }
+        format.html { redirect_to assignment_test_path(@assignment, @test), notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -46,6 +53,7 @@ class TestsController < ApplicationController
       end
     end
   end
+  
 
   # DELETE /tests/1 or /tests/1.json
   def destroy
@@ -58,6 +66,10 @@ class TestsController < ApplicationController
   end
 
   private
+
+    def set_assignment
+      @assignment = Assignment.find(params[:assignment_id])
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_test
       @test = Test.find(params[:id])
@@ -65,6 +77,6 @@ class TestsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def test_params
-      params.require(:test).permit(:name, :points, :type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id)
+      params.require(:test).permit(:name, :points, :test_type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id)
     end
 end
