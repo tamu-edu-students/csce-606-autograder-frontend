@@ -41,7 +41,7 @@
 
   <div class="field">
     <%= form.label :show_output %>
-    <%= form.check_box :show_output %>
+    <%= form.check_box :show_output, {}, true, false %> 
   </div>
 
   <div class="field">
@@ -56,7 +56,10 @@
 
   <div class="field">
     <%= form.label :visibility %>
-    <%= form.text_field :visibility %>
+    <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
+                                                      ['After Due Date', 'after_due_date'], 
+                                                      ['After Published', 'after_published'], 
+                                                      ['Visible', 'visible']], @test.visibility || 'visible') %>
   </div>
 
   <div class="field">

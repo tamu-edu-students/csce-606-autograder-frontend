@@ -1,15 +1,16 @@
+<% if @test.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@test.errors.count, "error") %> prohibited this test from being saved:</h2>
+    <ul>
+      <% @test.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 <%= form_with(model: [@assignment, @test], local: true, html: { multipart: true }) do |form| %>
-  <% if test.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(test.errors.count, "error") %> prohibited this test from being saved:</h2>
+  
 
-      <ul>
-        <% test.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
 
   <div>
     <%= form.label :name, style: "display: block" %>
@@ -49,9 +50,9 @@
     <%= form.text_field :number %>
   </div>
 
-  <div>
-    <%= form.label :show_output, style: "display: block" %>
-    <%= form.check_box :show_output %>
+  <div class="field">
+    <%= form.label :show_output %>
+    <%= form.check_box :show_output, {}, true, false %> 
   </div>
 
   <div>
@@ -64,9 +65,12 @@
     <%= form.text_field :timeout %>
   </div>
 
-  <div>
-    <%= form.label :visibility, style: "display: block" %>
-    <%= form.text_field :visibility %>
+  <div class="field">
+    <%= form.label :visibility %>
+    <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
+                                                      ['After Due Date', 'after_due_date'], 
+                                                      ['After Published', 'after_published'], 
+                                                      ['Visible', 'visible']], @test.visibility || 'visible') %>
   </div>
 
   <div>
