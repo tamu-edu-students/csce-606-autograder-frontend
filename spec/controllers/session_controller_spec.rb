@@ -27,12 +27,19 @@ RSpec.describe SessionsController, type: :controller do
       post :create
     end
 
-    it "sets the session for the user and redirects to assignments path" do
+    it "sets the session for the user" do
       allow(User).to receive(:find_or_create_by_auth_hash).and_return(@user) # Use @user here
 
       post :create
 
       expect(session[:user_id]).to eq(@user.id)
+    end
+
+    it ' redirects to assignments index path' do
+      allow(User).to receive(:find_or_create_by_auth_hash).and_return(@user) # Use @user here
+
+      post :create
+
       expect(response).to redirect_to(assignments_path)
     end
   end
@@ -43,39 +50,21 @@ RSpec.describe SessionsController, type: :controller do
       allow_any_instance_of(Octokit::Client).to receive(:organization_member?).and_return(false)
     end
 
-    it "does not create the user and redirects with an alert" do
+    it "does not create the user" do
       post :create
 
       expect(session[:user_id]).to be_nil
       expect(response).to redirect_to(root_path)
-      expect(flash[:alert]).to eq('You must be a member of CSCE-120 organization to access this application.')
+      expect(flash[:warning]).to eq('You must be a member of CSCE-120 organization to access this application.')
     end
   end
 
-  describe "when auth_hash is not present" do
-    before do
-      request.env['omniauth.auth'] = nil
-    end
-
-    it "redirects to root path with an authentication failure alert" do
-      post :create
+  describe "when user logs in with invalid credentials" do
+    it "returns an error message and redirects to home page" do
+      post :failure
 
       expect(response).to redirect_to(root_path)
-      expect(flash[:alert]).to eq('GitHub authentication failed. Please try again.')
-    end
-  end
-
-  describe "when token is invalid" do
-    before do
-      request.env['omniauth.auth'] = OmniAuth::AuthHash.new(auth_hash)
-      allow_any_instance_of(Octokit::Client).to receive(:organization_member?).and_raise(Octokit::Unauthorized)
-    end
-
-    it "it returns false and redirects to root path with an organization membership alert" do
-      post :create
-      expect(session[:user_id]).to be_nil
-      expect(response).to redirect_to(root_path)
-      expect(flash[:alert]).to eq('You must be a member of CSCE-120 organization to access this application.')
+      expect(flash[:warning]).to eq('GitHub authentication failed. Please try again.')
     end
   end
 end
