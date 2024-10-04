@@ -1,6 +1,6 @@
 <h1>Edit Test for <%= @assignment.assignment_name %></h1>
 
-<%= form_with(model: [@assignment, @test], local: true) do |form| %>
+<%= form_with(model: [@assignment, @test], local: true, html: { multipart: true }) do |form| %>
   <div class="field">
     <%= form.label :name %>
     <%= form.text_field :name %>
@@ -13,12 +13,20 @@
 
   <div class="field">
     <%= form.label :test_type %>
-    <%= form.text_field :test_type %>  
+    <%= form.select :test_type, options_for_select([['Approved Includes', 'approved_includes'], 
+                                                    ['Compile', 'compile'], 
+                                                    ['Coverage', 'coverage'], 
+                                                    ['I/O', 'i/o'], 
+                                                    ['Memory Errors', 'memory_errors'], 
+                                                    ['Performance', 'performance'], 
+                                                    ['Script', 'script'], 
+                                                    ['Style', 'style'], 
+                                                    ['Unit', 'unit']], @test.test_type) %>
   </div>
 
   <div class="field">
-    <%= form.label :target %>
-    <%= form.text_field :target %>
+    <%= form.label :target, "Upload File" %>
+    <%= form.file_field :target %>
   </div>
 
   <div class="field">
@@ -61,4 +69,4 @@
   </div>
 <% end %>
 
-<%= link_to "Back to tests", assignment_tests_path(@assignment) %>
+<%= link_to "Back to Assignment", assignment_path(@assignment), class: "btn btn-secondary" %>
