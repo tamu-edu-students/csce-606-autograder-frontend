@@ -4,14 +4,14 @@ Feature: Create a new assignment
   I want to create a new Git repository under the CSCE 120 GitHub
   organization from the autograded-assignment-template repository
 
-  Scenario: Create a new assignment as an instructor or ta-read-write
-    Given I am logged in as an "instructor"
+  Scenario: Create a new assignment as an instructor
+    Given I am logged in as an "instructor" named "alice"
     When I click the "Create Assignment" button
-    And I fill in the repository name with "csce-120-hw1"
-    And I fill in the description with "Homework 1"
-    And I click the "Create" button
-    Then I should see the new assignment in the course assignments list
-    And I should see the "csce-120-hw1" repository in the CSCE 120 GitHub organization
+    And I fill in "Assignment name" with "Homework 1"
+    And I fill in "Repository name" with "csce-120-hw1"
+    And I click the "Submit" button
+    Then I should see the "Homework 1" assignment
+    And I should see the "csce-120-hw1" repository in the GitHub organization
     And I should see a local clone of the "csce-120-hw1" repository
     And I should see the "autograder_core_deploy_key" in "/secrets" of the "csce-120-hw1" repository
     And I should see the "deploy_key" in "/secrets" of the "csce-120-hw1" repository
