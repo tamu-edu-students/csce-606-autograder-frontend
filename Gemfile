@@ -1,12 +1,12 @@
 source "https://rubygems.org"
 
 ruby "3.3.2"
-gem 'omniauth'
-gem 'omniauth-github'
-gem 'omniauth-rails_csrf_protection'
+gem "omniauth"
+gem "omniauth-github"
+gem "omniauth-rails_csrf_protection"
 
-gem 'faraday-retry'
-gem 'faraday-multipart'
+gem "faraday-retry"
+gem "faraday-multipart"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -53,13 +53,13 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem 'rubocop', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
-  gem 'rubycritic', require: false
+  gem "rubocop", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
+  gem "rubycritic", require: false
 
-  gem 'factory_bot_rails'
+  gem "factory_bot_rails"
 end
 
 group :development do

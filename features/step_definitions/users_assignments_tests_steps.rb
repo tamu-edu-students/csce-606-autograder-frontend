@@ -40,7 +40,7 @@ end
 
 Then('I should see the error message {string}') do |string|
     expect(page).to have_content(string)
-end 
+end
 
 And('I should have the role {string}') do |string|
     current_user = User.last
@@ -53,7 +53,7 @@ end
 
 When('I log in with GitHub as {string}') do |username|
     user = User.find_by(name: username)
-  
+
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({
     provider: "github",
     uid: "#{user.name}_uid",
@@ -78,6 +78,6 @@ When('I log in with GitHub as {string}') do |username|
     else
         allow_any_instance_of(SessionsController).to receive(:user_belongs_to_organization?).and_return(false)
     end
-    
+
     visit '/auth/github/callback' # Triggers OmniAuth GitHub login
 end

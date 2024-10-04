@@ -32,7 +32,7 @@ RSpec.describe SessionsController, type: :controller do
 
       post :create
 
-      expect(session[:user_id]).to eq(@user.id)  
+      expect(session[:user_id]).to eq(@user.id)
     end
 
     it ' redirects to assignments index path' do
