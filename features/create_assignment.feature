@@ -16,9 +16,9 @@ Feature: Create a new assignment
     And I should see the "autograder_core_deploy_key" in "/secrets" of the "csce-120-hw1" repository
 
   Scenario: Duplicate repository names should not be allowed
-    Given An assignment with the name "csce-120-hw1"
-    When I try to create an assignment with the name "csce-120-hw1"
-    Then I should see an error message
+    Given I create an assignment with the name "Homework 1" and the repository "csce-120-hw1"
+    When I create an assignment with the name "Homework 1" and the repository "csce-120-hw1"
+    Then I should see the error message "must be unique. This repository name is already taken."
 
   Scenario: TAs with read-only access should not see the "Create Assignment" button
     Given I am logged in as a "ta"
@@ -27,7 +27,7 @@ Feature: Create a new assignment
   Scenario: TAs with read-only access cannot visit the "Create Assignment" page
     Given I am logged in as a "ta"
     When I try to visit the "Create Assignment" page
-    Then I should see an error message
+    Then I should see the error message "Access Denied."
 
 
 

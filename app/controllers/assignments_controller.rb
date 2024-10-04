@@ -12,6 +12,10 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/new
   def new
+    if current_user.role != "instructor"
+      flash[:warning] = "Access Denied."
+      redirect_to root_path
+    end
     @assignment = Assignment.new
   end
 

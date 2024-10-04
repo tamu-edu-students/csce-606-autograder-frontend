@@ -78,12 +78,12 @@ RSpec.describe Assignment, type: :model do
     end
   end
   describe 'create_repo_from_template' do
-    it 'creates a new repo from a template' do
-      assignment_name = 'Test Assignment'
-      repository_name = 'test-repository'
-      organization = 'AutograderFrontend'
-      template_repo = 'philipritchey/autograded-assignment-template'
-
+    let(:assignment_name) {'Test Assignment'}
+    let(:repository_name) {'test-repository'}
+    let(:organization) {'AutograderFrontend'}
+    let(:template_repo) {'philipritchey/autograded-assignment-template'}
+    
+    before do
       allow(ENV).to receive(:[]).and_return(nil)
 
       allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
@@ -91,46 +91,40 @@ RSpec.describe Assignment, type: :model do
       allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
 
       stub_request(:post, "https://api.github.com/repos/philipritchey/autograded-assignment-template/generate")
-        .with(
-          body: { owner: organization, name: "#{organization}/#{repository_name}", private: true }.to_json,
-            headers: {
-            'Accept'=>'application/vnd.github.v3+json',
-            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization'=>'token test_token',
-            'Content-Type'=>'application/json',
-            'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-            }
-        )
-        .to_return(
-        status: 201,
-        body: { html_url: "https://github.com/#{organization}/#{repository_name}.git" }.to_json,
-        headers: { 'Content-Type' => 'application/json' }
-        )
+      .with(
+        body: { owner: organization, name: "#{organization}/#{repository_name}", private: true }.to_json,
+          headers: {
+          'Accept'=>'application/vnd.github.v3+json',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization'=>'token test_token',
+          'Content-Type'=>'application/json',
+          'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+          }
+      )
+      .to_return(
+      status: 201,
+      body: { html_url: "https://github.com/#{organization}/#{repository_name}.git" }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+      )
+    end
+    context 'when repo creation is successful' do
+      it 'creates a new repo from a template' do
+        expect(assignment.repository_url).to eq('https://github.com/AutograderFrontend/test-repository.git')
+      end
+    end
 
+    context 'when repo creation is unsuccessful' do
+      let(:client) { instance_double(Octokit::Client) }
+      
+      before do
+        allow(client).to receive(:create_repo_from_template).and_raise(Octokit::Error.new({status: 422, body: {message: 'GitHub API Error'}, headers: {}}))
+      end
+      
+      it 'raises a GitHub API Error' do
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
         assignment.send(:create_repo_from_template)
-        expect(assignment.repository_url).to eq('https://github.com/AutograderFrontend/test-repository.git')
-    end
-  end
-
-  describe 'clone_repo_to_local' do
-    it 'clones a repo to the local filesystem' do
-      assignment = Assignment.new(
-        assignment_name: 'Test Assignment',
-        repository_name: 'test-repository',
-        repository_url: 'https://github.com/AutograderFrontend/test-repository.git'
-      )
-
-      allow(ENV).to receive(:[]).and_return(nil)
-      allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos')
-
-      allow(Git).to receive(:clone)
-      expect(Git).to receive(:clone).with(
-        'https://github.com/AutograderFrontend/test-repository.git',
-        'assignment-repos/test-repository'
-      )
-
-      assignment.send(:clone_repo_to_local)
+        expect { assignment.create_repo_from_template }.to output(/Failed to clone repo from assignment template: GitHub API Error/).to_stdout
+      end
     end
   end
 

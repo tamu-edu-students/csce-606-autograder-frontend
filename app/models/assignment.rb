@@ -1,6 +1,6 @@
 class Assignment < ActiveRecord::Base
   has_many :tests
-  validates :repository_name, uniqueness: true
+  validates :repository_name, uniqueness: { message: 'must be unique. This repository name is already taken.' }
   validates :assignment_name, :repository_name, presence: true
   after_validation :assignment_repo_init, on: :create
 
@@ -42,29 +42,43 @@ class Assignment < ActiveRecord::Base
   end
     
   def create_repo_from_template
+    template_repo = ENV["GITHUB_TEMPLATE_REPO_URL"]
+    new_repo_name = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
+    options = {
+        owner: ENV["GITHUB_COURSE_ORGANIZATION"],
+        name: assignment_name,
+        private: true
+    }
+    begin
       client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
-      template_repo = ENV["GITHUB_TEMPLATE_REPO_URL"]
-      new_repo_name = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
-      options = {
-          owner: ENV["GITHUB_COURSE_ORGANIZATION"],
-          name: assignment_name,
-          private: true
-      }
       new_repo = client.create_repo_from_template(template_repo, new_repo_name, options)
-      puts "New repo created: #{new_repo}"
-      self.repository_url = new_repo[:html_url]
+    rescue Octokit::Error => e
+      puts "Failed to clone repo from assignment template: #{e.response_body[:message]}"
+      return
+    end
+    self.repository_url = new_repo[:html_url]
   end
 
   def clone_repo_to_local
       # wait for remote repo to be initialized
       sleep(3)
-      Git.clone(self.repository_url, "#{ENV['ASSIGNMENTS_BASE_PATH']}/#{repository_name}")
+      begin
+        Git.clone(self.repository_url, "#{ENV['ASSIGNMENTS_BASE_PATH']}/#{repository_name}")
+      rescue Git::Error => e
+        puts "An error occurred: #{e.message}"
+        return
+      end
   end
 
   def remote_repo_created?
+    begin
       client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
       repository_path = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
       client.repository?(repository_path)
+    rescue Octokit::Error => e
+      puts "Failed to check whether remote repo has been created: #{e.response_body[:message]}"
+      return
+    end
   end
 
   def assignment_repo_init

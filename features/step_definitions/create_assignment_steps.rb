@@ -19,10 +19,10 @@ After do
   FileUtils.rm_rf('assignment-repos')
 end
 
-
-
 Given('I am logged in as a(n) {string} named {string}') do |role, name|
-  # TODO: fix this once login is merged
+  user = User.create!(name: "#{name}", email: "#{name}@example.com", role: role)
+
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
   visit '/assignments'
 end
 
@@ -64,29 +64,36 @@ Then('I should see the {string} in {string} of the {string} repository') do |fil
 end
 
 Then('I should see the deploy_key in {string} of the {string} repository') do |string, string2|
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(File.exist?("#{ENV["ASSIGNMENTS_BASE_PATH"]}/#{repository_name}/#{dir}/deploy_key")).to be true
 end
 
-Given('An assignment with the name {string}') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-When('I try to create an assignment with the name {string}') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then('I should see an error message') do
-  pending # Write code here that turns the phrase above into concrete actions
+Given('I create an assignment with the name {string} and the repository {string}') do |assignment_name, repository_name|
+  steps %(
+    Given I am logged in as an "instructor" named "alice"
+    When I click the "Create Assignment" button
+    And I fill in "Assignment name" with "#{assignment_name}"
+    And I fill in "Repository name" with "#{repository_name}"
+    And I click the "Submit" button
+  )
 end
 
 Given('I am logged in as a {string}') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+  user = User.create!(name: "#{string}_user", email: "#{string}@example.com", role: string)
+
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 end
 
 Then('I should not see the {string} button') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(page).not_to have_button(string)
 end
 
 When('I try to visit the {string} page') do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+  path = case string
+         when 'Course Dashboard' then assignments_path
+         when 'Create Assignment' then new_assignment_path
+         when 'Login' then root_path
+         else
+           raise "Unknown page: #{string}"
+         end
+  visit path
 end
