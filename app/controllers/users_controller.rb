@@ -40,15 +40,12 @@ class UsersController < ApplicationController
       private
 
       def update_github_permissions(user, new_assignment_ids, old_assignment_ids)
-        Rails.logger.info "#{session[:github_token]}"
-        client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
+        access_token = session[:github_token]
+        client = Octokit::Client.new(access_token: access_token)
         org_name = "AutograderFrontend"
 
         # All assignments that need to be updated
         all_assignments = Assignment.where(id: new_assignment_ids | old_assignment_ids)
-        Rails.logger.info "#{all_assignments}"
-        Rails.logger.info "#{new_assignment_ids}"
-        Rails.logger.info "#{old_assignment_ids}"
 
 
         all_assignments.each do |assignment|
@@ -56,10 +53,10 @@ class UsersController < ApplicationController
           permission = new_assignment_ids.include?(assignment.id) ? "push" : "pull"
 
           begin
-            client.add_collaborator(repo_identifier, user.username, permission: permission)
-            Rails.logger.info "Updated collaborator #{user.username} on #{repo_identifier} with #{permission} access"
+            client.add_collaborator(repo_identifier, user.name, permission: permission)
+            Rails.logger.info "Updated collaborator #{user.name} on #{repo_identifier} with #{permission} access"
           rescue Octokit::Error => e
-            Rails.logger.error "Failed to update collaborator #{user.username} on #{repo_identifier}: #{e.message}"
+            Rails.logger.error "Failed to update collaborator #{user.name} on #{repo_identifier}: #{e.message}"
             raise
           end
         end
