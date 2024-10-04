@@ -20,7 +20,7 @@ RSpec.describe Assignment, type: :model do
     let(:key_path) { "./#{ENV['ASSIGNMENTS_BASE_PATH']}/#{assignment.repository_name}/secrets/deploy_key" }
 
     before do
-      allow(Open3).to receive(:capture3).and_return(['Key generated successfully', '', double(success?: true)])
+      allow(Open3).to receive(:capture3).and_return([ 'Key generated successfully', '', double(success?: true) ])
       allow(File).to receive(:read).with("#{key_path}.pub").and_return('mock_public_key_content')
       allow(Octokit::Client).to receive(:new).and_return(double('OctokitClient', add_deploy_key: true))
     end
@@ -44,7 +44,7 @@ RSpec.describe Assignment, type: :model do
 
     context 'when SSH key generation fails' do
       before do
-        allow(Open3).to receive(:capture3).and_return(['', 'Error generating key', double(success?: false)])
+        allow(Open3).to receive(:capture3).and_return([ '', 'Error generating key', double(success?: false) ])
       end
 
       it 'logs an error message' do
@@ -67,8 +67,8 @@ RSpec.describe Assignment, type: :model do
         client = double('OctokitClient')
         allow(Octokit::Client).to receive(:new).and_return(client)
         allow(client).to receive(:add_deploy_key).and_raise(Octokit::Error.new(
-            { status: 422, 
-            body: { message: "GitHub API error" }, 
+            { status: 422,
+            body: { message: "GitHub API error" },
             headers: {} }))
         end
 
@@ -78,11 +78,11 @@ RSpec.describe Assignment, type: :model do
     end
   end
   describe 'create_repo_from_template' do
-    let(:assignment_name) {'Test Assignment'}
-    let(:repository_name) {'test-repository'}
-    let(:organization) {'AutograderFrontend'}
-    let(:template_repo) {'philipritchey/autograded-assignment-template'}
-    
+    let(:assignment_name) { 'Test Assignment' }
+    let(:repository_name) { 'test-repository' }
+    let(:organization) { 'AutograderFrontend' }
+    let(:template_repo) { 'philipritchey/autograded-assignment-template' }
+
     before do
       allow(ENV).to receive(:[]).and_return(nil)
 
@@ -115,11 +115,11 @@ RSpec.describe Assignment, type: :model do
 
     context 'when repo creation is unsuccessful' do
       let(:client) { instance_double(Octokit::Client) }
-      
+
       before do
-        allow(client).to receive(:create_repo_from_template).and_raise(Octokit::Error.new({status: 422, body: {message: 'GitHub API Error'}, headers: {}}))
+        allow(client).to receive(:create_repo_from_template).and_raise(Octokit::Error.new({ status: 422, body: { message: 'GitHub API Error' }, headers: {} }))
       end
-      
+
       it 'raises a GitHub API Error' do
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
         assignment.send(:create_repo_from_template)

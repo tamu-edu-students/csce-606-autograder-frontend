@@ -27,7 +27,7 @@
     # table is a Cucumber::MultilineArgument::DataTable
     pending # Write code here that turns the phrase above into concrete actions
   end
-  
+
   When('I click on {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
@@ -196,7 +196,7 @@
   Then('I should see {string} file in my downloads folder') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
-  
+
   When('I press {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end

@@ -32,7 +32,7 @@ end
 
 When('I fill in {string} with {string}') do |field, value|
   if field == 'Repository name' && page.has_current_path?('/assignments/new')
-    
+
     allow(Git).to receive(:clone) do |url, path|
       FileUtils.mkdir_p(path)
     end
@@ -41,8 +41,8 @@ When('I fill in {string} with {string}') do |field, value|
     allow(Octokit::Client).to receive(:new).and_return(client)
     allow(client).to receive(:add_deploy_key).and_return(true)
     allow(client).to receive(:create_repo_from_template).and_return(
-      {html_url: "https://https://github.com/AutograderFrontend/#{value}.git"})
-      
+      { html_url: "https://https://github.com/AutograderFrontend/#{value}.git" })
+
   end
   fill_in field, with: value
 end
@@ -52,7 +52,6 @@ Then('I should see the {string} assignment') do |assignment_name|
 end
 
 Then('I should see the {string} repository in the GitHub organization') do |repository_name|
-
 end
 
 Then('I should see a local clone of the {string} repository') do |repository_name|
@@ -89,11 +88,11 @@ end
 
 When('I try to visit the {string} page') do |string|
   path = case string
-         when 'Course Dashboard' then assignments_path
-         when 'Create Assignment' then new_assignment_path
-         when 'Login' then root_path
-         else
+  when 'Course Dashboard' then assignments_path
+  when 'Create Assignment' then new_assignment_path
+  when 'Login' then root_path
+  else
            raise "Unknown page: #{string}"
-         end
+  end
   visit path
 end

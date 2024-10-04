@@ -1,6 +1,6 @@
 class Assignment < ActiveRecord::Base
   has_many :tests
-  validates :repository_name, uniqueness: { message: 'must be unique. This repository name is already taken.' }
+  validates :repository_name, uniqueness: { message: "must be unique. This repository name is already taken." }
   validates :assignment_name, :repository_name, presence: true
   after_validation :assignment_repo_init, on: :create
 
@@ -14,16 +14,16 @@ class Assignment < ActiveRecord::Base
     # Step 1: Generate SSH key
     begin
       stdout, stderr, status = Open3.capture3("ssh-keygen", "-t", "ed25519", "-C", "gradescope", "-f", key_path, "-N", "")
-    
-      if status.success?  
-        puts "Key generated successfully."  
-      else  
-        puts "Error generating key: #{stderr.strip}"  
-      end  
-      rescue Errno::ENOENT => e  
-        puts "Command not found: #{e.message}"  
-      rescue StandardError => e  
-        puts "Failed to generate SSH key: #{e.message}"  
+
+      if status.success?
+        puts "Key generated successfully."
+      else
+        puts "Error generating key: #{stderr.strip}"
+      end
+      rescue Errno::ENOENT => e
+        puts "Command not found: #{e.message}"
+      rescue StandardError => e
+        puts "Failed to generate SSH key: #{e.message}"
     end
     begin
       public_key_content = File.read("#{key_path}.pub")
@@ -32,7 +32,7 @@ class Assignment < ActiveRecord::Base
       return
     end
     begin
-      client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
+      client = Octokit::Client.new(access_token: ENV["GITHUB_ACCESS_TOKEN"])
       client.add_deploy_key("#{ENV["GITHUB_COURSE_ORGANIZATION"]}/#{self.repository_name}", "Gradescope Deploy Key", public_key_content, read_only: true)
     rescue Octokit::Error => e
       puts "Failed to add deploy key to GitHub: #{e.response_body[:message]}"
@@ -40,7 +40,7 @@ class Assignment < ActiveRecord::Base
     end
     puts "Deploy key added successfully for #{self.repository_name}!"
   end
-    
+
   def create_repo_from_template
     template_repo = ENV["GITHUB_TEMPLATE_REPO_URL"]
     new_repo_name = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
@@ -66,7 +66,7 @@ class Assignment < ActiveRecord::Base
         Git.clone(self.repository_url, "#{ENV['ASSIGNMENTS_BASE_PATH']}/#{repository_name}")
       rescue Git::Error => e
         puts "An error occurred: #{e.message}"
-        return
+        nil
       end
   end
 
@@ -77,7 +77,7 @@ class Assignment < ActiveRecord::Base
       client.repository?(repository_path)
     rescue Octokit::Error => e
       puts "Failed to check whether remote repo has been created: #{e.response_body[:message]}"
-      return
+      nil
     end
   end
 
