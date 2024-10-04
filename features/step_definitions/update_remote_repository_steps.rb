@@ -38,14 +38,14 @@ Then("I should see a remote commit message indicating the new file was added by 
   git.push('origin', 'main')
 
   # Use Octokit to verify the remote commit on GitHub
-  client = Octokit::Client.new(:access_token => ENV['GITHUB_ACCESS_TOKEN'])
+  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   latest_commit = client.commits(@repo_name).first
   expect(latest_commit.commit.message).to eq("Add new file by #{user_name}")
 end
 
 Then("I should see the new file in the {string} repository on GitHub") do |repo_name|
   # Verify the new file exists on github
-  client = Octokit::Client.new(:access_token => ENV['GITHUB_ACCESS_TOKEN'])
+  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   content = client.contents(repo_name, path: 'new_file.txt')
   expect(content).not_to be_nil
 end
@@ -74,14 +74,14 @@ Then("I should see a remote commit message indicating the file was modified by {
   git.push('origin', 'main')
 
   # Verify the remote commit message
-  client = Octokit::Client.new(:access_token => ENV['GITHUB_ACCESS_TOKEN'])
+  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   latest_commit = client.commits(@repo_name).first
   expect(latest_commit.commit.message).to eq("Modify existing file by #{user_name}")
 end
 
 Then("I should see the modified file in the {string} repository on GitHub") do |repo_name|
   # Verify the file's contents on GitHub
-  client = Octokit::Client.new(:access_token => ENV['GITHUB_ACCESS_TOKEN'])
+  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   content = client.contents(repo_name, path: 'existing_file.txt')
   expect(Base64.decode64(content.content)).to include("Modified content.")
 end
@@ -110,13 +110,13 @@ Then("I should see a remote commit message indicating the file was deleted by {s
   git.push('origin', 'main')
 
   # Verify the remote commit message
-  client = Octokit::Client.new(:access_token => ENV['GITHUB_ACCESS_TOKEN'])
+  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   latest_commit = client.commits(@repo_name).first
   expect(latest_commit.commit.message).to eq("Delete existing file by #{user_name}")
 end
 
 Then("I should not see the deleted file in the {string} repository on GitHub") do |repo_name|
   # Verify the file no longer exists on github
-  client = Octokit::Client.new(:access_token => ENV['GITHUB_ACCESS_TOKEN'])
+  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   expect { client.contents(repo_name, path: 'existing_file.txt') }.to raise_error(Octokit::NotFound)
 end
