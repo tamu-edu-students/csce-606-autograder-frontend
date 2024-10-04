@@ -4,12 +4,11 @@ Feature: Display test cases
     I want to fetch and display the existing test cases in the assignment
 
     Background:
-        Given I am logged in as an instructor or TA
+        Given I am logged in as an "organization member"
         And I am on the "Assignment Management" page for "assignment1"
 
     Scenario: Display test cases
-        Given I am logged in as an instructor or TA
-        And there is a test case of type "<type>"
+        Given there is a test case of type "<type>"
         And the test case has name "<name>"
         When I click on that test case
         Then I should see the correct details of the test case
