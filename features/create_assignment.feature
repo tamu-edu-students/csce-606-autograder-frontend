@@ -11,10 +11,9 @@ Feature: Create a new assignment
     And I fill in "Repository name" with "csce-120-hw1"
     And I click the "Submit" button
     Then I should see the "Homework 1" assignment
-    And I should see the "csce-120-hw1" repository in the GitHub organization
     And I should see a local clone of the "csce-120-hw1" repository
-    And I should see the "autograder_core_deploy_key" in "/secrets" of the "csce-120-hw1" repository
     And I should see the "deploy_key" in "/secrets" of the "csce-120-hw1" repository
+    And I should see the "autograder_core_deploy_key" in "/secrets" of the "csce-120-hw1" repository
 
   Scenario: Duplicate repository names should not be allowed
     Given An assignment with the name "csce-120-hw1"

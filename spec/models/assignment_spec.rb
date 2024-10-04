@@ -28,7 +28,6 @@ RSpec.describe Assignment, type: :model do
     it 'generates an SSH key' do
       expect(Open3).to receive(:capture3).with('ssh-keygen', '-t', 'ed25519', '-C', 'gradescope', '-f', key_path)
       assignment.send(:create_and_add_deploy_key)
-
     end
 
     it 'reads the generated public key' do
@@ -91,20 +90,21 @@ RSpec.describe Assignment, type: :model do
       allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return(template_repo)
       allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
 
-      stub_request(:post, "https://api.github.com/repos/philipritchey/autograded-assignment-template/generate").
-         with(
+      stub_request(:post, "https://api.github.com/repos/philipritchey/autograded-assignment-template/generate")
+        .with(
           body: { owner: organization, name: "#{organization}/#{repository_name}", private: true }.to_json,
-           headers: {
-          'Accept'=>'application/vnd.github.v3+json',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'token test_token',
-          'Content-Type'=>'application/json',
-          'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-           }).
-         to_return(
-          status: 201,
-          body: { html_url: "https://github.com/#{organization}/#{repository_name}.git" }.to_json,
-          headers: { 'Content-Type' => 'application/json' }
+            headers: {
+            'Accept'=>'application/vnd.github.v3+json',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization'=>'token test_token',
+            'Content-Type'=>'application/json',
+            'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+            }
+        )
+        .to_return(
+        status: 201,
+        body: { html_url: "https://github.com/#{organization}/#{repository_name}.git" }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
         )
 
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
@@ -143,15 +143,16 @@ RSpec.describe Assignment, type: :model do
       allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
       allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
 
-      stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}").
-        with(
+      stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}")
+        .with(
           headers: {
             'Accept'=>'application/vnd.github.v3+json',
             'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
             'Authorization'=>'token test_token',
             'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-          }).
-        to_return(status: 200, body: '', headers: {})
+          }
+        )
+        .to_return(status: 200, body: '', headers: {})
 
       assignment = Assignment.new(repository_name: repository_name)
       expect(assignment.send(:remote_repo_created?)).to be true
@@ -165,15 +166,16 @@ RSpec.describe Assignment, type: :model do
       allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
       allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
 
-      stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}").
-        with(
+      stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}")
+        .with(
           headers: {
             'Accept'=>'application/vnd.github.v3+json',
             'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
             'Authorization'=>'token test_token',
             'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-          }).
-        to_return(status: 404, body: '', headers: {})
+          }
+        )
+        .to_return(status: 404, body: '', headers: {})
 
       assignment = Assignment.new(repository_name: repository_name)
       expect(assignment.send(:remote_repo_created?)).to be false

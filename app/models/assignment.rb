@@ -7,10 +7,13 @@ class Assignment < ActiveRecord::Base
   private
   def create_and_add_deploy_key
     # Define paths
+    key_dir = "./#{ENV['ASSIGNMENTS_BASE_PATH']}/#{self.repository_name}/secrets/"
     key_path = "./#{ENV['ASSIGNMENTS_BASE_PATH']}/#{self.repository_name}/secrets/deploy_key"
+
+    FileUtils.mkdir_p(key_dir)
     # Step 1: Generate SSH key
-    begin  
-      stdout, stderr, status = Open3.capture3("ssh-keygen", "-t", "ed25519", "-C", "gradescope", "-f", key_path)  
+    begin
+      stdout, stderr, status = Open3.capture3("ssh-keygen", "-t", "ed25519", "-C", "gradescope", "-f", key_path, "-N", "")
     
       if status.success?  
         puts "Key generated successfully."  
@@ -30,7 +33,7 @@ class Assignment < ActiveRecord::Base
     end
     begin
       client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-      client.add_deploy_key(self.repository_name, "Gradescope Deploy Key", public_key_content, read_only: true)
+      client.add_deploy_key("#{ENV["GITHUB_COURSE_ORGANIZATION"]}/#{self.repository_name}", "Gradescope Deploy Key", public_key_content, read_only: true)
     rescue Octokit::Error => e
       puts "Failed to add deploy key to GitHub: #{e.response_body[:message]}"
       return
@@ -67,5 +70,6 @@ class Assignment < ActiveRecord::Base
   def assignment_repo_init
       create_repo_from_template
       clone_repo_to_local
+      create_and_add_deploy_key
   end
 end
