@@ -37,7 +37,7 @@ jobs:
           bundler-cache: true
           
       - name: Run RubyCritic
-        run: bundle exec rubycritic --no-browser --format console
+        run: bundle exec rubycritic --no-browser --format console app lib config
         
   rubocop:
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
         env: 
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageCommand: bundle exec simplecov
+          coverageLocations: ${{github.workspace}}/coverage/.resultset.json
 
 
   # deploy:
