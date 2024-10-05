@@ -10,7 +10,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe "when the assignments are shown for each user" do
-        let(:user) { User.create!(username: 'TestUser') }
+        let(:user) { User.create!(name: 'TestUser') }
 
         it 'assigns @user' do
             get :show, params: { id: user.id }
