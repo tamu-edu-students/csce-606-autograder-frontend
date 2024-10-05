@@ -3,6 +3,7 @@ require 'rspec/mocks'
 World(RSpec::Mocks::ExampleMethods)
 
 Before do
+  OmniAuth.config.test_mode = true
   RSpec::Mocks.setup
 end
 
