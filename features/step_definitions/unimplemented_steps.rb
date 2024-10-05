@@ -18,10 +18,6 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Given('I am logged in as a(n) {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   When('I select the assignment {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
@@ -300,14 +296,6 @@
   end
 
   Then('the .tests file should contain the remaining {string} tests') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Given('I am am logged in with the {string} role') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Given('I am am logged in as a TA') do
     pending # Write code here that turns the phrase above into concrete actions
   end
 
