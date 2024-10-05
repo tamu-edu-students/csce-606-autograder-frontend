@@ -33,3 +33,12 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore coverage reports
+/coverage/*
+
+# Ignore ASSIGNMENTS_BASE_PATH
+/assignment-repos
+
+# Ignore Gemfile.lock
+Gemfile.lock
