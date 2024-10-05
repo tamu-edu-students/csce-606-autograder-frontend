@@ -568,6 +568,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   rubycritic
+  rubyzip
   selenium-webdriver
   simplecov
   sprockets-rails

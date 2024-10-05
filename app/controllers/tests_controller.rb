@@ -1,7 +1,7 @@
 class TestsController < ApplicationController
   before_action :set_assignment
   before_action :set_test, only: %i[ show edit update destroy ]
-  
+
 
   # GET /tests or /tests.json
   def index
@@ -25,7 +25,7 @@ class TestsController < ApplicationController
   def create
     @assignment = Assignment.find(params[:assignment_id])  # Find the relevant assignment
     @test = @assignment.tests.new(test_params)  # Associate test with the assignment
-  
+
     respond_to do |format|
       if @test.save
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully created." }
@@ -38,13 +38,13 @@ class TestsController < ApplicationController
       end
     end
   end
-  
+
 
   # PATCH/PUT /tests/1 or /tests/1.json
   def update
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
-  
+
     respond_to do |format|
       if @test.update(test_params)
         format.html { redirect_to assignment_path(@assignment, @test), notice: "Test was successfully updated." }
@@ -57,20 +57,20 @@ class TestsController < ApplicationController
       end
     end
   end
-  
+
 
   # DELETE /tests/1 or /tests/1.json
   def destroy
     @assignment = Assignment.find(params[:assignment_id])
     @test = @assignment.tests.find(params[:id])
     @test.destroy
-  
+
     respond_to do |format|
       format.html { redirect_to assignment_path(@assignment), status: :see_other, notice: "Test was successfully destroyed." }
       format.json { head :no_content }
     end
   end
-  
+
 
   private
 
@@ -82,7 +82,7 @@ class TestsController < ApplicationController
       @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
       @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
     end
-    
+
 
     # Only allow a list of trusted parameters through.
     def test_params

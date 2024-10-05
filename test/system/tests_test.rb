@@ -23,7 +23,7 @@ class TestsTest < ApplicationSystemTestCase
     check "Skip" if @test.skip
     fill_in "Target", with: @test.target
     fill_in "Timeout", with: @test.timeout
-    fill_in "Type", with: @test.type
+    fill_in "Type", with: @test.test_type
     fill_in "Visibility", with: @test.visibility
     click_on "Create Test"
 
@@ -44,7 +44,7 @@ class TestsTest < ApplicationSystemTestCase
     check "Skip" if @test.skip
     fill_in "Target", with: @test.target
     fill_in "Timeout", with: @test.timeout
-    fill_in "Type", with: @test.type
+    fill_in "Type", with: @test.test_type
     fill_in "Visibility", with: @test.visibility
     click_on "Update Test"
 

@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   get "pages/home"
 
   resources :assignments do
-    resources :tests 
+    resources :tests
+    member do
+      get 'create_and_download_zip'
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get "/auth/github/callback", to: "sessions#create"

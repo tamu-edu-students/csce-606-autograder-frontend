@@ -17,7 +17,7 @@ class TestsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create test" do
     assert_difference("Test.count") do
-      post tests_url, params: { test: { assignment_id: @test.assignment_id, include: @test.include, name: @test.name, number: @test.number, points: @test.points, show_output: @test.show_output, skip: @test.skip, target: @test.target, timeout: @test.timeout, type: @test.type, visibility: @test.visibility } }
+      post tests_url, params: { test: { assignment_id: @test.assignment_id, include: @test.include, name: @test.name, number: @test.number, points: @test.points, show_output: @test.show_output, skip: @test.skip, target: @test.target, timeout: @test.timeout, type: @test.test_type, visibility: @test.visibility } }
     end
 
     assert_redirected_to test_url(Test.last)
@@ -34,7 +34,7 @@ class TestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update test" do
-    patch test_url(@test), params: { test: { assignment_id: @test.assignment_id, include: @test.include, name: @test.name, number: @test.number, points: @test.points, show_output: @test.show_output, skip: @test.skip, target: @test.target, timeout: @test.timeout, type: @test.type, visibility: @test.visibility } }
+    patch test_url(@test), params: { test: { assignment_id: @test.assignment_id, include: @test.include, name: @test.name, number: @test.number, points: @test.points, show_output: @test.show_output, skip: @test.skip, target: @test.target, timeout: @test.timeout, type: @test.test_type, visibility: @test.visibility } }
     assert_redirected_to test_url(@test)
   end
 

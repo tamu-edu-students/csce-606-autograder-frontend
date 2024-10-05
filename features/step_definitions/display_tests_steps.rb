@@ -9,22 +9,22 @@ end
   
     expect(page).to have_content(@assignment.assignment_name)
   end
-  
+
   Given(/^there is a test case of type "(.*)"$/) do |type|
     @test_case = TestCase.create!(type: type, assignment: @current_assignment)
   end
-  
+
   Given(/^the test case has name "(.*)"$/) do |name|
     @test_case.update!(name: name)
   end
-  
+
   When(/^I click on that test case$/) do
     find('tr', text: @test_case.name).click
   end
-  
+
   Then(/^I should see the correct details of the test case$/) do
     expect(page).to have_content(@test_case.name)
-    expect(page).to have_content(@test_case.type)
+    expect(page).to have_content(@test_case.test_type)
     expect(page).to have_content(@test_case.points.to_s)
     expect(page).to have_content(@test_case.target || 'N/A')
     expect(page).to have_content(@test_case.include || 'N/A')
@@ -34,5 +34,3 @@ end
     expect(page).to have_content(@test_case.show_output ? 'True' : 'False')
     expect(page).to have_content(@test_case.skip ? 'True' : 'False')
   end
-  
-  

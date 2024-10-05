@@ -1,4 +1,4 @@
-<%= form_with(model: [@assignment, @test], local: true) do |form| %>
+<%= form_with(model: [@assignment, @test], local: true, html: { multipart: true }) do |form| %>
 
 <div class="field">
     <%= form.label :name %>
@@ -12,12 +12,20 @@
 
   <div class="field">
     <%= form.label :test_type %>
-    <%= form.text_field :test_type %>  
+    <%= form.select :test_type, options_for_select([['Approved Includes', 'approved_includes'], 
+                                                    ['Compile', 'compile'], 
+                                                    ['Coverage', 'coverage'], 
+                                                    ['I/O', 'i/o'], 
+                                                    ['Memory Errors', 'memory_errors'], 
+                                                    ['Performance', 'performance'], 
+                                                    ['Script', 'script'], 
+                                                    ['Style', 'style'], 
+                                                    ['Unit', 'unit']], @test.test_type) %>
   </div>
 
   <div class="field">
-    <%= form.label :target %>
-    <%= form.text_field :target %>
+    <%= form.label :target, "Upload File" %>
+    <%= form.file_field :target %>
   </div>
 
   <div class="field">
@@ -32,7 +40,7 @@
 
   <div class="field">
     <%= form.label :show_output %>
-    <%= form.check_box :show_output %>
+    <%= form.check_box :show_output, {}, true, false %> 
   </div>
 
   <div class="field">
@@ -47,8 +55,12 @@
 
   <div class="field">
     <%= form.label :visibility %>
-    <%= form.text_field :visibility %>
+    <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
+                                                      ['After Due Date', 'after_due_date'], 
+                                                      ['After Published', 'after_published'], 
+                                                      ['Visible', 'visible']], @test.visibility || 'visible') %>
   </div>
+
 
   <div class="field">
     <%= form.label :actual_test, "Actual Test" %>
