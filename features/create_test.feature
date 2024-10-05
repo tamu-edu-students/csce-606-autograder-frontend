@@ -77,15 +77,16 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And with the target "<target>"
+      And I click the "Create Test" button
       Then I should see an error message saying "Missing attribute: <attribute>"
 
       Examples:
-        | type              | name  | points | target      |
-        |                   | test1 | 10     | target1.cpp |
-        | memory_errors     |       | 10     | target2.cpp |
-        | script            | test3 |        | target3.cpp |
-        | approved_includes |       | 10     | target4.cpp |
-        | coverage          | test2 |        | target5.cpp |
+        | type              | name  | points | target      | attribute |
+        |                   | test1 | 10     | target1.cpp | type      |
+        | memory_errors     |       | 10     | target2.cpp | name      |
+        | script            | test3 |        | target3.cpp | points    |
+        | approved_includes |       | 10     | target4.cpp | name      |
+        | coverage          | test2 |        | target5.cpp | points    |
 
     Scenario Outline: Tests missing multiple required attributes
       When I create a new test with type "<type>"

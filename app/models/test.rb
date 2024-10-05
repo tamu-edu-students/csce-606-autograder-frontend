@@ -4,11 +4,11 @@ class Test < ApplicationRecord
 
 
   # Validations for required fields
-  validates :name, presence: true
-  validates :points, presence: true, numericality: true
+  validates :name, presence: { message: 'Missing attribute: name' }
+  validates :points, presence: { message: 'Missing attribute: points'}, numericality: true
 
   VALID_TEST_TYPES = ['approved_includes', 'compile', 'coverage', 'i/o', 'memory_errors', 'performance', 'script', 'style', 'unit'  ]
-  validates :test_type, presence: true, inclusion: { in: VALID_TEST_TYPES, message: "Unknown test type: %{value}" }
+  validates :test_type, presence: { message: 'Missing attribute: type'}, inclusion: { in: VALID_TEST_TYPES, message: "Unknown test type: %{value}" }
   
   validates :target, presence: { message: 'Missing attribute: target' }, unless: -> { %w[compile memory_errors script style].include?(test_type) }
   # Optional attributes with defaults
