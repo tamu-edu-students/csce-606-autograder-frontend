@@ -10,6 +10,7 @@ class UsersController < ApplicationController
 
     def update_assignments
         @user = User.find(params[:id])
+        @assignments = Assignment.all
         new_assignment_ids = (params[:assignment_ids] || []).map(&:to_i)
         old_assignment_ids = @user.assignment_ids
 
@@ -29,9 +30,11 @@ class UsersController < ApplicationController
             rescue Octokit::Error => e
                 Rails.logger.error "Failed to update GitHub permissions: #{e.message}"
                 flash[:alert] = "Failed to update assignments. Please try again."
+                @assignments = Assignment.all
                 render :show
             end
         else
+            @assignments ||= []
             flash.now[:alert] = "Failed to update assignments. Please try again."
             render :show
         end

@@ -18,21 +18,7 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Given('the following assignments exist:') do |table|
-    # table is a Cucumber::MultilineArgument::DataTable
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Given('the following users exist:') do |table|
-    # table is a Cucumber::MultilineArgument::DataTable
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   Given('I am logged in as a(n) {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  When('I click on {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
 
@@ -40,19 +26,7 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  When('I click {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should see that {string} has {string} access to the remote {string} repository') do |string, string2, string3|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   When('I select the assignments {string} and {string}') do |string, string2|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  When('I click on bob') do
     pending # Write code here that turns the phrase above into concrete actions
   end
 

@@ -1,93 +1,99 @@
-# Step to create multiple assignments from a table
-Given('the following assignments exist:') do |table|
-  table.hashes.each do |row|
-    Assignment.create!(assignment_name: row['assignment_name'], repository_name: row['repository_name'], repository_url: row['repository_url'])
+def login_as(name)
+  @current_user = User.find_by(name: name)
+  # Simulate session creation
+  page.set_rack_session(user_id: @current_user.id)
+  # Simulate GitHub token for API calls
+  page.set_rack_session(github_token: 'fake_github_token')
+end
+
+Given("the following assignments exist:") do |table|
+  table.hashes.each do |hash|
+    Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
   end
 end
 
-# Step to create users and update their access to assignments
-Given('the following users exist:') do |table|
-  table.hashes.each do |row|
-    user = User.create!(username: row['username'], role: row['role'])
-    
-    # Assuming each user has access fields like assignment1_access, assignment2_access, etc.
-    row.each do |key, value|
-      if key.start_with?('assignment') && key.end_with?('_access')
-        assignment = Assignment.find_by(assignment_name: key.gsub('_access', ''))
-        user.assignment_accesses.create!(assignment: assignment, access: value) if assignment
-      end
+Given("the following users exist in assignment permissions:") do |table|
+  table.hashes.each do |hash|
+    user = User.create!(name: hash['name'], role: hash['role'])
+    Assignment.all.each do |assignment|
+      access = hash["#{assignment.assignment_name}_access"]
+      user.assignments << assignment if access == 'read-write'
     end
   end
 end
 
-# Step to log in as a specific user
-Given('I am logged in as {string}') do |username|
-  user = User.find_by(username: username)
-  if user
-    session[:user_id] = user.id # Check once - this is Manual session setup, can replace with any other authentication helper if needed
+Given("I am logged in to view assignment permissions as {string}") do |username|
+  login_as(username)
+end
+
+Given("I am on the {string} page for assignment permissions") do |page_name|
+  visit users_path if page_name == "Manage Users"
+end
+
+# Step definitions for user interactions
+When("I click on {string}") do |username|
+  click_link username
+end
+
+When("I select the assignment on the page {string}") do |repo_name|
+  assignment = Assignment.find_by(repository_name: repo_name)
+  find(:css, "input[type='checkbox'][value='#{assignment.id}']").set(true)
+end
+
+When("I select the assignments on the page {string} and {string}") do |repo1, repo2|
+  [ repo1, repo2 ].each do |repo_name|
+    assignment = Assignment.find_by(repository_name: repo_name)
+    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
+    checkbox.set(true)
+  end
+end
+
+When("I click Select All") do
+  Assignment.all.each do |assignment|
+    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
+    checkbox.set(true) unless checkbox.checked?
+  end
+end
+
+When("I click Revoke All") do
+  Assignment.all.each do |assignment|
+    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
+    checkbox.set(false) if checkbox.checked?
+  end
+end
+
+When("I click {string}") do |button_text|
+  click_button button_text
+end
+
+When("I de-select the assignment on the page {string}") do |repo_name|
+  assignment = Assignment.find_by(repository_name: repo_name)
+  checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
+  checkbox.set(false) unless !checkbox.checked?
+end
+
+When("I de-select the assignments on the page {string} and {string}") do |repo1, repo2|
+  [ repo1, repo2 ].each do |repo_name|
+    assignment = Assignment.find_by(repository_name: repo_name)
+    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
+    checkbox.set(false) unless !checkbox.checked?
+  end
+end
+
+# Step definitions for verifying results
+Then("I should see that {string} has {string} access to the remote {string} repository") do |name, access_type, repo_name|
+  user = User.find_by(name: name)
+  assignment = Assignment.find_by(repository_name: repo_name)
+
+  # Mock the GitHub API call
+  allow_any_instance_of(Octokit::Client).to receive(:add_collaborator)
+    .with("AutograderFrontend/#{repo_name}", name, permission: access_type == 'read-write' ? 'push' : 'pull')
+    .and_return(true)
+
+  # Verify the user's assignment access in the database
+  if access_type == 'read-write'
+    expect(user.assignments).to include(assignment)
   else
-    raise "User #{username} not found"
-  end
-end
-
-# Step to visit a specific page
-Given('I am on the {string} page') do |page_name|
-  visit path_to(page_name) # Ensure `path_to` helper is defined and returns the correct paths
-end
-
-# Step to click a specific user link
-When('I click on {string}') do |username|
-  user = User.find_by(username: username)
-  if user
-    click_link(user.username) # Assuming usernames are clickable links
-  else
-    raise "User #{username} not found"
-  end
-end
-
-# Step to select a specific assignment by repository name
-When('I select the assignment {string}') do |assignment_repo_name|
-  find('option', text: assignment_repo_name).select_option
-end
-
-# Step to select multiple assignments by repository names
-When('I select the assignments {string}') do |assignment_repo_names|
-  assignment_repo_names.split(' and ').each do |assignment_repo_name|
-    find('option', text: assignment_repo_name).select_option
-  end
-end
-
-# Step to click a button by its text
-When('I click the {string} button') do |button_text|
-  click_button(button_text)
-end
-
-# Step to click any button by its text (alternative version)
-When('I click {string}') do |button_text|
-  click_button(button_text)
-end
-
-# Step to de-select an assignment by repository name
-When('I de-select the assignment {string}') do |assignment_repo_name|
-  find('option', text: assignment_repo_name).unselect_option
-end
-
-# Step to de-select multiple assignments by repository names
-When('I de-select the assignments {string}') do |assignment_repo_names|
-  assignment_repo_names.split(' and ').each do |assignment_repo_name|
-    find('option', text: assignment_repo_name).unselect_option
-  end
-end
-
-# Step to check that a user has specific access to a repository
-Then('I should see that {string} has {string} access to the remote {string} repository') do |username, access_type, repository_name|
-  user = User.find_by(username: username)
-  assignment = Assignment.find_by(repository_name: repository_name)
-
-  if user && assignment
-    # Review this  - can we use some implementation for `access_for` that checks the user's access to an assignment
-    expect(user.access_for(assignment)).to eq(access_type)
-  else
-    raise "User #{username} or Assignment #{repository_name} not found"
+    expect(user.assignments).not_to include(assignment)
   end
 end
