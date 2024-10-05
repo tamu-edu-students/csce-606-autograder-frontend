@@ -1,14 +1,21 @@
+  Given('I am logged in as an {string}') do |string|
+    pending # Write code here that turns the phrase above into concrete actions
+  end
+
   When('I click the {string} button') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
+
 
   When('I fill in the repository name with {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
 
+
   When('I fill in the description with {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
+
 
   Then('I should see the new assignment in the course assignments list') do
     pending # Write code here that turns the phrase above into concrete actions
@@ -43,9 +50,14 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
+  Given('I am logged in as a {string}') do |string|
+    pending # Write code here that turns the phrase above into concrete actions
+  end
+
   Then('I should not see the {string} button') do |string|
     pending # Write code here that turns the phrase above into concrete actions
   end
+
 
   When('I try to visit the {string} page') do |string|
     pending # Write code here that turns the phrase above into concrete actions
