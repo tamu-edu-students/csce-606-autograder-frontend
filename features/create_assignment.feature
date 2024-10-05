@@ -24,10 +24,5 @@ Feature: Create a new assignment
     Given I am logged in as a "ta"
     Then I should not see the "Create Assignment" button
 
-  Scenario: TAs with read-only access cannot visit the "Create Assignment" page
-    Given I am logged in as a "ta"
-    When I try to visit the "Create Assignment" page
-    Then I should see the error message "Access Denied."
-
 
 

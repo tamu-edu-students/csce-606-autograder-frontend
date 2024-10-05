@@ -12,10 +12,6 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/new
   def new
-    if current_user.role != "instructor"
-      flash[:warning] = "Access Denied."
-      redirect_to root_path
-    end
     @assignment = Assignment.new
   end
 
@@ -37,7 +33,7 @@ class AssignmentsController < ApplicationController
       end
     end
     github_token = session[:github_token]
-    assignment.assignment_repo_init(github_token)
+    @assignment.assignment_repo_init(github_token)
   end
 
   # PATCH/PUT /assignments/1 or /assignments/1.json

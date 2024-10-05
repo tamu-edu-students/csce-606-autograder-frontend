@@ -4,14 +4,30 @@ class Assignment < ActiveRecord::Base
   validates :assignment_name, :repository_name, presence: true
 
   def repository_identifier
-    
     File.join(ENV["GITHUB_COURSE_ORGANIZATION"], self.repository_name)
   end
 
   def local_repository_path
-    
-    
     File.join(ENV["ASSIGNMENTS_BASE_PATH"], self.repository_name)
+  end
+
+  def assignment_repo_init(github_token)
+    create_repo_from_template(github_token)
+    clone_repo_to_local
+    create_and_add_deploy_key(
+      github_token,
+      self.repository_name,
+      ENV["GITHUB_COURSE_ORGANIZATION"],
+      self.local_repository_path,
+      false
+    )
+    create_and_add_deploy_key(
+      github_token,
+      self.repository_name,
+      ENV["GITHUB_COURSE_ORGANIZATION"],
+      self.local_repository_path,
+      true
+    )
   end
 
   private
@@ -83,7 +99,7 @@ class Assignment < ActiveRecord::Base
       end
   end
 
-  def remote_repo_created?
+  def remote_repo_created?(github_token)
     begin
       client = Octokit::Client.new(access_token: github_token)
       client.repository?(self.repository_identifier)
@@ -91,24 +107,5 @@ class Assignment < ActiveRecord::Base
       puts "Failed to check whether remote repo has been created: #{e.response_body[:message]}"
       nil
     end
-  end
-
-  def assignment_repo_init(github_token)
-      create_repo_from_template(github_token)
-      clone_repo_to_local(github_token)
-      create_and_add_deploy_key(
-        github_token,
-        self.repository_name,
-        ENV["GITHUB_COURSE_ORGANIZATION"],
-        self.local_repository_path,
-        false
-      )
-      create_and_add_deploy_key(
-        github_token,
-        self.repository_name,
-        ENV["GITHUB_COURSE_ORGANIZATION"],
-        self.local_repository_path,
-        true
-      )
   end
 end
