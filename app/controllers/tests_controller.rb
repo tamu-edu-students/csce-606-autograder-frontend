@@ -1,57 +1,66 @@
 class TestsController < ApplicationController
-  before_action :set_assignment
   before_action :set_test, only: %i[ show edit update destroy ]
 
+  # GET /tests or /tests.json
   def index
-    @assignment = Assignment.find(params[:assignment_id])
-    
-    @tests = @assignment.tests
+    @tests = Test.all
   end
 
+  # GET /tests/1 or /tests/1.json
+  def show
+  end
+  # GET /tests/new
   def new
-    @test = @assignment.tests.build
+    @test = Test.new
   end
 
-  def create
-    @test = @assignment.tests.new(test_params)
-    if @test.save
-      @assignment.generate_tests_file  # Make sure this generates the .tests file
-      redirect_to assignment_tests_path(@assignment), notice: 'Test was successfully created.'
-    else
-      render :new
-    end
-  end
-  
-
-  # GET /assignments/:assignment_id/tests/:id/edit
+  # GET /tests/1/edit
   def edit
   end
-
-  # PATCH/PUT /assignments/:assignment_id/tests/:id
-  def update
-    if @test.update(test_params)
-      redirect_to assignment_test_path(@assignment, @test), notice: "Test was successfully updated."
-    else
-      render :edit
+  # POST /tests or /tests.json
+  def create
+    @test = Test.new(test_params)
+    respond_to do |format|
+      if @test.save
+        format.html { redirect_to @test, notice: "Test was successfully created." }
+        format.json { render :show, status: :created, location: @test }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @test.errors, status: :unprocessable_entity }
+      end
     end
   end
 
-  # DELETE /assignments/:assignment_id/tests/:id
+  # PATCH/PUT /tests/1 or /tests/1.json
+  def update
+    respond_to do |format|
+      if @test.update(test_params)
+        format.html { redirect_to @test, notice: "Test was successfully updated." }
+        format.json { render :show, status: :ok, location: @test }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @test.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /tests/1 or /tests/1.json
   def destroy
-    @test.destroy
-    redirect_to assignment_tests_path(@assignment, @test), notice: "Test was successfully deleted."
+    @test.destroy!
+    respond_to do |format|
+      format.html { redirect_to tests_path, status: :see_other, notice: "Test was successfully destroyed." }
+      format.json { head :no_content }
+    end
   end
 
   private
-    def set_assignment
-      @assignment = Assignment.find(params[:assignment_id])
-    end
-
+    # Use callbacks to share common setup or constraints between actions.
     def set_test
-      @test = @assignment.tests.find(params[:id])
+      @test = Test.find(params[:id])
     end
 
+    # Only allow a list of trusted parameters through.
     def test_params
-      params.require(:test).permit(:name, :points, :target, :test_code, :test_type, :include_files)
-    end    
+      params.require(:test).permit(:name, :points, :type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id)
+    end
 end

@@ -1,15 +1,3 @@
-<% if flash[:notice] %>
-  <div class="flash notice" style="color: green;">
-    <%= flash[:notice] %>
-  </div>
-<% end %>
-
-<% if flash[:alert] %>
-  <div class="flash alert" style="color: red;">
-    <%= flash[:alert] %>
-  </div>
-<% end %>
-
 <% content_for :title, "Editing test" %>
 
 <h1>Editing test</h1>
@@ -20,5 +8,5 @@
 
 <div>
   <%= link_to "Show this test", @test %> |
-  <%= link_to "Back to tests", assignment_tests_path %>
+  <%= link_to "Back to tests", tests_path %>
 </div>

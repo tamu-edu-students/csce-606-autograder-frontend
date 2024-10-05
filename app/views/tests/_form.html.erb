@@ -1,9 +1,9 @@
-<%= form_with(model: [ @assignment, @test ]) do |form| %>
-  <% if @test.errors.any? %>
+<%= form_with(model: test) do |form| %>
+  <% if test.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(@test.errors.count, "error") %> prohibited this test from being saved:</h2>
+      <h2><%= pluralize(test.errors.count, "error") %> prohibited this test from being saved:</h2>
       <ul>
-        <% @test.errors.each do |error| %>
+        <% test.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
@@ -17,12 +17,12 @@
 
   <div>
     <%= form.label :points, style: "display: block" %>
-    <%= form.number_field :points %>
+    <%= form.text_field :points %>
   </div>
 
   <div>
-    <%= form.label :test_type, style: "display: block" %>
-    <%= form.text_field :test_type %>
+    <%= form.label :type, style: "display: block" %>
+    <%= form.text_field :type %>
   </div>
 
   <div>
@@ -31,18 +31,36 @@
   </div>
 
   <div>
-    <%= form.label :test_code, style: "display: block" %>
-    <%= form.text_area :test_code %>
+    <%= form.label :include, style: "display: block" %>
+    <%= form.text_area :include %>
   </div>
-
+  <div>
+    <%= form.label :number, style: "display: block" %>
+    <%= form.text_field :number %>
+  </div>
 
   <div>
-    <%= form.label :include_files, style: "display: block" %>
-    <%= form.text_field :include_files %>
+    <%= form.label :show_output, style: "display: block" %>
+    <%= form.check_box :show_output %>
+  </div>
+  <div>
+    <%= form.label :skip, style: "display: block" %>
+    <%= form.check_box :skip %>
+  </div>
+  <div>
+    <%= form.label :timeout, style: "display: block" %>
+    <%= form.text_field :timeout %>
+  </div>
+  <div>
+    <%= form.label :visibility, style: "display: block" %>
+    <%= form.text_field :visibility %>
   </div>
 
-  
+  <div>
+    <%= form.label :assignment_id, style: "display: block" %>
+    <%= form.text_field :assignment_id %>
+  </div>
+
   <div>
     <%= form.submit %>
   </div>
-<% end %>
