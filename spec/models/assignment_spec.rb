@@ -8,16 +8,15 @@ RSpec.describe Assignment, type: :model do
 
   before do
     # Set the environment variable for the test
-    ENV['ASSIGNMENTS_BASE_PATH'] = 'assignments_path'
-  end
-
-  after do
-    # Clean up the environment variable after the test
-    ENV.delete('ASSIGNMENTS_BASE_PATH')
+    allow(ENV).to receive(:[]).and_return(nil)
+    allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
+    allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return('philipritchey/autograded-assignment-template')
+    allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return('AutograderFrontend')
+    allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
   end
 
   describe '#create_and_add_deploy_key' do
-    let(:key_path) { "./#{ENV['ASSIGNMENTS_BASE_PATH']}/#{assignment.repository_name}/secrets/deploy_key" }
+    let(:key_path) { File.join("destination_path", "secrets", "deploy_key") }
 
     before do
       allow(Open3).to receive(:capture3).and_return([ 'Key generated successfully', '', double(success?: true) ])
@@ -26,29 +25,40 @@ RSpec.describe Assignment, type: :model do
     end
 
     it 'generates an SSH key' do
-      expect(Open3).to receive(:capture3).with('ssh-keygen', '-t', 'ed25519', '-C', 'gradescope', '-f', key_path)
-      assignment.send(:create_and_add_deploy_key)
+      key_path = File.join("destination_path", "secrets", "deploy_key")
+      expect(Open3).to receive(:capture3).with('ssh-keygen', '-t', 'ed25519', '-C', 'gradescope', '-f', key_path, "-N", "")
+      assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path')
     end
 
     it 'reads the generated public key' do
       expect(File).to receive(:read).with("#{key_path}.pub")
-      assignment.send(:create_and_add_deploy_key)
+      assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path')
     end
 
     it 'adds a deploy key to the GitHub repository' do
       client = double('OctokitClient')
       allow(Octokit::Client).to receive(:new).and_return(client)
-      expect(client).to receive(:add_deploy_key).with(assignment.repository_name, 'Gradescope Deploy Key', 'mock_public_key_content', read_only: true)
-      assignment.send(:create_and_add_deploy_key)
+      expect(client).to receive(:add_deploy_key).with('organization_name/repo_name', 'Gradescope Deploy Key', 'mock_public_key_content', read_only: true)
+      assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path')
     end
 
     context 'when SSH key generation fails' do
-      before do
-        allow(Open3).to receive(:capture3).and_return([ '', 'Error generating key', double(success?: false) ])
+      context 'when Errno::ENOENT is raised' do
+        it 'outputs "Command not found"' do
+          allow(Open3).to receive(:capture3).and_raise(Errno::ENOENT, "Command not found")
+  
+          expect { assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path') }
+            .to output(/Command not found: No such file or directory - Command not found/).to_stdout
+        end
       end
-
-      it 'logs an error message' do
-        expect { assignment.send(:create_and_add_deploy_key) }.to output(/Error generating key/).to_stdout
+  
+      context 'when StandardError is raised' do
+        it 'outputs "Failed to generate SSH key"' do
+          allow(Open3).to receive(:capture3).and_raise(StandardError, "Some error message")
+  
+          expect { assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path') }
+            .to output(/Failed to generate SSH key: Some error message/).to_stdout
+        end
       end
     end
 
@@ -58,7 +68,7 @@ RSpec.describe Assignment, type: :model do
       end
 
       it 'logs an error message' do
-        expect { assignment.send(:create_and_add_deploy_key) }.to output(/Failed to read public key: File read error/).to_stdout
+        expect { assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path') }.to output(/Failed to read public key: File read error/).to_stdout
       end
     end
 
@@ -73,7 +83,7 @@ RSpec.describe Assignment, type: :model do
         end
 
       it 'logs an error message' do
-        expect { assignment.send(:create_and_add_deploy_key) }.to output(/Failed to add deploy key to GitHub: GitHub API error/).to_stdout
+        expect { assignment.send(:create_and_add_deploy_key, 'repo_name', 'organization_name', 'destination_path') }.to output(/Failed to add deploy key to GitHub: GitHub API error/).to_stdout
       end
     end
   end
@@ -119,18 +129,54 @@ RSpec.describe Assignment, type: :model do
       let(:client) { instance_double(Octokit::Client) }
 
       before do
-        allow(client).to receive(:create_repo_from_template).and_raise(Octokit::Error.new({ status: 422, body: { message: 'GitHub API Error' }, headers: {} }))
+        client = double('OctokitClient')
+        allow(Octokit::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:create_repo_from_template).and_raise(Octokit::Error.new(
+            { status: 422,
+            body: { message: "GitHub API error" },
+            headers: {} }))
       end
 
       it 'raises a GitHub API Error' do
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
-        assignment.send(:create_repo_from_template)
-        expect { assignment.create_repo_from_template }.to output(/Failed to clone repo from assignment template: GitHub API Error/).to_stdout
+        expect { assignment.send(:create_repo_from_template) }.to output(/Failed to clone repo from assignment template: GitHub API error/).to_stdout
+      end
+    end
+  end
+
+  describe 'clone_repo_to_local' do
+    let(:assignment_name) { 'Test Assignment' }
+    let(:repository_name) { 'test-repository' }
+    let(:organization) {'AutograderFrontend'}
+    
+    before do
+      allow(ENV).to receive(:[]).and_return(nil)
+      allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
+      allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
+
+      allow(Git).to receive(:clone)
+    end
+    context 'when Git clone is successful' do
+      it 'clones the repository without errors' do
+        assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
+        puts assignment.local_repository_path
+        expect(Git).to receive(:clone).with(assignment.repository_url, assignment.local_repository_path).and_return(true)    
+        assignment.send(:clone_repo_to_local)
+      end
+    end
+    context 'when Git clone raises an error' do
+      before do
+        allow(Git).to receive(:clone).and_raise(Git::GitExecuteError.new("Failed to clone"))
+      end
+      it 'rescues the error and prints the error message' do
+        assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
+        expect { assignment.send(:clone_repo_to_local) }.to output(/An error occurred: Failed to clone/).to_stdout
       end
     end
   end
 
   describe 'remote_repo_created?' do
+    let(:assignment_name) { 'Test Assignment' }
     let(:repository_name) {'test-repository'}
     let(:organization) {'AutograderFrontend'}
     
@@ -152,8 +198,8 @@ RSpec.describe Assignment, type: :model do
           )
         .to_return(status: 200, body: '', headers: {})
 
-        assignment = Assignment.new(repository_name: repository_name)
-        expect(assignment.id.send(:remote_repo_created?)).to be true
+        assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
+        expect(assignment.send(:remote_repo_created?)).to be true
       end
 
       it 'returns false if the repo does not exist on GitHub' do
@@ -168,18 +214,19 @@ RSpec.describe Assignment, type: :model do
           )
           .to_return(status: 404, body: '', headers: {})
 
-        assignment = Assignment.new(repository_name: repository_name)
-        expect(assignment.id.send(:remote_repo_created?)).to be false
+        assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
+        expect(assignment.send(:remote_repo_created?)).to be false
       end
     end
     context 'if the repository check API call is unsuccessful' do
       let(:client) { instance_double(Octokit::Client) }
 
       before do
-        allow(client).to receive(:create_repo_from_template).and_raise(Octokit::Error.new({ status: 422, body: { message: 'GitHub API Error' }, headers: {} }))
+        allow(client).to receive(:repository?).and_raise(Octokit::Error.new({ status: 422, body: { message: 'GitHub API Error' }, headers: {} }))
       end
       it 'raises a GitHub API Error' do
-        "Failed to check whether remote repo has been created: GitHub API error"
+        assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
+        expect(assignment.send(:remote_repo_created?)).to output(/Failed to check whether remote repo has been created: GitHub API error/)
       end
     end
   end

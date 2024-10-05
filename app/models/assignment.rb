@@ -33,8 +33,10 @@ class Assignment < ActiveRecord::Base
       end
     rescue Errno::ENOENT => e
       puts "Command not found: #{e.message}"
+      return
     rescue StandardError => e
       puts "Failed to generate SSH key: #{e.message}"
+      return
     end
     begin
       public_key_content = File.read("#{key_path}.pub")
