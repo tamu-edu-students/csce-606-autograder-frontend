@@ -15,4 +15,6 @@
 <% end %>
 
 <%= link_to "Add new test", new_assignment_test_path(@assignment), class: "btn btn-primary" %>
+<%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
+
 <%= link_to "Back to assignments", assignments_path %>
