@@ -25,13 +25,13 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe "when the assignment access for a user is updated" do
-        let(:user) { User.create!(name: 'Test User', username: 'testuser') }
+        let(:user) { User.create!(name: 'Test User') }
         let(:assignment1) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: 'repo1') }
         let(:assignment2) { Assignment.create!(assignment_name: 'Assignment 2', repository_name: 'repo2') }
 
         before do
-            allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('fake_token')
-            @mock_client = double('Octokit::Client')
+            allow(controller).to receive(:session).and_return({ github_token: 'fake_token' })
+            @mock_client = instance_double(Octokit::Client)
             allow(Octokit::Client).to receive(:new).and_return(@mock_client)
         end
 
@@ -62,8 +62,8 @@ RSpec.describe UsersController, type: :controller do
             user.assignment_ids = [ assignment1.id ]
             user.save!
 
-            expect(@mock_client).to receive(:add_collaborator).with('AutograderFrontend/repo2', 'testuser', permission: 'push')
-            expect(@mock_client).to receive(:remove_collaborator).with('AutograderFrontend/repo1', 'testuser')
+            expect(@mock_client).to receive(:add_collaborator).with('AutograderFrontend/repo2', user.name, permission: 'push')
+            expect(@mock_client).to receive(:add_collaborator).with('AutograderFrontend/repo1', user.name, permission: 'pull')
 
             post :update_assignments, params: { id: user.id, assignment_ids: [ assignment2.id ] }
         end
@@ -77,7 +77,7 @@ RSpec.describe UsersController, type: :controller do
             end
         end
 
-        context 'when GitHub API raises an error for add collaborator' do
+        context 'when GitHub API raises an error' do
             it 'handles the error and sets a flash alert' do
               user.assignment_ids = [ assignment1.id ]
               user.save!
@@ -85,20 +85,6 @@ RSpec.describe UsersController, type: :controller do
               allow(@mock_client).to receive(:add_collaborator).and_raise(Octokit::Error.new)
 
               post :update_assignments, params: { id: user.id, assignment_ids: [ assignment2.id ] }
-
-              expect(flash[:alert]).to eq('Failed to update assignments. Please try again.')
-              expect(response).to render_template(:show)
-            end
-        end
-
-        context 'when GitHub API raises an error for remove collaborator' do
-            it 'handles the error and sets a flash alert' do
-              user.assignment_ids = [ assignment1.id ]
-              user.save!
-
-              allow(@mock_client).to receive(:remove_collaborator).and_raise(Octokit::Error.new)
-
-              post :update_assignments, params: { id: user.id, assignment_ids: [] }
 
               expect(flash[:alert]).to eq('Failed to update assignments. Please try again.')
               expect(response).to render_template(:show)
