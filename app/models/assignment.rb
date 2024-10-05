@@ -2,6 +2,24 @@ class Assignment < ActiveRecord::Base
     has_and_belongs_to_many :users
     has_many :tests
 
+    def set_remote_origin(local_repo_path, remote_repo_url)
+        # Open the local Git repository
+        git = Git.open(local_repo_path)
+      
+        # Check if the 'origin' remote already exists
+        remote = git.remotes.find { |r| r.name == 'origin' }
+      
+        if remote
+          # If 'origin' exists, update the URL
+          remote.url = remote_repo_url
+          puts "Updated 'origin' to #{remote_repo_url}"
+        else
+          # If 'origin' doesn't exist, add it
+          git.add_remote('origin', remote_repo_url)
+          puts "Added 'origin' with URL #{remote_repo_url}"
+        end
+    end
+
      # Push any changes to the remote GitHub repository
     def push_changes_to_github(user, auth_token)
         # Retrieve the base path for all assignments from the environment variable
@@ -15,8 +33,11 @@ class Assignment < ActiveRecord::Base
         remote_repo_url = "https://#{auth_token}@github.com/#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}.git"
     
         # Set the remote URL for the repository
-        system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
-    
+        #system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
+
+        set_remote_origin(local_repo_path, remote_repo_url)
+
+
         # Check if the local repo exists before committing and pushing changes
         if Dir.exist?(local_repo_path)
           commit_local_changes(local_repo_path, user)
