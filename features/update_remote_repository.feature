@@ -4,7 +4,7 @@ Feature: Update remote assignment repository
     I want to push any assignment changes to the remote GitHub repository
 
     Background:
-        Given the following users exist in assignment permissions:
+        Given We have the following users exist in assignment permissions:
         | name     | role       | assignment1_access | assignment2_access | assignment3_access |
         | alice    | ta         | read               | read               | read               |
         | bob      | ta         | read-write         | read-write         | read-write         |

@@ -21,7 +21,7 @@
 #     FileUtils.rm_rf('assignment-repos')
 # end
 
-Given("the following users exist in assignment permissions:") do |table|
+Given("We have the following users exist in assignment permissions:") do |table|
     table.hashes.each do |hash|
       user = User.create!(name: hash['name'], role: hash['role'])
       Assignment.all.each do |assignment|
