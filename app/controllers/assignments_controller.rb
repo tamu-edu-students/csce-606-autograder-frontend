@@ -35,7 +35,7 @@ class AssignmentsController < ApplicationController
   end
 
   # PATCH/PUT /assignments/1 or /assignments/1.json
-   # PATCH/PUT /assignments/1 or /assignments/1.json
+  # PATCH/PUT /assignments/1 or /assignments/1.json
   def update
     respond_to do |format|
       if @assignment.update(assignment_params)
@@ -44,7 +44,7 @@ class AssignmentsController < ApplicationController
         current_user = User.find(session[:user_id]) # Retrieve the current user
         auth_token = session[:github_token] # Get the GitHub auth token from the session
         update_remote(current_user, auth_token)
-        redirect_to @assignment, notice: 'Assignment was successfully updated.'
+        redirect_to @assignment, notice: "Assignment was successfully updated."
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @assignment.errors, status: :unprocessable_entity }
@@ -53,8 +53,8 @@ class AssignmentsController < ApplicationController
   end
 
   def update_remote(user, auth_token)
-    #1. Update code tests file
-    #2. Push changes to remote
+    # 1. Update code tests file
+    # 2. Push changes to remote
     @assignment.push_changes_to_github(user, auth_token)
   end
 

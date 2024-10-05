@@ -7,7 +7,7 @@ RSpec.describe Assignment, type: :model do
   let(:local_repo_path) { File.join(ENV['ASSIGNMENTS_BASE_PATH'], assignment.repository_name) }
   let(:auth_token) { 'fake_auth_token' }
   let(:remote_url) { "https://#{auth_token}@github.com/#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{assignment.repository_name}.git" }
-  
+
   let(:git) { instance_double('Git::Base') } # Define git here
 
   before do
@@ -20,7 +20,7 @@ RSpec.describe Assignment, type: :model do
 
     # Mocking the 'origin' remote and stubbing url= method
     remote = instance_double('Git::Remote', name: 'origin', url: 'old_url')
-    allow(git).to receive(:remotes).and_return([remote])
+    allow(git).to receive(:remotes).and_return([ remote ])
     allow(remote).to receive(:url=)
     allow(git).to receive(:add_remote)
 
@@ -39,7 +39,7 @@ RSpec.describe Assignment, type: :model do
     context 'when the origin remote already exists' do
       it 'updates the remote URL' do
         expect(Git).to receive(:open).with(local_repo_path).and_return(git)
-        expect(git).to receive(:remotes).and_return([git.remotes.first]) # Using mock remote
+        expect(git).to receive(:remotes).and_return([ git.remotes.first ]) # Using mock remote
         expect(git.remotes.first).to receive(:url=).with(remote_url)
 
         assignment.set_remote_origin(local_repo_path, remote_url)
