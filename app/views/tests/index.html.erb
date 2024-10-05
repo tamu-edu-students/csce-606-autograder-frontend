@@ -1,3 +1,15 @@
+<% if flash[:notice] %>
+  <div class="flash notice" style="color: green;">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="flash alert" style="color: red;">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
 <p style="color: green"><%= notice %></p>
 
 <% content_for :title, "Tests" %>
@@ -13,4 +25,4 @@
   <% end %>
 </div>
 
-<%= link_to "New test", new_test_path %>
+<%= link_to "New test", new_assignment_test_path(@assignment) %>

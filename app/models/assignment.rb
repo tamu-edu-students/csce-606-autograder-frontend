@@ -1,20 +1,12 @@
-class Assignment < ActiveRecord::Base
+class Assignment < ApplicationRecord
   has_many :tests
   def generate_tests_file
-    # should determine the language that is wanted
-    language_folder = "tests/#{self.language}"
+    FileUtils.mkdir_p(repository_name) unless Dir.exist?(repository_name)
 
-    # makes sure the foulder exists if not make it
-    FileUtils.mkdir_p(language_folder)
-
-    # Defining  the path for the .tests file
-    tests_file_path = "#{language_folder}/#{self.title.parameterize}.tests"
-
-    # Opening the file for writing the stuff
-    File.open(tests_file_path, "w") do |file|
-      self.tests.each do |test|
-        file.write(format_test(test))
-        file.write("\n\n")
+    file_path = "#{repository_name}/.tests"
+    File.open(file_path, 'w') do |file|
+      tests.each do |test|
+        file.puts format_test(test)
       end
     end
   end
@@ -22,19 +14,18 @@ class Assignment < ActiveRecord::Base
   private
 
   def format_test(test)
-    test_spec = <<~TEST_SPEC
+    <<~TEST_SPEC
     /*
     @name: #{test.name}
     @points: #{test.points}
-    @type: #{test.test_type}
-    #{format_optional_attributes(test)}
+    @target: #{test.target}
+    @test_type: #{test.test_type}
+    @include_files: #{test.include_files}
     */
     <test>
-    #{test.actual_test}
+    #{test.test_code}
     </test>
     TEST_SPEC
-
-    test_spec
   end
 
   # @target is semi-optional (depending on type), but whether it
@@ -42,6 +33,7 @@ class Assignment < ActiveRecord::Base
   # it as optional
   def format_optional_attributes(test)
     optional_attrs = ""
+    optional_attributes += "@include_files: #{test.include_files}\n" if test.respond_to?(:include_files)
     optional_attrs += "@target: #{test.target}\n" if test.target.present?
     optional_attrs += "@include: #{test.include_files}\n" if test.include_files.present?
     optional_attrs += "@number: #{test.number}\n" if test.number.present?

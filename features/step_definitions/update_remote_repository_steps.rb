@@ -1,122 +1,82 @@
-require 'git'
-require 'octokit'
+# Given("the following assignments exist:") do |table|
+#   table.hashes.each do |assignment|
+#     Assignment.create!(
+#       title: assignment['assignment_name'],
+#       repository_name: assignment['repository_name']
+#     )
+#   end
+# end
 
-Given("I am logged in as {string}") do |user_name|
-  @user_name = user_name
-  # Simulate login or store user info for commits
-end
+# And("the assignment contains no tests") do
+#   # Ensure the assignment has no tests
+#   Assignment.last.tests.delete_all
+# end
 
-Given("the name {string} exists") do |repo_name|
-  @repo_name = repo_name
-  # Ensure the repository exists
-end
+# And("the assignment contains {int} tests") do |number_of_tests|
+#   assignment = Assignment.last
+#   assignment.tests = FactoryBot.create_list(:test, number_of_tests, assignment: assignment)
+# end
 
-Given("I have write access to the {string} repository") do |repo_name|
-end
+# Given('I am logged in as an "instructor"') do
+#   # Assuming you're using Devise or some authentication system
+#   @current_user = User.create!(email: "instructor@example.com", role: "instructor")
+#   login_as(@current_user)
+# end
 
-### Scenario: New file is added to the local repository
-When("I add a new file under the local {string} repository") do |repo_name|
-  # Create and write content to a new file in the local repo
-  @new_file_path = File.join(repo_name, "new_file.txt")
-  File.write(@new_file_path, "This is a new file.")
+# Given('I am on the "Assignment Management" page for {string}') do |assignment_name|
+#   assignment = Assignment.find_by(title: assignment_name)
+#   visit assignment_path(assignment)
+# end
 
-  # Initialize Git and commit the new file locally
-  git = Git.open(repo_name)
-  git.add(@new_file_path)
-  git.commit("Add new file by #{@user_name}")
-end
+# When('I add a new unit test called {string}') do |name|
+#   fill_in 'test_name', with: name
+# end
 
-Then("I should see a local commit message indicating the new file was added by {string}") do |user_name|
-  # Verify the most recent local commit message
-  git = Git.open(@repo_name)
-  expect(git.log.first.message).to eq("Add new file by #{user_name}")
-end
+# When('I set it to {string} points') do |points|
+#   fill_in 'test_points', with: points
+# end
 
-Then("I should see a remote commit message indicating the new file was added by {string}") do |user_name|
-  # Push the changes to the remote repository
-  git = Git.open(@repo_name)
-  git.push('origin', 'main')
+# When('I set the target to {string}') do |target|
+#   fill_in 'test_target', with: target
+# end
 
-  # Use Octokit to verify the remote commit on GitHub
-  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  latest_commit = client.commits(@repo_name).first
-  expect(latest_commit.commit.message).to eq("Add new file by #{user_name}")
-end
+# When('I fill in the test block with {string}') do |test_code|
+#   fill_in 'test_code', with: test_code
+# end
 
-Then("I should see the new file in the {string} repository on GitHub") do |repo_name|
-  # Verify the new file exists on github
-  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  content = client.contents(repo_name, path: 'new_file.txt')
-  expect(content).not_to be_nil
-end
+# When('I click the "Create" button') do
+#   click_button 'Create Test'
+# end
 
-### Scenario: Existing file is modified in local repository
-When("I modify an existing file under the local {string} repository") do |repo_name|
-  # Modify the contents of an existing file in the local repository
-  @file_path = File.join(repo_name, "existing_file.txt")
-  File.write(@file_path, "Modified content.")
+# Then('I should see a success message') do
+#   expect(page).to have_content('Test was successfully created')
+# end
 
-  # Stage and commit the changes locally
-  git = Git.open(repo_name)
-  git.add(@file_path)
-  git.commit("Modify existing file by #{@user_name}")
-end
+# Then('the .tests file should contain the properly formatted test') do
+#   assignment = Assignment.last
+#   tests_file_path = "tests/#{assignment.language}/#{assignment.title.parameterize}.tests"
+#   expect(File.read(tests_file_path)).to include("/*")
+# end
 
-Then("I should see a local commit message indicating the file was modified by {string}") do |user_name|
-  # Verify the most recent local commit message
-  git = Git.open(@repo_name)
-  expect(git.log.first.message).to eq("Modify existing file by #{user_name}")
-end
+# Then('the .tests file should contain both properly formatted tests') do
+#   assignment = Assignment.last
+#   tests_file_path = "tests/#{assignment.language}/#{assignment.title.parameterize}.tests"
+#   assignment.tests.each do |test|
+#     expect(File.read(tests_file_path)).to include(test.name)
+#     expect(File.read(tests_file_path)).to include(test.actual_test)
+#   end
+# end
 
-Then("I should see a remote commit message indicating the file was modified by {string}") do |user_name|
-  # Push the changes to the remote repository
-  git = Git.open(@repo_name)
-  git.push('origin', 'main')
+# When('I delete the {int} test') do |position|
+#   test = Assignment.last.tests[position]
+#   test.destroy
+# end
 
-  # Verify the remote commit message
-  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  latest_commit = client.commits(@repo_name).first
-  expect(latest_commit.commit.message).to eq("Modify existing file by #{user_name}")
-end
-
-Then("I should see the modified file in the {string} repository on GitHub") do |repo_name|
-  # Verify the file's contents on GitHub
-  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  content = client.contents(repo_name, path: 'existing_file.txt')
-  expect(Base64.decode64(content.content)).to include("Modified content.")
-end
-
-### Scenario: Existing file is deleted in local repository
-When("I delete an existing file under the local {string} repository") do |repo_name|
-  # Delete the file in the local repository
-  @file_path = File.join(repo_name, "existing_file.txt")
-  File.delete(@file_path)
-
-  # Stage and commit the deletion locally
-  git = Git.open(repo_name)
-  git.remove(@file_path)
-  git.commit("Delete existing file by #{@user_name}")
-end
-
-Then("I should see a local commit message indicating the file was deleted by {string}") do |user_name|
-  # Verify the most recent local commit message
-  git = Git.open(@repo_name)
-  expect(git.log.first.message).to eq("Delete existing file by #{user_name}")
-end
-
-Then("I should see a remote commit message indicating the file was deleted by {string}") do |user_name|
-  # Push the changes to the remote repository
-  git = Git.open(@repo_name)
-  git.push('origin', 'main')
-
-  # Verify the remote commit message
-  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  latest_commit = client.commits(@repo_name).first
-  expect(latest_commit.commit.message).to eq("Delete existing file by #{user_name}")
-end
-
-Then("I should not see the deleted file in the {string} repository on GitHub") do |repo_name|
-  # Verify the file no longer exists on github
-  client = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  expect { client.contents(repo_name, path: 'existing_file.txt') }.to raise_error(Octokit::NotFound)
-end
+# Then('the .tests file should contain the remaining {int} tests') do |remaining_tests|
+#   assignment = Assignment.last
+#   tests_file_path = "tests/#{assignment.language}/#{assignment.title.parameterize}.tests"
+#   expect(assignment.tests.count).to eq(remaining_tests)
+#   remaining_tests.each do |test|
+#     expect(File.read(tests_file_path)).to include(test.name)
+#   end
+# end
