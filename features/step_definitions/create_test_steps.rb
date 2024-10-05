@@ -2,7 +2,6 @@ When('I create a new test with type {string}') do |type|
   click_link('Add new test')
   select type, from: 'Test type'
  #click_button 'Create Test'
-
 end
 
 

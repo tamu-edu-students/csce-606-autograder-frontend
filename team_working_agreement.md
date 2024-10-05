@@ -34,6 +34,43 @@ Our working agreement is built upon the following Scrum values:
 
 ---
 
+## Development Best Practices
+
+- Never commit to the `main` branch directly.
+
+   1. Instead, create a separate branch for your new code, and use pull request (PR) to apply your
+      new code to the `main` branch.
+
+- Write concise titles and detailed descriptions for PRs.
+
+   1. The PR description should be well organized and provide the following information.
+      1. Explanations of the context
+      2. Detailed description of the changes
+      3. Testing approach and result
+
+- Create small PRs.
+
+   1. Each PR should complete one and only one task. Keep your tasks as small as possible.
+   2. Try to limit the line of change in each PR to **200** (suggested value). Smaller PRs
+      accelerate code reviews significantly.
+   3. For example, you implemented a feature in a new branch. Before creating PR, you found a typo
+      in a component unrelated to your changes. In this case, create a separate PR for that typo fix.
+
+- Request reviews for your PR.
+
+   1. Each PR should be reviewed by at least one team member (the Product Owner).
+   2. If your PR involves changes to a component/module, the team member mainly responsible
+      for it should be on the reviewer list as well.
+   3. If your PR involves important changes to the code base, add more team members to make them
+      aware of the changes.
+
+- Each PR should be merged by the author.
+   1. For small changes, approval from one reviewer is sufficient.
+   2. For important changes, all the reviewers need to inspect the content. In this case, the author
+      should obtain approvals from all reviewers, and then merge the changes into the `main` branch.
+
+---
+
 ## Tools & Documentation
 - Tools: 
   - Version control with Git and GitHub.

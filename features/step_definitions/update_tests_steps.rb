@@ -4,7 +4,6 @@ Given(/^I am logged in as an instructor$/) do
   end
 
   Given(/^I have created an assignment with a test case of type "(.*)"$/) do |type|
-    @assignment = Assignment.create!(name: "Assignment 1", instructor: User.find_by!(role: 'instructor'))
     @test_case = TestCase.create!(assignment: @assignment, type: type, name: "#{type}_test")
   end
 
