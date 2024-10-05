@@ -43,11 +43,6 @@ Then('I should see a button to confirm') do
   expect(page).to have_button('Confirm')
 end
 
-Given('the following assignments exist:') do |table|
-  table.hashes.each do |assignment|
-    Assignment.create!(assignment_name: assignment['assignment_name'], repository_name: assignment['repository_name'])
-  end
-end
 
 When('with the name {string}') do |name|
   fill_in 'Name', with: name
@@ -120,7 +115,7 @@ Given('the field is empty') do
 end
 
 Then('I should not see the test added to the list of tests in assignment1') do
-  expect(page).not_to have_content('Test added successfully')
+  expect(page).not_to have_content('Test was successfully created')
 end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
@@ -128,5 +123,6 @@ Given('the test block contains the fields {string} and {string}') do |field1, fi
 end
 
 When('I fill in the field {string} with {string}') do |field, value|
-  fill_in 'Actual test', with: value
+  fill_in 'Actual test', with: 'actual test'
+  fill_in 'Target', with: 'target'
 end

@@ -23,11 +23,7 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Given('I am logged in as a(n) {string}') do |string|
-    #pending # Write code here that turns the phrase above into concrete actions
-    #skip_this_scenario
-    #do nothing to pass the test
-  end
+
 
   When('I click on {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
@@ -37,19 +33,7 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  When('I click {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should see that {string} has {string} access to the remote {string} repository') do |string, string2, string3|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   When('I select the assignments {string} and {string}') do |string, string2|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  When('I click on bob') do
     pending # Write code here that turns the phrase above into concrete actions
   end
 
@@ -108,9 +92,7 @@
 
 
 
-  Given('I have created an assignment with a test case of type {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+
 
   When('I delete the test case') do
     pending # Write code here that turns the phrase above into concrete actions
@@ -124,21 +106,13 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Given('there is a test case of type {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
-  Given('the test case has name {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
-  When('I click on that test case') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
-  Then('I should see the correct details of the test case') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+
+
+
+
 
   When('I click the {string} button for {string}') do |string, string2|
     pending # Write code here that turns the phrase above into concrete actions
@@ -273,14 +247,6 @@
   end
 
   Then('the .tests file should contain the remaining {string} tests') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Given('I am am logged in with the {string} role') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Given('I am am logged in as a TA') do
     pending # Write code here that turns the phrase above into concrete actions
   end
 

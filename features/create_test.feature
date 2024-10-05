@@ -189,7 +189,7 @@ Feature: Create a new test case
     Scenario: Invalid script test block
       Given the test block has the field "Script Path"
       And the field is empty
-      When I click the "Create test" button
+      When I click the "Create Test" button
       Then I should see an error message saying "Actual test can't be blank"
       And I should not see the test added to the list of tests in assignment1
 
@@ -209,9 +209,9 @@ Feature: Create a new test case
       Given the test block contains the fields "Main Path" and "Source Path(s)"
       When I fill in the field "Main Path" with "<main>"
       And I fill in the field "Source Path(s)" with "<source>"
-      And I click the "Create test" button
+      And I click the "Create Test" button
       Then I should see the test added to the list of tests in assignment1
-      And I should see a message saying "Test added successfully"
+      And I should see a message saying "Test was successfully created"
 
       Examples:
         | main     | source                  |
@@ -223,7 +223,7 @@ Feature: Create a new test case
       Given the test block contains the fields "Main Path" and "Source Path(s)"
       When I fill in the field "Main Path" with "<main>"
       And I fill in the field "Source Path(s)" with "<source>"
-      And I click the "Save" button
+      And I click the "Create Test" button
       Then I should not see the test added to the list of tests in assignment1
       And I should see an error message saying "Invalid test block: missing main"
 
@@ -248,15 +248,15 @@ Feature: Create a new test case
       Given the test block contains the fields "Input Path" and "Output Path"
       When I fill in the field "Input Path" with "input.txt"
       And I fill in the field "Output Path" with "output.txt"
-      And I click the "Save" button
+      And I click the "Create Test" button
       Then I should see the test added to the list of tests in assignment1
-      And I should see a message saying "Test added successfully"
+      And I should see a message saying "Test was successfully created"
 
     Scenario Outline: Invalid I/O test block
       Given the test block contains the fields "Input" and "Output"
       When I fill in the field "Input" with "<input>"
       And I fill in the field "Output" with "<output>"
-      And I click the "Save" button
+      And I click the "Create Test" button
       Then I should not see the test added to the list of tests in assignment1
       And I should see an error message saying "Invalid test block: missing input"
 

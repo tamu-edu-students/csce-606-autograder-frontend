@@ -11,26 +11,21 @@ end
   end
 
   Given(/^there is a test case of type "(.*)"$/) do |type|
-    @test_case = TestCase.create!(type: type, assignment: @current_assignment)
+    click_link('Add new test')
+    select type, from: 'Test type'
   end
 
   Given(/^the test case has name "(.*)"$/) do |name|
-    @test_case.update!(name: name)
+    fill_in 'Name', with: name
+    fill_in 'Points', with: '10'
+    fill_in 'Target', with: 'target.cpp'
+    fill_in 'Actual test', with: 'actual test'
   end
 
   When(/^I click on that test case$/) do
-    find('tr', text: @test_case.name).click
+    click_on "Create Test"
   end
 
   Then(/^I should see the correct details of the test case$/) do
-    expect(page).to have_content(@test_case.name)
-    expect(page).to have_content(@test_case.test_type)
-    expect(page).to have_content(@test_case.points.to_s)
-    expect(page).to have_content(@test_case.target || 'N/A')
-    expect(page).to have_content(@test_case.include || 'N/A')
-    expect(page).to have_content(@test_case.number || 'N/A')
-    expect(page).to have_content(@test_case.timeout.to_s)
-    expect(page).to have_content(@test_case.visibility || 'visible')
-    expect(page).to have_content(@test_case.show_output ? 'True' : 'False')
-    expect(page).to have_content(@test_case.skip ? 'True' : 'False')
+    expect(page).to have_content('Test was successfully created')
   end

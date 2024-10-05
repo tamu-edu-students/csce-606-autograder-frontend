@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 ruby "3.3.2"
+
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
@@ -63,6 +64,7 @@ group :development, :test do
   gem "rubycritic", require: false
 
   gem "factory_bot_rails"
+  gem "rails-controller-testing"
   gem "dotenv-rails"
 end
 
@@ -78,7 +80,6 @@ group :test do
   gem "cucumber-rails", require: false
   gem "database_cleaner"
   gem "rack_session_access"
-  gem "rails-controller-testing"
   gem "rspec-rails"
   gem "selenium-webdriver"
   gem "simplecov", require: false
