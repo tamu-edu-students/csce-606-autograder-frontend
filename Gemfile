@@ -9,7 +9,10 @@ gem "omniauth-rails_csrf_protection"
 gem "faraday-retry"
 gem "faraday-multipart"
 
+
+gem "git"
 gem "dotenv-rails", groups: [ :development, :test, :production ]
+
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
