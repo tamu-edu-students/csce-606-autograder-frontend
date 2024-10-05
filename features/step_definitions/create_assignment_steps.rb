@@ -1,66 +1,95 @@
-Given('I am logged in as an {string}') do |role|
-  # Ensure the role is either 'instructor' or 'TA'
-  unless ['instructor', 'TA'].include?(role)
-    raise ArgumentError, "Role must be either 'instructor' or 'TA'."
-  end
+require 'webmock/cucumber'
+require 'rspec/mocks'
 
-  # Find or create a user with the specified role
-  user = User.find_or_create_by!(role: role) do |user|
-    user.email = "#{role}@example.com"  # Ensure unique email for different roles
-    user.password = 'password123'       # Assign a default password
-  end
+World(RSpec::Mocks::ExampleMethods)
 
-  # Log in the user using your login helper method
-  login_as(user)
+Before do
+  RSpec::Mocks.setup
+  WebMock.enable!
+  allow(ENV).to receive(:[]).and_return(nil)
+  allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
+  allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return('philipritchey/autograded-assignment-template')
+  allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return('AutograderFrontend')
+  allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
 end
-  
-  
-  When('I fill in the repository name with {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+
+After do
+  RSpec::Mocks.teardown
+  WebMock.disable!
+  FileUtils.rm_rf('assignment-repos')
+end
+
+Given('I am logged in as a(n) {string} named {string}') do |role, name|
+  user = User.create!(name: "#{name}", email: "#{name}@example.com", role: role)
+
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+  visit '/assignments'
+end
+
+When('I click the {string} button') do |button|
+  click_on button
+end
+
+When('I fill in {string} with {string}') do |field, value|
+  if field == 'Repository name' && page.has_current_path?('/assignments/new')
+
+    allow(Git).to receive(:clone) do |url, path|
+      FileUtils.mkdir_p(path)
+    end
+
+    client = double('OctokitClient')
+    allow(Octokit::Client).to receive(:new).and_return(client)
+    allow(client).to receive(:add_deploy_key).and_return(true)
+    allow(client).to receive(:create_repo_from_template).and_return(
+      { html_url: "https://https://github.com/AutograderFrontend/#{value}.git" })
+
   end
-  
-  When('I fill in the description with {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+  fill_in field, with: value
+end
+
+Then('I should see the {string} assignment') do |assignment_name|
+  expect(page).to have_content(assignment_name)
+end
+
+Then('I should see the {string} repository in the GitHub organization') do |repository_name|
+end
+
+Then('I should see a local clone of the {string} repository') do |repository_name|
+  expect(Dir.exist?("#{ENV["ASSIGNMENTS_BASE_PATH"]}/#{repository_name}")).to be true
+end
+
+Then('I should see {string} in {string}') do |deploy_key, base_path|
+  # wait for deploy keys to be created
+  expect(File.exist?(File.join(base_path, deploy_key))).to be true
+end
+
+Given('I create an assignment with the name {string} and the repository {string}') do |assignment_name, repository_name|
+  steps %(
+    Given I am logged in as an "instructor" named "alice"
+    When I click the "Create Assignment" button
+    And I fill in "Assignment name" with "#{assignment_name}"
+    And I fill in "Repository name" with "#{repository_name}"
+    And I click the "Submit" button
+  )
+end
+
+Given('I am logged in as a {string}') do |string|
+  user = User.create!(name: "#{string}_user", email: "#{string}@example.com", role: string)
+
+  allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+end
+
+Then('I should not see the {string} button') do |string|
+  expect(page).not_to have_button(string)
+end
+
+When('I try to visit the {string} page') do |string|
+  path = case string
+  when 'Course Dashboard' then assignments_path
+  when 'Create Assignment' then new_assignment_path
+  when 'Login' then root_path
+  else
+    raise "Unknown page: #{string}"
   end
-  
-  Then('I should see the new assignment in the course assignments list') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  Then('I should see the {string} repository in the CSCE {int} GitHub organization') do |string, int|
-  # Then('I should see the {string} repository in the CSCE {float} GitHub organization') do |string, float|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  Then('I should see a local clone of the {string} repository') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  Then('I should see the {string} in {string} of the {string} repository') do |string, string2, string3|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  Then('I should see the deploy_key in {string} of the {string} repository') do |string, string2|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  Given('An assignment with the name {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  When('I try to create an assignment with the name {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  Then('I should see an error message') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  
-  Then('I should not see the {string} button') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-  
-  When('I try to visit the {string} page') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+  visit path
+end

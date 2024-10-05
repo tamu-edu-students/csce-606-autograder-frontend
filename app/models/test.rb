@@ -4,7 +4,7 @@ class Test < ApplicationRecord
 
 
   # Validations for required fields
-  validates :name, presence: { message: 'Missing attribute: name' }
+  validates :name, presence: { message: 'Missing attribute: name' },  uniqueness: { scope: :assignment_id, message: "Test name must be unique" }
   validates :points, presence: { message: 'Missing attribute: points'}, numericality: true
 
   VALID_TEST_TYPES = ['approved_includes', 'compile', 'coverage', 'i/o', 'memory_errors', 'performance', 'script', 'style', 'unit'  ]

@@ -14,7 +14,7 @@ Feature: Create a new test case
     And I go to eidt page
     When I change the test type to "compile"
     Then I should be prompted with a warning that the test block will be cleared
-
+    And I should see a "confirm" button
 
   Rule: All tests must have non-empty name, points, type, and if applicable, target attributes
     Background:
@@ -109,8 +109,8 @@ Feature: Create a new test case
         | assignment_name | repository_name   |
         | assignment1     | assignment-1-repo |
       And the assignment contains the following test:
-        | test_name | test_type | test_points | test_target | test_block     |
-        | test1     | unit      | 10          | target1.cpp | main: main.cpp |
+        | test_name | test_type | test_points | test_target | actual_test|
+        | test1     | unit      | 10          | target1.cpp | test.cpp   |
       And I am logged in as an "instructor"
       And I am on the "Assignment Management" page for "assignment1"
 
@@ -119,13 +119,16 @@ Feature: Create a new test case
       And with the name "test0"
       And with the points "10"
       And with the target "target1.cpp"
+      And I click the "Create Test" button
       Then I should not see an error message saying "Test name must be unique"
 
     Scenario: Test names are not unique
+      Given I am on the "Assignment Management" page for "assignment1"
       When I create a new test with type "unit"
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
+      And I click the "Create Test" button
       Then I should see an error message saying "Test name must be unique"
 
   Rule: Test blocks must prompt user for correct fields
@@ -142,6 +145,7 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
+      And I click the "Create Test" button
       Then the test block should contain the fields "<fields>"
 
       Examples:
@@ -168,12 +172,13 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
 
+
     Scenario Outline: Valid script test block
       Given the test block contains the field "Script Path"
       When I fill in the field with "<script>"
-      And I click the "Save" button
+      And I click the "Create Test" button
       Then I should see the test added to the list of tests in assignment1
-      And I should see a message saying "Test added successfully"
+      And I should see a message saying "Test was successfully created"
 
       Examples:
         | script        |
@@ -184,8 +189,8 @@ Feature: Create a new test case
     Scenario: Invalid script test block
       Given the test block has the field "Script Path"
       And the field is empty
-      When I click the "Save" button
-      Then I should see an error message saying "Invalid test block: missing script path"
+      When I click the "Create Test" button
+      Then I should see an error message saying "Actual test can't be blank"
       And I should not see the test added to the list of tests in assignment1
 
   Rule: Coverage test blocks must have a main path and may have source paths
@@ -204,7 +209,7 @@ Feature: Create a new test case
       Given the test block contains the fields "Main Path" and "Source Path(s)"
       When I fill in the field "Main Path" with "<main>"
       And I fill in the field "Source Path(s)" with "<source>"
-      And I click the "Save" button
+      And I click the "Create test" button
       Then I should see the test added to the list of tests in assignment1
       And I should see a message saying "Test added successfully"
 

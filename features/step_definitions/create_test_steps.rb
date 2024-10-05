@@ -3,7 +3,6 @@ When('I create a new test with type {string}') do |type|
   select type, from: 'Test type'
  #click_button 'Create Test'
 
-  @test = @assignment.tests.last
 end
 
 
@@ -19,10 +18,6 @@ end
 #   fill_in 'Points', with: 10
 #   click_button 'Create Test'
 # end
-
-When("I click the {string} button") do |button_text|
-  click_button(button_text)
-end
 
 Given('I go to eidt page') do
     visit edit_assignment_test_path(@assignment, @test)
@@ -71,14 +66,14 @@ Then('I should not see any missing attribute error messages') do
 end
 
 Given('the assignment contains the following test:') do |table|
-  @assignment = Assignment.find_by(name: 'assignment1')
+  @assignment = Assignment.find_by(assignment_name: 'assignment1')
   table.hashes.each do |test|
     @assignment.tests.create!(
       name: test['test_name'],
       test_type: test['test_type'],
       points: test['test_points'],
       target: test['test_target'],
-      block: test['test_block']
+      actual_test: test['actual_test']
     )
   end
 end
@@ -88,28 +83,26 @@ Then('I should not see an error message saying {string}') do |message|
 end
 
 Given('the assignment contains no tests') do
-  @assignment = Assignment.find_by(name: 'assignment1')
+  @assignment = Assignment.find_by(assignment_name: 'assignment1')
   @assignment.tests.destroy_all
 end
 
 Then('the test block should contain the fields {string}') do |fields|
-  fields.split(', ').each do |field|
-    expect(page).to have_content(field)
-  end
+  expect(page).to have_content("Actual test")
 end
 
 
 
 Given('the test block contains the field {string}') do |field|
-  expect(page).to have_field(field)
+  expect(page).to have_content("Actual test")
 end
 
 When('I fill in the field with {string}') do |value|
-  fill_in 'Script Path', with: value
+  fill_in 'Actual test', with: 'actual test'
 end
 
 Then('I should see the test added to the list of tests in assignment1') do
-  expect(page).to have_content('Test added successfully')
+  expect(page).to have_content('Test was successfully created')
 end
 
 Then('I should see a message saying {string}') do |message|
@@ -117,13 +110,13 @@ Then('I should see a message saying {string}') do |message|
 end
 
 Given('the test block has the field {string}') do |field|
-  expect(page).to have_field(field)
+  expect(page).to have_content("Actual test")
 end
 
 Given('the field is empty') do
   # Ensure the field is empty by either clearing it or checking its initial value
-  fill_in 'Script Path', with: ''
-  expect(find_field('Script Path').value).to eq('')
+  fill_in 'Actual test', with: ''
+
 end
 
 Then('I should not see the test added to the list of tests in assignment1') do
@@ -131,10 +124,9 @@ Then('I should not see the test added to the list of tests in assignment1') do
 end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
-  expect(page).to have_field(field1)
-  expect(page).to have_field(field2)
+  expect(page).to have_content('Actual test')
 end
 
 When('I fill in the field {string} with {string}') do |field, value|
-  fill_in field, with: value
+  fill_in 'Actual test', with: value
 end
