@@ -189,7 +189,7 @@ Feature: Create a new test case
     Scenario: Invalid script test block
       Given the test block has the field "Script Path"
       And the field is empty
-      When I click the "Create Test" button
+      When I click the "Create test" button
       Then I should see an error message saying "Actual test can't be blank"
       And I should not see the test added to the list of tests in assignment1
 
