@@ -145,28 +145,26 @@ RSpec.describe Assignment, type: :model do
   end
 
   describe 'clone_repo_to_local' do
-    let(:assignment_name) { 'Test Assignment' }
-    let(:repository_name) { 'test-repository' }
-    let(:organization) {'AutograderFrontend'}
+    assignment_name = 'Test Assignment'
+    repository_name = 'test-repository'
     
     before do
-      allow(ENV).to receive(:[]).and_return(nil)
-      allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
-      allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
-
       allow(Git).to receive(:clone)
     end
     context 'when Git clone is successful' do
       it 'clones the repository without errors' do
+        puts "assignment_name: #{assignment_name}"
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
-        puts assignment.local_repository_path
+        puts "assignment.local_repository_path: #{assignment.local_repository_path}"
+        puts "assignment.repository_url: #{assignment.repository_url}"
+        puts "assignment.repository_name: #{assignment.repository_name}"
         expect(Git).to receive(:clone).with(assignment.repository_url, assignment.local_repository_path).and_return(true)    
         assignment.send(:clone_repo_to_local)
       end
     end
     context 'when Git clone raises an error' do
       before do
-        allow(Git).to receive(:clone).and_raise(Git::GitExecuteError.new("Failed to clone"))
+        allow(Git).to receive(:clone).and_raise(Git::Error.new("Failed to clone"))
       end
       it 'rescues the error and prints the error message' do
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
@@ -176,57 +174,37 @@ RSpec.describe Assignment, type: :model do
   end
 
   describe 'remote_repo_created?' do
-    let(:assignment_name) { 'Test Assignment' }
-    let(:repository_name) {'test-repository'}
-    let(:organization) {'AutograderFrontend'}
-    
-    before do
-      allow(ENV).to receive(:[]).and_return(nil)
-      allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
-      allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
-    end
+    assignment_name = 'Test Assignment'
+    repository_name = 'test-repository'
+    organization = 'AutograderFrontend'
+
     context 'if the repository check API call is successful' do
       it 'returns true if a repo exists on GitHub' do
-        stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}")
-          .with(
-            headers: {
-              'Accept'=>'application/vnd.github.v3+json',
-              'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization'=>'token test_token',
-              'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-            }
-          )
-        .to_return(status: 200, body: '', headers: {})
+        client = instance_double(Octokit::Client)
+        allow(Octokit::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:repository?).and_return(true)
 
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
         expect(assignment.send(:remote_repo_created?)).to be true
       end
 
       it 'returns false if the repo does not exist on GitHub' do
-        stub_request(:get, "https://api.github.com/repos/#{organization}/#{repository_name}")
-          .with(
-            headers: {
-              'Accept'=>'application/vnd.github.v3+json',
-              'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization'=>'token test_token',
-              'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-            }
-          )
-          .to_return(status: 404, body: '', headers: {})
+        client = instance_double(Octokit::Client)
+        allow(Octokit::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:repository?).and_return(false)
 
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
         expect(assignment.send(:remote_repo_created?)).to be false
       end
     end
-    context 'if the repository check API call is unsuccessful' do
-      let(:client) { instance_double(Octokit::Client) }
 
-      before do
-        allow(client).to receive(:repository?).and_raise(Octokit::Error.new({ status: 422, body: { message: 'GitHub API Error' }, headers: {} }))
-      end
+    context 'if the repository check API call is unsuccessful' do
       it 'raises a GitHub API Error' do
+        client = instance_double(Octokit::Client)
+        allow(Octokit::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:repository?).and_raise(Octokit::Error.new({ status: 422, body: { message: 'GitHub API Error' }, headers: {} }))
         assignment = Assignment.new(assignment_name: assignment_name, repository_name: repository_name)
-        expect(assignment.send(:remote_repo_created?)).to output(/Failed to check whether remote repo has been created: GitHub API error/)
+        expect { assignment.send(:remote_repo_created?) }.to output(/Failed to check whether remote repo has been created: GitHub API Error/).to_stdout
       end
     end
   end
@@ -240,6 +218,22 @@ RSpec.describe Assignment, type: :model do
 
       allow(assignment).to receive(:create_repo_from_template)
       allow(assignment).to receive(:clone_repo_to_local)
+
+      stub_request(:post, "https://api.github.com/repos/AutograderFrontend/test-repository/keys")
+        .with(
+          body: "{\"read_only\":true,\"title\":\"Gradescope Deploy Key\",\"key\":\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGh73qHRllHRCY+yNjmBAkHEnZajBpGGDaAdhf6sNzUp gradescope\\n\"}",
+          headers: {
+            'Accept'=>'application/vnd.github.v3+json',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization'=>'token test_token',
+            'Content-Type'=>'application/json',
+            'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+          }
+        ).to_return(status: 200, body: "", headers: {})
+
+        client = double('OctokitClient')
+        allow(Octokit::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:add_deploy_key).and_return(true)
 
       assignment.send(:assignment_repo_init)
 

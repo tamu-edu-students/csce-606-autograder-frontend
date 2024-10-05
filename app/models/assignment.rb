@@ -5,10 +5,13 @@ class Assignment < ActiveRecord::Base
   after_validation :assignment_repo_init, on: :create
 
   def repository_identifier
+    
     File.join(ENV["GITHUB_COURSE_ORGANIZATION"], self.repository_name)
   end
 
   def local_repository_path
+    
+    
     File.join(ENV["ASSIGNMENTS_BASE_PATH"], self.repository_name)
   end
 
@@ -23,8 +26,6 @@ class Assignment < ActiveRecord::Base
     # Step 1: Generate SSH key
     begin
       stdout, stderr, status = Open3.capture3("ssh-keygen", "-t", "ed25519", "-C", "gradescope", "-f", key_path, "-N", "")
-      
-      puts "Path: #{key_path}"
 
       if status.success?
         puts "Key generated successfully."

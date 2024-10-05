@@ -42,8 +42,18 @@ RSpec.describe "/assignments", type: :request do
 
   describe "GET /new" do
     it "renders a successful response" do
+      # mock session current_user
+      user = User.create!(name: "Test User", email: "test@test.net", role: "instructor")
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       get new_assignment_url
       expect(response).to be_successful
+    end
+
+    it "redirects to root path if user is not an instructor" do
+      user = User.create!(name: "Test User", email: "test@test.net", role: "student")
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+      get new_assignment_url
+      expect(response).to redirect_to(root_path)
     end
   end
 
