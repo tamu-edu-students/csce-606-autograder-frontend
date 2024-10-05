@@ -40,10 +40,10 @@ Feature: Regenerate .tests file on test creation/update/deletion
     And the .tests file should contain both properly formatted tests
 
     Examples:
-      | type      | name  | points | target   | test_code                                               |
-      | unit_test | test2 | 1      | code.cpp |                                                         |
-      | unit_test | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
-      | unit_test | test4 | 1      | code.cpp | EXPECT_TRUE(is_even(64));                               |
+      | type | name  | points | target   | test_code                                               |
+      | unit | test2 | 1      | code.cpp |                                                         |
+      | unit | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
+      | unit | test4 | 1      | code.cpp | EXPECT_TRUE(is_even(64));                               |
 
   Scenario Outline: Delete a unit test
     Given the following assignments exist:
@@ -54,7 +54,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
     And I am on the "Assignment Management" page for "assignment1"
     When I delete the "<position>" test
     Then I should see a success message
-    And the .tests file should contain the remaining "<remaining_tests>" tests
+    And the .tests file should contain the remaining "remaining_tests" tests
 
     Examples:
       | number_of_tests | position | name  | remaining_tests |

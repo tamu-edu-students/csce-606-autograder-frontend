@@ -30,7 +30,7 @@ class Assignment < ActiveRecord::Base
     #{format_optional_attributes(test)}
     */
     <test>
-    #{test.body}
+    #{test.actual_test}
     </test>
     TEST_SPEC
 

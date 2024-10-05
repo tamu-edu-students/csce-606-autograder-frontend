@@ -305,10 +305,6 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Then('the .tests file should contain the properly formatted test') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
   Given('the assignment contains one test') do
     pending # Write code here that turns the phrase above into concrete actions
   end
@@ -325,9 +321,7 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Then('the .tests file should contain the remaining {string} tests') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+  
 
   Given('I am am logged in with the {string} role') do |string|
     pending # Write code here that turns the phrase above into concrete actions
