@@ -107,7 +107,7 @@ RSpec.describe Assignment, type: :model do
 
       stub_request(:post, "https://api.github.com/repos/philipritchey/autograded-assignment-template/generate")
       .with(
-        body: { owner: organization, name: "#{organization}/#{repository_name}", private: true }.to_json,
+        body: { owner: organization, name: "#{repository_name}", private: true }.to_json,
           headers: {
           'Accept'=>'application/vnd.github.v3+json',
           'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
