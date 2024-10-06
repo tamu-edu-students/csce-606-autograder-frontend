@@ -52,7 +52,7 @@ RSpec.describe 'Tests Routes', type: :request do
       expect(response).to have_http_status(:see_other) # Expect 303 status after deletion
     end
   end
-  
+
 
   describe 'GET /assignments/:id/create_and_download_zip' do
     it 'routes to assignments#create_and_download_zip' do

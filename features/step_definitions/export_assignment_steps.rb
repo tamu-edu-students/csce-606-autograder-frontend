@@ -13,6 +13,6 @@ Given(/^I am logged in as an organization member$/) do
 
     # The new zip file name based on the assignment name
     zip_filename = "#{@assignment.assignment_name}.zip"
-        
+
     expect(page).to have_content("#{zip_filename} downloaded successfully")
   end

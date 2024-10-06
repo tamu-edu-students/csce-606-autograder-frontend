@@ -2,11 +2,11 @@ Given(/^I am logged in as a (instructor|TA)$/) do |role|
   user = User.find_or_create_by!(role: role)
   login_as(user)
 end
-  
+
   Given(/^I am on the "Assignment Management" page for "(.*)"$/) do |assignment_name|
     @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name)
     visit assignment_path(@assignment)
-  
+
     expect(page).to have_content(@assignment.assignment_name)
   end
 

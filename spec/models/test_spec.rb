@@ -65,7 +65,7 @@ RSpec.describe Test, type: :model do
     end
 
     it 'is valid without a target for compile, memory_errors, script, or style test types' do
-      ['compile', 'memory_errors', 'script', 'style'].each do |type|
+      [ 'compile', 'memory_errors', 'script', 'style' ].each do |type|
         valid_test.test_type = type
         valid_test.target = nil
         expect(valid_test).to be_valid
@@ -97,4 +97,3 @@ RSpec.describe Test, type: :model do
     end
   end
 end
-

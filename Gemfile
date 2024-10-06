@@ -89,7 +89,7 @@ group :test do
   gem "selenium-webdriver"
   gem "simplecov", require: false
   gem "ZenTest"
-  gem 'webmock'
+  gem "webmock"
 end
 
 group :production do

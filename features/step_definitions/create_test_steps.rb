@@ -4,7 +4,7 @@ When('I create a new test with type {string}') do |type|
   if type.nil? || type.empty?
     # Simulate error for missing type
     page.find('body').native.inner_html += "<p class='error'>Missing attribute: type</p>"
-  elsif page.has_select?('Test type', with_options: [type])
+  elsif page.has_select?('Test type', with_options: [ type ])
     select type, from: 'Test type'
   else
     # Simulate error for invalid test type
@@ -42,7 +42,6 @@ When('I change the test type to {string}') do |new_type|
   fill_in 'Test type', with: new_type
 
   click_button 'Update Test'
-
 end
 
 Then('I should be prompted with a warning that the test block will be cleared') do
@@ -121,7 +120,6 @@ end
 Given('the field is empty') do
   # Ensure the field is empty by either clearing it or checking its initial value
   fill_in 'Actual test', with: ''
-
 end
 
 Then('I should not see the test added to the list of tests in assignment1') do

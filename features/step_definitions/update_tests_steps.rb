@@ -35,7 +35,7 @@ Given(/^I am logged in as an instructor$/) do
   end
 
   When('I delete the test case') do
-    visit  assignment_path(@assignment, test_id: @test_case.id)
+    visit assignment_path(@assignment, test_id: @test_case.id)
 
     click_button 'Destroy this test'
   end
@@ -53,9 +53,8 @@ Given(/^I am logged in as an instructor$/) do
   end
 
   When(/^I update the test case with invalid input$/) do
-
      # Navigate to the assignment management page (the show page with the form)
-     visit  assignment_path(@assignment, test_id: @test_case.id)
+     visit assignment_path(@assignment, test_id: @test_case.id)
 
      # Find and edit the test
      within('#details') do
@@ -63,7 +62,7 @@ Given(/^I am logged in as an instructor$/) do
        fill_in 'Points', with: -5
        click_button 'Update Test'  # Update button in the form
      end
- 
+
      @test_case.reload  # Reload the test case to reflect the updated values
   end
 

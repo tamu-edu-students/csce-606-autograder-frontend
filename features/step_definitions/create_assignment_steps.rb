@@ -1,9 +1,9 @@
   Given('I am logged in as an {string}') do |string|
-    #pending # Write code here that turns the phrase above into concrete actions
+    # pending # Write code here that turns the phrase above into concrete actions
   end
 
   When('I click the {string} button') do |string|
-    #pending # Write code here that turns the phrase above into concrete actions
+    # pending # Write code here that turns the phrase above into concrete actions
     click_on string
   end
 

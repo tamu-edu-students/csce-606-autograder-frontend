@@ -1,6 +1,6 @@
 class TestsController < ApplicationController
   before_action :set_assignment
-  before_action :set_test, only: [:show, :edit, :update, :destroy]
+  before_action :set_test, only: [ :show, :edit, :update, :destroy ]
 
 
   # GET /tests or /tests.json

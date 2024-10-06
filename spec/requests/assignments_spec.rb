@@ -22,7 +22,7 @@ RSpec.describe "AssignmentsController", type: :request do
 
       it "displays a success message" do
         get create_and_download_zip_assignment_path(assignment)
-        
+
         # Check for a 200 OK response (since `send_file` typically results in a 200 OK)
         expect(response).to have_http_status(:ok)
 

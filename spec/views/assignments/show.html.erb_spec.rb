@@ -6,7 +6,7 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   before do
     assign(:assignment, assignment)
-    assign(:tests, [test_case])
+    assign(:tests, [ test_case ])
     assign(:test, test_case)  # To simulate form editing a test
   end
 
@@ -58,4 +58,3 @@ RSpec.describe "assignments/show.html.erb", type: :view do
     expect(rendered).to have_link('Back to Assignment', href: assignments_path)
   end
 end
-
