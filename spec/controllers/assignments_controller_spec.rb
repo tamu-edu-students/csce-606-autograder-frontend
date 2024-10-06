@@ -4,14 +4,14 @@ RSpec.describe AssignmentsController, type: :controller do
   let(:valid_attributes) do
     {
       assignment_name: 'Test Assignment',
-      repository_name: 'test-repository',
+      repository_name: 'test-repository'
     }
   end
 
   let(:invalid_attributes) do
     {
       assignment_name: nil,
-      repository_name: nil,
+      repository_name: nil
     }
   end
 
@@ -101,7 +101,7 @@ RSpec.describe AssignmentsController, type: :controller do
         allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: auth_token })
         allow(User).to receive(:find).with(user.id).and_return(user)
         allow_any_instance_of(AssignmentsController).to receive(:update_remote).and_return(true)
-      end 
+      end
       it 'updates the requested assignment' do
         put :update, params: { id: assignment.to_param, assignment: new_attributes }
         assignment.reload
