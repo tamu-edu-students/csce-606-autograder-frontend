@@ -74,35 +74,35 @@ class AssignmentsController < ApplicationController
 
   # Define the local repository path
   def local_repository_path
-    "/Users/walkerjames/Autograded_frontend_new/test_app" 
+    "/Users/walkerjames/Autograded_frontend_new/test_app"
   end
 
   def create_and_download_zip
     # Find the assignment
     assignment = Assignment.find(params[:id])
-  
+
     # Use self.local_repository_path instead of hardcoded path
     git_folder = self.local_repository_path
-  
+
     # Use Dir.chdir to change directory and run make
     Dir.chdir(self.local_repository_path) do
       system("make")
     end
-  
+
     # The original zip file created by the make command
     original_zip_file = File.join(self.local_repository_path, "autograder.zip")
-  
+
     # The new zip file name based on the assignment name
     new_zip_filename = "#{assignment.assignment_name}.zip"
-  
+
     flash[:notice] = "#{new_zip_filename} downloaded successfully"
     # Rename the autograder.zip to assignment_name.zip
     renamed_zip_path = File.join(self.local_repository_path, new_zip_filename)
-  
+
     if File.exist?(original_zip_file)
       File.rename(original_zip_file, renamed_zip_path)
     end
-  
+
     # Check if the renamed ZIP file exists and send it as a download
     if File.exist?(renamed_zip_path)
       send_file renamed_zip_path, type: "application/zip", disposition: "attachment", filename: new_zip_filename
@@ -111,7 +111,7 @@ class AssignmentsController < ApplicationController
       redirect_to assignment_path(params[:id])
     end
   end
-  
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
