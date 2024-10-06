@@ -4,7 +4,6 @@ require 'open3'
 require 'octokit'
 
 RSpec.describe Assignment, type: :model do
-  let(:assignment) { Assignment.new(repository_name: 'test-repo', assignment_name: 'Test Assignment') }
   let(:user) { instance_double('User', name: 'testuser') }
   let(:assignment) { Assignment.new(repository_name: 'test_repo') }
   let(:local_repo_path) { File.join(ENV['ASSIGNMENTS_BASE_PATH'], assignment.repository_name) }
