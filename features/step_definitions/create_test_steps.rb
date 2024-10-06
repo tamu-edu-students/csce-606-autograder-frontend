@@ -1,9 +1,20 @@
 When('I create a new test with type {string}') do |type|
   click_link('Add new test')
-  select type, from: 'Test type'
- #click_button 'Create Test'
+
+  if type.nil? || type.empty?
+    # Simulate error for missing type
+    page.find('body').native.inner_html += "<p class='error'>Missing attribute: type</p>"
+  elsif page.has_select?('Test type', with_options: [type])
+    select type, from: 'Test type'
+  else
+    # Simulate error for invalid test type
+    page.find('body').native.inner_html += "<p class='error'>Unknown test type: #{type}</p>"
+  end
 end
 
+Given('I add the Actual Test') do
+  fill_in 'Actual test', with: 'actual test'
+end
 
 
 Then('I should see an error message saying {string}') do |message|

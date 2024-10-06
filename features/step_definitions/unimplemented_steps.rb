@@ -49,9 +49,7 @@
 
 
 
-  Given('there is text in the test block') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+
 
   When('I change the test type to {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions
@@ -65,9 +63,7 @@
 
 
 
-  Then('I should not see any missing attribute error messages') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+
 
 
 
@@ -94,17 +90,11 @@
 
 
 
-  When('I delete the test case') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
   Then('I should be prompted to confirm the deletion') do
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  Then('I should not see the test case in the assignment') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
 
 
@@ -114,13 +104,10 @@
 
 
 
-  When('I click the {string} button for {string}') do |string, string2|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
-  Then('I should see {string} file in my downloads folder') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+
+
+
 
   When('I fill in {string} with {string}') do |string, string2|
     pending # Write code here that turns the phrase above into concrete actions
@@ -194,17 +181,11 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  When('I update the test case with valid input') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+ 
 
-  Then('I should see the updated test case in the assignment') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
 
-  When('I update the test case with invalid input') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+
+
 
   When('I add a new unit test called {string}') do |string|
     pending # Write code here that turns the phrase above into concrete actions

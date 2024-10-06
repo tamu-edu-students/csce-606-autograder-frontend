@@ -5,7 +5,18 @@ Feature: Delete a test case
 
     Scenario: Delete a test case
         Given I am logged in as an "instructor"
-        And I have created an assignment with a test case of type "<type>"
+        Given I am on the "Assignment Management" page for "assignment1"
+        And I have created a test case of type "<type>"
         When I delete the test case
-        Then I should be prompted to confirm the deletion
         And I should not see the test case in the assignment
+
+        Examples:
+            | type              |
+            | approved_includes |
+            | compile           |
+            | memory_errors     |
+            | coverage          |
+            | unit              |
+            | i/o               |
+            | performance       |
+            | script            |

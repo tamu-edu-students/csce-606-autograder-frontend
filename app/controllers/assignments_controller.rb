@@ -71,12 +71,14 @@ class AssignmentsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  
   def create_and_download_zip
     # Find the assignment
     assignment = Assignment.find(params[:id])
 
     # The WSL path where the make command should be executed
-    git_folder = '/home/banna/CoreGrader/testRepository'
+    git_folder = '/Users/walkerjames/Autograded_frontend_new/test_app'
 
     # Run the make command in the specified WSL directory
     system("cd #{git_folder} && make")
@@ -86,17 +88,19 @@ class AssignmentsController < ApplicationController
 
     # The new zip file name based on the assignment name
     zip_filename = "#{assignment.assignment_name}.zip"
+        
+
+    flash[:notice] = "#{zip_filename} downloaded successfully"
+    
     zip_file_path = File.join(git_folder, zip_filename)
 
     # Rename the autograder.zip to assignment_name.zip
     if File.exist?(original_zip_file)
       File.rename(original_zip_file, zip_file_path)
     end
-
     # Check if the renamed ZIP file exists and send it as a download
     if File.exist?(zip_file_path)
       send_file zip_file_path, type: 'application/zip', disposition: 'attachment', filename: zip_filename
-      flash[:notice] = "#{zip_filename} downloaded successfully"
     else
       flash[:alert] = "ZIP file not found. Please ensure the make command works correctly."
       redirect_to assignment_path(params[:id])

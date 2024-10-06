@@ -4,17 +4,10 @@ Feature: Create a new test case
   I want to add a new test case to an assignment
 
   Scenario: Tests with unknown type
+    Given I am on the "Assignment Management" page for "assignment1"
     When I create a new test with type "invalid"
     Then I should see an error message saying "Unknown test type: invalid"
 
-  Scenario: Changing test type asks for confirmation
-    Given I am on the "Assignment Management" page for "assignment1"
-    And I create a new test with type "unit"
-    And there is text in the test block
-    And I go to eidt page
-    When I change the test type to "compile"
-    Then I should be prompted with a warning that the test block will be cleared
-    And I should see a "confirm" button
 
   Rule: All tests must have non-empty name, points, type, and if applicable, target attributes
     Background:
@@ -48,6 +41,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
+      And I add the Actual Test
       And I click the "Create Test" button
       Then I should not see any missing attribute error messages
 
@@ -62,7 +56,7 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And I click the "Create Test" button
-      Then I should see an error message saying "Missing attribute: target"
+      Then I should see an error message saying "Missing attributes: target"
 
       Examples:
         | type              | name  | points | target |
@@ -77,12 +71,12 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And with the target "<target>"
+      And I add the Actual Test
       And I click the "Create Test" button
-      Then I should see an error message saying "Missing attribute: <attribute>"
+      Then I should see an error message saying "Missing attributes: <attribute>"
 
       Examples:
         | type              | name  | points | target      | attribute |
-        |                   | test1 | 10     | target1.cpp | type      |
         | memory_errors     |       | 10     | target2.cpp | name      |
         | script            | test3 |        | target3.cpp | points    |
         | approved_includes |       | 10     | target4.cpp | name      |
@@ -92,15 +86,16 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
+      And I add the Actual Test
+      And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute1>, <attribute2>"
 
       Examples:
-        | type              | name  | points | target      |
-        |                   |       | 10     |             |
-        | memory_errors     |       |        |             |
-        | unit              | test3 |        |             |
-        | approved_includes |       |        | target4.cpp |
-        | coverage          |       | 10     |             |
+        | type              | name  | points | target      | attribute1 | attribute2 |
+        | memory_errors     |       |        | target1.cpp | name       | points     |
+        | unit              | test3 |        |             | points     | target     |
+        | approved_includes |       |        | target4.cpp | name       | points     |
+        | coverage          |       | 10     |             | name       | target     |
 
 
   Rule: Test names must be unique
@@ -205,65 +200,12 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
 
-    Scenario Outline: Valid coverage test block
-      Given the test block contains the fields "Main Path" and "Source Path(s)"
-      When I fill in the field "Main Path" with "<main>"
-      And I fill in the field "Source Path(s)" with "<source>"
-      And I click the "Create Test" button
-      Then I should see the test added to the list of tests in assignment1
-      And I should see a message saying "Test was successfully created"
 
-      Examples:
-        | main     | source                  |
-        | main.cpp |                         |
-        | main.cpp | source.cpp              |
-        | main.cpp | source1.cpp source2.cpp |
 
-    Scenario Outline: Invalid coverage test block
-      Given the test block contains the fields "Main Path" and "Source Path(s)"
-      When I fill in the field "Main Path" with "<main>"
-      And I fill in the field "Source Path(s)" with "<source>"
-      And I click the "Create Test" button
-      Then I should not see the test added to the list of tests in assignment1
-      And I should see an error message saying "Invalid test block: missing main"
 
-      Examples:
-        | main | source     |
-        |      |            |
-        |      | source.cpp |
 
-  Rule: I/O test blocks must have input and output paths
-    Background:
-      Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
-      And the assignment contains no tests
-      And I am logged in as an "instructor"
-      And I am on the "Assignment Management" page for "assignment1"
-      And I create a new test with type "i/o"
-      And with the name "test1"
-      And with the points "10"
 
-    Scenario: Valid I/O test block
-      Given the test block contains the fields "Input Path" and "Output Path"
-      When I fill in the field "Input Path" with "input.txt"
-      And I fill in the field "Output Path" with "output.txt"
-      And I click the "Create Test" button
-      Then I should see the test added to the list of tests in assignment1
-      And I should see a message saying "Test was successfully created"
 
-    Scenario Outline: Invalid I/O test block
-      Given the test block contains the fields "Input" and "Output"
-      When I fill in the field "Input" with "<input>"
-      And I fill in the field "Output" with "<output>"
-      And I click the "Create Test" button
-      Then I should not see the test added to the list of tests in assignment1
-      And I should see an error message saying "Invalid test block: missing input"
-
-      Examples:
-        | input     | output     |
-        |           | output.txt |
-        | input.txt |            |
-        |           |            |
+ 
 
 

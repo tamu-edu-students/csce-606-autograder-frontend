@@ -31,9 +31,11 @@ class TestsController < ApplicationController
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
-        flash.now[:alert] = @test.errors.full_messages.to_sentence  # Store error messages in flash
-        logger.debug "Flash message: #{flash[:alert]}"
-        format.html { render :new, status: :unprocessable_entity }
+        # Collect error messages and merge them
+        error_messages = @test.errors.full_messages
+        combined_errors = merge_error_messages(error_messages)
+        flash[:alert] = combined_errors
+        format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
         format.json { render json: @test.errors, status: :unprocessable_entity }
       end
     end
@@ -50,16 +52,18 @@ class TestsController < ApplicationController
         format.html { redirect_to assignment_path(@assignment, @test), notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
-        flash.now[:alert] = @test.errors.full_messages.to_sentence  # Store error messages in flash
-        logger.debug "Flash message: #{flash[:alert]}"
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @test.errors, status: :unprocessable_entity }
+         # Collect error messages and merge them
+         error_messages = @test.errors.full_messages
+         combined_errors = merge_error_messages(error_messages)
+         flash[:alert] = combined_errors
+         format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
+         format.json { render json: @test.errors, status: :unprocessable_entity }
       end
     end
   end
 
 
-  # DELETE /tests/1 or /tests/1.json
+  # DELETE /assignments/:assignment_id/tests/:id
   def destroy
     @assignment = Assignment.find(params[:assignment_id])
     @test = @assignment.tests.find(params[:id])
@@ -72,6 +76,7 @@ class TestsController < ApplicationController
   end
 
 
+
   private
 
     def set_assignment
@@ -82,6 +87,36 @@ class TestsController < ApplicationController
       @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
       @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
     end
+
+  def merge_error_messages(errors)
+    # Separate "Missing attribute" errors and other errors
+    missing_attributes = []
+    other_errors = []
+
+    errors.each do |message|
+      # Extract the attribute name from the error message if it matches "Missing attribute: <attribute>"
+      if (match = message.match(/Missing attribute: (\w+)/))
+        missing_attributes << match[1]
+      else
+        other_errors << message
+      end
+    end
+
+  # Build the final error message
+  final_error_message = []
+
+  # If there are any missing attributes, add them to the final message
+  if missing_attributes.any?
+    final_error_message << "Missing attributes: #{missing_attributes.join(', ')}"
+  end
+
+  # Add any other errors to the final message
+  final_error_message.concat(other_errors)
+
+  # Return the joined error messages
+  final_error_message.join(", ")
+end
+
 
 
     # Only allow a list of trusted parameters through.

@@ -5,5 +5,6 @@ Feature: Export assignment
 
   Scenario: Export an assignment as an organization member
     Given I am logged in as an "organization member"
-    When I click the "Export Assignment" button for "csce-120-hw1"
+    Given I am on the "Assignment Management" page for "csce-120-hw1"
+    When I click the "Create and Download ZIP" button for "csce-120-hw1"
     Then I should see "csce-120-hw1.zip" file in my downloads folder
