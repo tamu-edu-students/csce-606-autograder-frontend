@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'git'
 
 RSpec.describe Assignment, type: :model do
-  let(:user) { instance_double('User', username: 'testuser') }
+  let(:user) { instance_double('User', name: 'testuser') }
   let(:assignment) { Assignment.new(repository_name: 'test_repo') }
   let(:local_repo_path) { File.join(ENV['ASSIGNMENTS_BASE_PATH'], assignment.repository_name) }
   let(:auth_token) { 'fake_auth_token' }
@@ -25,7 +25,7 @@ RSpec.describe Assignment, type: :model do
     allow(git).to receive(:add_remote)
 
     allow(git).to receive(:add).with(all: true)
-    allow(git).to receive(:commit).with("Changes made by #{user.username}")
+    allow(git).to receive(:commit).with("Changes made by #{user.name}")
     allow(git).to receive(:push).with('origin', 'main')
 
     # Stub the system call to set the remote URL
@@ -82,7 +82,7 @@ RSpec.describe Assignment, type: :model do
     it 'adds and commits changes to the local repository' do
       expect(Git).to receive(:open).with(local_repo_path).and_return(git)
       expect(git).to receive(:add).with(all: true)
-      expect(git).to receive(:commit).with("Changes made by #{user.username}")
+      expect(git).to receive(:commit).with("Changes made by #{user.name}")
 
       assignment.send(:commit_local_changes, local_repo_path, user)
     end
