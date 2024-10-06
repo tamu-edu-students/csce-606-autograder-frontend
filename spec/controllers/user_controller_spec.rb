@@ -18,7 +18,7 @@ RSpec.describe UsersController, type: :controller do
         end
 
         it 'assigns @assignments' do
-            assignment = Assignment.create!(repository_name: 'TestAssignment')
+            assignment = Assignment.create!(assignment_name: 'Test Assignment', repository_name: 'TestAssignment')
             get :show, params: { id: user.id }
             expect(assigns(:assignments)).to include(assignment)
         end

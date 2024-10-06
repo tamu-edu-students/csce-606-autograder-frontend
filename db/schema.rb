@@ -55,18 +55,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_05_210157) do
     t.string "role"
   end
 
-  create_table "users_assignments", id: false, force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "assignment_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["assignment_id"], name: "index_users_assignments_on_assignment_id"
-    t.index ["user_id"], name: "index_users_assignments_on_user_id"
-  end
-
   add_foreign_key "assignments_users", "assignments"
   add_foreign_key "assignments_users", "users"
   add_foreign_key "tests", "assignments"
-  add_foreign_key "users_assignments", "assignments"
-  add_foreign_key "users_assignments", "users"
 end
