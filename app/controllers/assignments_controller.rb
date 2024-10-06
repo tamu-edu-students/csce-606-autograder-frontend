@@ -42,12 +42,12 @@ class AssignmentsController < ApplicationController
   def update
     respond_to do |format|
       if @assignment.update(assignment_params)
-        format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }
-        format.json { render :show, status: :ok, location: @assignment }
         current_user = User.find(session[:user_id]) # Retrieve the current user
         auth_token = session[:github_token] # Get the GitHub auth token from the session
         update_remote(current_user, auth_token)
-        redirect_to @assignment, notice: "Assignment was successfully updated."
+
+        format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }
+        format.json { render :show, status: :ok, location: @assignment }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @assignment.errors, status: :unprocessable_entity }
