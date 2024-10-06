@@ -14,6 +14,6 @@ class Test < ApplicationRecord
   # Optional attributes with defaults
   attribute :show_output, :boolean, default: false
   attribute :skip, :boolean, default: false
-  attribute :timeout, :float, default: 10
+  attribute :timeout, :float
   attribute :visibility, :string, default: "visible"
 end
