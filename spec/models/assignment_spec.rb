@@ -93,7 +93,7 @@ RSpec.describe Assignment, type: :model do
       end
     end
   end
-  describe 'create_repo_from_template' do
+  describe '#create_repo_from_template' do
     let(:assignment_name) { 'Test Assignment' }
     let(:repository_name) { 'test-repository' }
     let(:organization) { 'AutograderFrontend' }
@@ -150,7 +150,7 @@ RSpec.describe Assignment, type: :model do
     end
   end
 
-  describe 'clone_repo_to_local' do
+  describe '#clone_repo_to_local' do
     assignment_name = 'Test Assignment'
     repository_name = 'test-repository'
 
@@ -179,7 +179,7 @@ RSpec.describe Assignment, type: :model do
     end
   end
 
-  describe 'remote_repo_created?' do
+  describe '#remote_repo_created?' do
     assignment_name = 'Test Assignment'
     repository_name = 'test-repository'
     organization = 'AutograderFrontend'
@@ -215,7 +215,7 @@ RSpec.describe Assignment, type: :model do
     end
   end
 
-  describe 'assignment_repo_init' do
+  describe '#assignment_repo_init' do
     it 'creates a new repo from a template and clones it locally' do
       assignment = Assignment.new(
         assignment_name: 'Test Assignment',

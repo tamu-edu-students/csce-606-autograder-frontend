@@ -23,6 +23,9 @@ class AssignmentsController < ApplicationController
   def create
     @assignment = Assignment.new(assignment_params)
 
+    github_token = session[:github_token]
+    @assignment.assignment_repo_init(github_token)
+
     respond_to do |format|
       if @assignment.save
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
@@ -32,8 +35,6 @@ class AssignmentsController < ApplicationController
         format.json { render json: @assignment.errors, status: :unprocessable_entity }
       end
     end
-    github_token = session[:github_token]
-    @assignment.assignment_repo_init(github_token)
   end
 
   # PATCH/PUT /assignments/1 or /assignments/1.json
