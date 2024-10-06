@@ -13,6 +13,8 @@
 
   <% if current_user %>
     <p>You are logged in as <%= current_user.name %>!</p>
+    <%= link_to "Course Dashboard", assignments_path, class: "button", data: { turbo: false } %>
+    <br>
     <%= link_to "Manage Users", users_path, class: "button", data: { turbo: false } %>
   <% else %>
     <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
