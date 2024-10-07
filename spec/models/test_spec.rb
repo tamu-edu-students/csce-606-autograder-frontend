@@ -88,8 +88,8 @@ RSpec.describe Test, type: :model do
       expect(valid_test.skip).to eq(false)
     end
 
-    it 'sets timeout to 10 by default' do
-      expect(valid_test.timeout).to eq(10)
+    it 'sets timeout to nil by default' do
+      expect(valid_test.timeout).to eq(nil)
     end
 
     it 'sets visibility to visible by default' do

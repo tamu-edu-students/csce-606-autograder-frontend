@@ -79,6 +79,8 @@ RSpec.describe "/assignments", type: :request do
       end
 
       it "displays an error message" do
+        # create assignments basepath using mkdir_p
+        FileUtils.mkdir_p(File.join(ENV["ASSIGNMENTS_BASE_PATH"], "assignment-1"))
         get create_and_download_zip_assignment_path(assignment)
 
         # Check for redirection to the assignment page with the error
@@ -87,19 +89,23 @@ RSpec.describe "/assignments", type: :request do
 
         # Check for the error message
         expect(flash[:alert]).to be_present
-        expect(flash[:alert]).to eq("ZIP file not found. Please ensure the make command works correctly.")
+        expect(flash[:alert]).to eq("Could not export assignment")
       end
     end
   end
 
   let!(:assignment) { Assignment.create!(assignment_name: "Assignment 1", repository_name: "assignment-1") }
-  let(:git_folder) { '/Users/walkerjames/Autograded_frontend_new/test_app' }
+  let(:git_folder) { File.join(ENV["ASSIGNMENTS_BASE_PATH"], assignment.repository_name) }
   let(:original_zip_file) { File.join(git_folder, 'autograder.zip') }
   let(:zip_file_path) { File.join(git_folder, "#{assignment.assignment_name}.zip") }
 
   before do
     # Stub the system call to avoid actually running it
     allow_any_instance_of(Object).to receive(:system).and_return(true)
+  end
+
+  after do
+    FileUtils.rm_rf(git_folder)
   end
 
   describe "GET /assignments/:id/create_and_download_zip" do
@@ -112,6 +118,8 @@ RSpec.describe "/assignments", type: :request do
       end
 
       it "displays a success message" do
+        FileUtils.mkdir_p(git_folder)
+        FileUtils.touch(File.join(git_folder, "#{assignment.assignment_name}.zip"))
         get create_and_download_zip_assignment_path(assignment)
 
         # Check for a 200 OK response (since `send_file` typically results in a 200 OK)
@@ -129,7 +137,13 @@ RSpec.describe "/assignments", type: :request do
         allow(File).to receive(:exist?).and_return(false)
       end
 
+      after do
+        FileUtils.rm_rf(ENV["ASSIGNMENTS_BASE_PATH"])
+      end
+
       it "displays an error message" do
+        # create assignments basepath using mkdir_p
+        FileUtils.mkdir_p(File.join(ENV["ASSIGNMENTS_BASE_PATH"], "assignment-1"))
         get create_and_download_zip_assignment_path(assignment)
 
         # Check for redirection to the assignment page with the error
@@ -138,7 +152,7 @@ RSpec.describe "/assignments", type: :request do
 
         # Check for the error message
         expect(flash[:alert]).to be_present
-        expect(flash[:alert]).to eq("ZIP file not found. Please ensure the make command works correctly.")
+        expect(flash[:alert]).to eq("Could not export assignment")
       end
     end
   end
