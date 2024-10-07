@@ -1,0 +1,10 @@
+<!-- app/views/users/index.html.erb -->
+<div class="container users-index">
+  <h1>Users</h1>
+
+  <ul>
+    <% @users.each do |user| %>
+      <li><%= link_to user.name, user_path(user) %></li>
+    <% end %>
+  </ul>
+</div>

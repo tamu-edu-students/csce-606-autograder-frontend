@@ -4,20 +4,25 @@ Feature: Log in to the application
   I want to authenticate with a third-party service and login to the system
 
   Background: Users in the GitHub organization
-    Given I am on the "Login" page
+    Given the following users are in the GitHub organization:
+      | name     | email              | role        |
+      | alice    | alice@example.com  | instructor  |
+      | bob      | bob@example.com    | ta          |
+      | dave     | dave@example.com   |             | 
+    And I am on the "Login" page
 
   Scenario: Instructor logs in with valid credentials
-    When I log in with GitHub as "alice" who has the role of "instructor"
+    When I log in with GitHub as "alice"
     Then I should see the "Course Dashboard" page
     And I should have the role "instructor"
 
   Scenario: TA logs in with valid credentials
-    When I log in with GitHub as "bob" who has the role of "ta"
+    When I log in with GitHub as "bob"
     Then I should see the "Course Dashboard" page
     And I should have the role "ta"
 
   Scenario: Non-organization user logs in with valid credentials
-    When I log in with GitHub as "dave" who has the role of ""
+    When I log in with GitHub as "dave"
     Then I should see the "Login" page
     And I should see the error message "You must be a member of CSCE-120 organization to access this application."
 

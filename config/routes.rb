@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   root "pages#home"
   get "pages/home"
 
+  resources :users, only: [ :index, :show ]
+  resources :assignments, only: [ :index ]
+  post "users/:id/update_assignments", to: "users#update_assignments", as: "update_user_assignments"
+
   resources :assignments do
     resources :tests
   end

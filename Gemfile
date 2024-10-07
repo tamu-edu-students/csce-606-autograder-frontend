@@ -1,12 +1,18 @@
 source "https://rubygems.org"
 
 ruby "3.3.2"
+
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
 
 gem "faraday-retry"
 gem "faraday-multipart"
+
+
+gem "git"
+gem "dotenv-rails", groups: [ :development, :test, :production ]
+
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
@@ -62,7 +68,7 @@ group :development, :test do
   gem "rubycritic", require: false
 
   gem "factory_bot_rails"
-  gem "dotenv-rails"
+  gem "rails-controller-testing"
 end
 
 group :development do
@@ -77,10 +83,10 @@ group :test do
   gem "cucumber-rails", require: false
   gem "database_cleaner"
   gem "rack_session_access"
-  gem "rails-controller-testing"
   gem "rspec-rails"
   gem "selenium-webdriver"
   gem "simplecov", require: false
+  gem "webmock", "~> 3.0"
   gem "ZenTest"
 end
 

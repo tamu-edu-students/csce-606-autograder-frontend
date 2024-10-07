@@ -3,11 +3,19 @@ require 'rspec/mocks'
 World(RSpec::Mocks::ExampleMethods)
 
 Before do
+  OmniAuth.config.test_mode = true
   RSpec::Mocks.setup
 end
 
 After do
   RSpec::Mocks.teardown
+end
+
+Given('the following users are in the GitHub organization:') do |users_table|
+    User.destroy_all
+    users_table.hashes.each do |user|
+      User.create user
+    end
 end
 
 Given('I am on the {string} page') do |page_name|
@@ -44,23 +52,22 @@ When('I attempt to log in with GitHub with invalid credentials') do
     visit '/auth/failure'
 end
 
-When('I log in with GitHub as {string} who has the role of {string}') do |string, string2|
-    auth_hash = OmniAuth::AuthHash.new({
-        provider: "github",
-        uid: "#{string}_uid",
-        info: {
-            name: string,
-            email: "#{string}@example.com",
-            nickname: string,
-            role: string2
-        },
-        credentials: {
-            token: "fake_access_token"
-        }
-        })
+When('I log in with GitHub as {string}') do |username|
+    user = User.find_by(name: username)
 
-    OmniAuth.config.mock_auth[:github] = auth_hash
-    user = User.find_or_create_by_auth_hash(auth_hash)
+    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({
+    provider: "github",
+    uid: "#{user.name}_uid",
+    info: {
+        name: user.name,
+        email: user.email,
+        nickname: user.name,
+        role: user.role
+    },
+    credentials: {
+        token: "fake_access_token"
+    }
+    })
 
     if user.role
         # Mock organization check

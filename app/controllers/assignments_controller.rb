@@ -23,6 +23,9 @@ class AssignmentsController < ApplicationController
   def create
     @assignment = Assignment.new(assignment_params)
 
+    github_token = session[:github_token]
+    @assignment.assignment_repo_init(github_token)
+
     respond_to do |format|
       if @assignment.save
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
@@ -51,13 +54,6 @@ class AssignmentsController < ApplicationController
       end
     end
   end
-
-  def update_remote(user, auth_token)
-    # 1. Update code tests file
-    # 2. Push changes to remote
-    @assignment.push_changes_to_github(user, auth_token)
-  end
-
 
   # DELETE /assignments/1 or /assignments/1.json
   def destroy

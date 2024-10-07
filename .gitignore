@@ -35,7 +35,7 @@
 /config/master.key
 
 # Ignore coverage reports
-/coverage/*
+/coverage
 
 # Ignore ASSIGNMENTS_BASE_PATH
 /assignment-repos

@@ -1,0 +1,3 @@
+GITHUB_TEMPLATE_REPO_URL: 'philipritchey/autograded-assignment-template'
+GITHUB_COURSE_ORGANIZATION: 'AutograderFrontend'
+ASSIGNMENTS_BASE_PATH: 'assignment-repos/'
