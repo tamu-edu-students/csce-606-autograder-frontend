@@ -33,8 +33,8 @@ class TestsController < ApplicationController
       if @test.save
         current_user, auth_token = current_user_and_token
         update_remote(current_user, auth_token)
-        format.html { redirect_to @test, notice: "Test was successfully created." }
-        format.json { render :show, status: :created, location: @test }
+        # format.html { redirect_to @test, notice: "Test was successfully created." }
+        # format.json { render :show, status: :created, location: @test }
       else
         # Collect error messages and merge them
         error_messages = @test.errors.full_messages
@@ -55,9 +55,9 @@ class TestsController < ApplicationController
     respond_to do |format|
       if @test.update(test_params)
         current_user, auth_token = current_user_and_token
-        update_remote(current_user, auth_token)
-        format.html { redirect_to @test, notice: "Test was successfully updated." }
-        format.json { render :show, status: :ok, location: @test }
+        # update_remote(current_user, auth_token)
+        # format.html { render @test, notice: "Test was successfully updated." }
+        # format.json { render :show, status: :ok, location: @test }
       else
          # Collect error messages and merge them
          error_messages = @test.errors.full_messages
