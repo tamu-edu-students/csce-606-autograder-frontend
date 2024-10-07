@@ -23,7 +23,7 @@ RSpec.describe TestsHelper, type: :helper do
 
       result = helper.current_user_and_token
 
-      expect(result).to eq([user, auth_token])
+      expect(result).to eq([ user, auth_token ])
     end
   end
 end
