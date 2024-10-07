@@ -26,6 +26,9 @@ class AssignmentsController < ApplicationController
   def create
     @assignment = Assignment.new(assignment_params)
 
+    github_token = session[:github_token]
+    @assignment.assignment_repo_init(github_token)
+
     respond_to do |format|
       if @assignment.save
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
@@ -42,12 +45,12 @@ class AssignmentsController < ApplicationController
   def update
     respond_to do |format|
       if @assignment.update(assignment_params)
-        format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }
-        format.json { render :show, status: :ok, location: @assignment }
         current_user = User.find(session[:user_id]) # Retrieve the current user
         auth_token = session[:github_token] # Get the GitHub auth token from the session
         update_remote(current_user, auth_token)
-        redirect_to @assignment, notice: "Assignment was successfully updated."
+
+        format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }
+        format.json { render :show, status: :ok, location: @assignment }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @assignment.errors, status: :unprocessable_entity }
@@ -72,32 +75,24 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  # Define the local repository path
-  def local_repository_path
-    "/Users/walkerjames/Autograded_frontend_new/test_app"
-  end
-
   def create_and_download_zip
     # Find the assignment
     assignment = Assignment.find(params[:id])
-
-    # Use self.local_repository_path instead of hardcoded path
-    git_folder = self.local_repository_path
-
+    
     # Use Dir.chdir to change directory and run make
-    Dir.chdir(self.local_repository_path) do
+    Dir.chdir(assignment.local_repository_path) do
       system("make")
     end
 
     # The original zip file created by the make command
-    original_zip_file = File.join(self.local_repository_path, "autograder.zip")
+    original_zip_file = File.join(assignment.local_repository_path, "autograder.zip")
 
     # The new zip file name based on the assignment name
     new_zip_filename = "#{assignment.assignment_name}.zip"
 
     flash[:notice] = "#{new_zip_filename} downloaded successfully"
     # Rename the autograder.zip to assignment_name.zip
-    renamed_zip_path = File.join(self.local_repository_path, new_zip_filename)
+    renamed_zip_path = File.join(assignment.local_repository_path, new_zip_filename)
 
     if File.exist?(original_zip_file)
       File.rename(original_zip_file, renamed_zip_path)

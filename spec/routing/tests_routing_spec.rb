@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Tests Routes', type: :request do
-  let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1') }
+  let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: "assignment-1") }
   let(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', actual_test: 'some test') }
 
   describe 'GET /assignments/:assignment_id/tests' do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Test, type: :model do
-  let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1') }
+  let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: "assignment-1") }
 
   # Create a valid test object to use in multiple examples
   let(:valid_test) do
