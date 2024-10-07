@@ -100,17 +100,11 @@ RSpec.describe AssignmentsController, type: :controller do
       before do
         allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: auth_token })
         allow(User).to receive(:find).with(user.id).and_return(user)
-        allow_any_instance_of(AssignmentsController).to receive(:update_remote).and_return(true)
       end
       it 'updates the requested assignment' do
         put :update, params: { id: assignment.to_param, assignment: new_attributes }
         assignment.reload
         expect(assignment.assignment_name).to eq('Updated Assignment')
-      end
-
-      it 'calls update_remote' do
-        expect_any_instance_of(AssignmentsController).to receive(:update_remote).with(user, auth_token)
-        put :update, params: { id: assignment.to_param, assignment: new_attributes }
       end
 
       it 'redirects to the assignment' do

@@ -1,4 +1,7 @@
+
 class TestsController < ApplicationController
+  include TestsHelper
+
   before_action :set_assignment
   before_action :set_test, only: [ :show, :edit, :update, :destroy ]
 
@@ -28,7 +31,9 @@ class TestsController < ApplicationController
 
     respond_to do |format|
       if @test.save
-        format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully created." }
+        current_user, auth_token = current_user_and_token
+        update_remote(current_user, auth_token)
+        format.html { redirect_to @test, notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
         # Collect error messages and merge them
@@ -49,7 +54,9 @@ class TestsController < ApplicationController
 
     respond_to do |format|
       if @test.update(test_params)
-        format.html { redirect_to assignment_path(@assignment, @test), notice: "Test was successfully updated." }
+        current_user, auth_token = current_user_and_token
+        update_remote(current_user, auth_token)
+        format.html { redirect_to @test, notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
          # Collect error messages and merge them
@@ -70,7 +77,9 @@ class TestsController < ApplicationController
     @test.destroy
 
     respond_to do |format|
-      format.html { redirect_to assignment_path(@assignment), status: :see_other, notice: "Test was successfully destroyed." }
+      current_user, auth_token = current_user_and_token
+      update_remote(current_user, auth_token)
+      format.html { redirect_to tests_path, status: :see_other, notice: "Test was successfully destroyed." }
       format.json { head :no_content }
     end
   end
