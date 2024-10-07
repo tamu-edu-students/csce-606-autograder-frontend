@@ -8,30 +8,6 @@ end
 
 Given("the following assignments exist:") do |table|
   table.hashes.each do |hash|
-    # mock the GitHub API call
-    stub_request(:put, "https://api.github.com/repos/AutograderFrontend/#{hash[:repository_name]}/collaborators/alice").
-        with(
-          body: "{\"permission\":\"pull\"}",
-          headers: {
-          'Accept'=>'application/vnd.github.v3+json',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'token fake_github_token',
-          'Content-Type'=>'application/json',
-          'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-          }).
-        to_return(status: 200, body: "", headers: {})
-
-        stub_request(:put, "https://api.github.com/repos/AutograderFrontend/#{hash[:repository_name]}/collaborators/bob").
-        with(
-          body: "{\"permission\":\"push\"}",
-          headers: {
-          'Accept'=>'application/vnd.github.v3+json',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'token fake_github_token',
-          'Content-Type'=>'application/json',
-          'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-          }).
-        to_return(status: 200, body: "", headers: {})
     Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
   end
 end
@@ -55,8 +31,8 @@ Given("I am on the {string} page for assignment permissions") do |page_name|
 end
 
 # Step definitions for user interactions
-When("I click on {string}") do |button|
-  click_link button
+When("I click on {string}") do |username|
+  click_link username
 end
 
 When("I select the assignment on the page {string}") do |repo_name|
