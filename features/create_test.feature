@@ -1,32 +1,29 @@
 Feature: Create a new test case
-  As an instructor or TA with write access to an assignment
-  So that I can test some functionality of student code
-  I want to add a new test case to an assignment
+    As an instructor or TA with write access to an assignment
+    So that I can test some functionality of student code
+    I want to add a new test case to an assignment
 
-  Scenario: Tests with unknown type
-    Given I am on the "Assignment Management" page for "assignment1"
-    When I create a new test with type "invalid"
-    Then I should see an error message saying "Unknown test type: invalid"
+    Background: Assignments in the GitHub organization
+        Given the following assignments exist:
+            | assignment_name | repository_name   |
+            | assignment1     | assignment1 |
+            | assignment2     | assignment2 |
+            | assignment3     | assignment3 | 
+        And I am on the "Assignment Management" page for "assignment1"
 
-
-  Rule: All tests must have non-empty name, points, type, and if applicable, target attributes
-    Background:
-      Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
-        | assignment2     | assignment-2-repo |
-        | assignment3     | assignment-3-repo |
-      And I am on the "Assignment Management" page for "assignment1"
-
+    Scenario: Tests with unknown type
+        When I create a new test with type "invalid"
+        Then I should see an error message saying "Unknown test type: invalid"
+    
     Scenario: Test has required attributes
-      When I create a new test with type "<type>"
-      And with the name "<name>"
-      And with the points "<points>"
-      And with the target "<target>"
-      And I click the "Create Test" button
-      Then I should not see any missing attribute error messages
-
-      Examples:
+        When I create a new test with type "<type>"
+        And with the name "<name>"
+        And with the points "<points>"
+        And with the target "<target>"
+        And I click the "Create Test" button
+        Then I should not see any missing attribute error messages
+    
+        Examples:
         | type              | name  | points | target      |
         | approved_includes | test1 | 10     | target1.cpp |
         | compile           | test2 | 10     | target2.cpp |
