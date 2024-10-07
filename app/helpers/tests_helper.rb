@@ -1,5 +1,6 @@
 module TestsHelper
     def update_remote(user, auth_token)
+        @assignment.generate_tests_file
         @assignment.push_changes_to_github(user, auth_token)
     end
 

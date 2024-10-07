@@ -16,4 +16,8 @@ class Test < ApplicationRecord
   attribute :skip, :boolean, default: false
   attribute :timeout, :float
   attribute :visibility, :string, default: "visible"
+
+  def regenerate_tests_file
+    assignment.generate_tests_file
+  end
 end

@@ -76,6 +76,17 @@ class Assignment < ActiveRecord::Base
     )
   end
 
+  def generate_tests_file
+    FileUtils.mkdir_p(repository_name) unless Dir.exist?(repository_name)
+
+    file_path = File.join(local_repository_path, "tests", "c++", "code.tests")
+    File.open(file_path, 'w') do |file|
+      tests.each do |test|
+        file.puts format_test(test)
+      end
+    end
+  end
+
   private
 
   # Commit local changes to the repository
@@ -167,5 +178,30 @@ class Assignment < ActiveRecord::Base
       puts "Failed to check whether remote repo has been created: #{e.response_body[:message]}"
       nil
     end
+  end
+
+  def format_test(test)
+    <<~TEST_SPEC
+    /*
+    @name: #{test.name}
+    @points: #{test.points}
+    @test_type: #{test.test_type}
+    */
+    <test>
+    #{test.actual_test}
+    </test>
+    TEST_SPEC
+  end
+
+  def format_optional_attributes(test)
+    optional_attrs = ""
+    optional_attrs += "@target: #{test.target}\n" if test.target.present?
+    optional_attrs += "@include: #{test.include_files}\n" if test.include_files.present?
+    optional_attrs += "@number: #{test.number}\n" if test.number.present?
+    optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
+    optional_attrs += "@skip: #{test.skip}\n" if test.skip.present?
+    optional_attrs += "@timeout: #{test.timeout}\n" if test.timeout.present?
+    optional_attrs += "@visibility: #{test.visibility}\n" if test.visibility.present?
+    optional_attrs
   end
 end
