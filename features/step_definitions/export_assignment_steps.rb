@@ -5,6 +5,8 @@ Given(/^I am logged in as an organization member$/) do
 
   When(/^I click the "Create and Download ZIP" button for "(.*)"$/) do |assignment_name|
     @assignment = Assignment.find_by!(assignment_name: assignment_name)
+    # mock 
+    FileUtils.touch(File.join(ENV["ASSIGNMENTS_BASE_PATH"], assignment_name, "#{@assignment.assignment_name}.zip"))
     click_on 'Create and Download ZIP'
   end
 
