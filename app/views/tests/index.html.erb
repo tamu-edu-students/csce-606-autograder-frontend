@@ -8,9 +8,11 @@
   <% @tests.each do |test| %>
     <%= render test %>
     <p>
-      <%= link_to "Show this test", test %>
+      <%= link_to "Show this test", assignment_test_path(@assignment, test), class: "btn btn-secondary mt-3" %>
     </p>
   <% end %>
 </div>
 
-<%= link_to "New test", new_test_path %>
+<%= link_to "New test", new_assignment_test_path(@assignment), class: "btn btn-secondary mt-3" %>
+
+<%= link_to "Back to Assignment", assignment_path(@assignment), class: "btn btn-secondary mt-3" %>

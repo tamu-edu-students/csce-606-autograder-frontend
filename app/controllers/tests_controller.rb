@@ -1,6 +1,10 @@
+
 class TestsController < ApplicationController
   include TestsHelper
-  before_action :set_test, only: %i[ show edit update destroy ]
+
+  before_action :set_assignment
+  before_action :set_test, only: [ :show, :edit, :update, :destroy ]
+
 
   # GET /tests or /tests.json
   def index
@@ -22,7 +26,8 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @test = Test.new(test_params)
+    @assignment = Assignment.find(params[:assignment_id])  # Find the relevant assignment
+    @test = @assignment.tests.new(test_params)  # Associate test with the assignment
 
     respond_to do |format|
       if @test.save
@@ -31,14 +36,22 @@ class TestsController < ApplicationController
         format.html { redirect_to @test, notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        # Collect error messages and merge them
+        error_messages = @test.errors.full_messages
+        combined_errors = merge_error_messages(error_messages)
+        flash[:alert] = combined_errors
+        format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
         format.json { render json: @test.errors, status: :unprocessable_entity }
       end
     end
   end
 
+
   # PATCH/PUT /tests/1 or /tests/1.json
   def update
+    @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
+    @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
+
     respond_to do |format|
       if @test.update(test_params)
         current_user, auth_token = current_user_and_token
@@ -46,15 +59,22 @@ class TestsController < ApplicationController
         format.html { redirect_to @test, notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @test.errors, status: :unprocessable_entity }
+         # Collect error messages and merge them
+         error_messages = @test.errors.full_messages
+         combined_errors = merge_error_messages(error_messages)
+         flash[:alert] = combined_errors
+         format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
+         format.json { render json: @test.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /tests/1 or /tests/1.json
+
+  # DELETE /assignments/:assignment_id/tests/:id
   def destroy
-    @test.destroy!
+    @assignment = Assignment.find(params[:assignment_id])
+    @test = @assignment.tests.find(params[:id])
+    @test.destroy
 
     respond_to do |format|
       current_user, auth_token = current_user_and_token
@@ -64,14 +84,52 @@ class TestsController < ApplicationController
     end
   end
 
+
+
   private
+
+    def set_assignment
+      @assignment = Assignment.find(params[:assignment_id])
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_test
-      @test = Test.find(params[:id])
+      @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
+      @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
     end
+
+  def merge_error_messages(errors)
+    # Separate "Missing attribute" errors and other errors
+    missing_attributes = []
+    other_errors = []
+
+    errors.each do |message|
+      # Extract the attribute name from the error message if it matches "Missing attribute: <attribute>"
+      if (match = message.match(/Missing attribute: (\w+)/))
+        missing_attributes << match[1]
+      else
+        other_errors << message
+      end
+    end
+
+  # Build the final error message
+  final_error_message = []
+
+  # If there are any missing attributes, add them to the final message
+  if missing_attributes.any?
+    final_error_message << "Missing attributes: #{missing_attributes.join(', ')}"
+  end
+
+  # Add any other errors to the final message
+  final_error_message.concat(other_errors)
+
+  # Return the joined error messages
+  final_error_message.join(", ")
+end
+
+
 
     # Only allow a list of trusted parameters through.
     def test_params
-      params.require(:test).permit(:name, :points, :type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id)
+      params.require(:test).permit(:name, :points, :test_type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id, :actual_test)
     end
 end

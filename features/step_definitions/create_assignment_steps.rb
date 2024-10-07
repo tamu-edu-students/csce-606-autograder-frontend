@@ -73,7 +73,7 @@ Given('I create an assignment with the name {string} and the repository {string}
   )
 end
 
-Given('I am logged in as a {string}') do |string|
+Given('I am logged in as a(n) {string}') do |string|
   user = User.create!(name: "#{string}_user", email: "#{string}@example.com", role: string)
 
   allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)

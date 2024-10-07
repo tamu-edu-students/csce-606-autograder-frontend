@@ -21,6 +21,10 @@ RSpec.describe Assignment, type: :model do
     allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
   end
 
+  after do
+    FileUtils.rm_rf(ENV['ASSIGNMENTS_BASE_PATH'])
+  end
+
   describe '#create_and_add_deploy_key' do
     let(:key_path) { File.join("destination_path", "secrets", "deploy_key") }
     let(:mock_client) { double('OctokitClient', add_deploy_key: true) }
@@ -88,22 +92,16 @@ RSpec.describe Assignment, type: :model do
     let(:template_repo) { 'philipritchey/autograded-assignment-template' }
     let(:assignment) { Assignment.new(assignment_name: assignment_name, repository_name: repository_name) }
 
-    before do
-      allow(ENV).to receive(:[]).and_return(nil)
-      allow(ENV).to receive(:[]).with('GITHUB_ACCESS_TOKEN').and_return('test_token')
-      allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return(template_repo)
-      allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return(organization)
-    end
-
     it 'creates a new repo from a template when successful' do
-      stub_request(:post, "https://api.github.com/repos/philipritchey/autograded-assignment-template/generate")
-        .with(
-          body: { owner: organization, name: repository_name, private: true }.to_json,
+      stub_request(:post, "https://api.github.com/repos/philipritchey/autograded-assignment-template/generate").
+        with(
+          body: "{\"owner\":\"AutograderFrontend\",\"name\":\"test-repository\",\"private\":true}",
           headers: {
-            'Accept' => 'application/vnd.github.v3+json',
-            'Authorization' => 'token test_token',
-            'Content-Type' => 'application/json',
-            'User-Agent' => 'Octokit Ruby Gem 9.1.0'
+          'Accept'=>'application/vnd.github.v3+json',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization'=>'token test_token',
+          'Content-Type'=>'application/json',
+          'User-Agent'=>'Octokit Ruby Gem 9.1.0'
           }
         )
         .to_return(
@@ -180,6 +178,7 @@ RSpec.describe Assignment, type: :model do
         repository_name: 'test-repository'
       )
 
+      # mock
       allow(assignment).to receive(:create_repo_from_template)
       allow(assignment).to receive(:clone_repo_to_local)
 
@@ -207,10 +206,6 @@ RSpec.describe Assignment, type: :model do
   end
 
   before do
-    # Stub the environment variables
-    allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('/path/to/assignments')
-    allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return('course_org')
-
     # Mock Git commands
     allow(Git).to receive(:open).with(local_repo_path).and_return(git)
 

@@ -1,12 +1,75 @@
-<% content_for :title, "Editing test" %>
+<h1>Edit Test for <%= @assignment.assignment_name %></h1>
 
-<h1>Editing test</h1>
+<%= form_with(model: [@assignment, @test], local: true, html: { multipart: true }) do |form| %>
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
 
-<%= render "form", test: @test %>
+  <div class="field">
+    <%= form.label :points %>
+    <%= form.number_field :points %>ß
+  </div>
 
-<br>
+  <div class="field">
+    <%= form.label :test_type %>
+    <%= form.select :test_type, options_for_select([['Approved Includes', 'approved_includes'], 
+                                                    ['Compile', 'compile'], 
+                                                    ['Coverage', 'coverage'], 
+                                                    ['I/O', 'i/o'], 
+                                                    ['Memory Errors', 'memory_errors'], 
+                                                    ['Performance', 'performance'], 
+                                                    ['Script', 'script'], 
+                                                    ['Style', 'style'], 
+                                                    ['Unit', 'unit']], @test.test_type) %>
+  </div>
 
-<div>
-  <%= link_to "Show this test", @test %> |
-  <%= link_to "Back to tests", tests_path %>
-</div>
+  <div class="field">
+    <%= form.label :target, "Upload File" %>
+    <%= form.file_field :target %>
+  </div>
+
+  <div class="field">
+    <%= form.label :include %>
+    <%= form.text_area :include %>
+  </div>
+
+  <div class="field">
+    <%= form.label :number %>
+    <%= form.text_field :number %>
+  </div>
+
+  <div class="field">
+    <%= form.label :show_output %>
+    <%= form.check_box :show_output, {}, true, false %> 
+  </div>
+
+  <div class="field">
+    <%= form.label :skip %>
+    <%= form.check_box :skip %>
+  </div>
+
+  <div class="field">
+    <%= form.label :timeout %>
+    <%= form.number_field :timeout %>
+  </div>
+
+  <div class="field">
+    <%= form.label :visibility %>
+    <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
+                                                      ['After Due Date', 'after_due_date'], 
+                                                      ['After Published', 'after_published'], 
+                                                      ['Visible', 'visible']], @test.visibility || 'visible') %>
+  </div>
+
+  <div class="field">
+    <%= form.label :actual_test, "Actual Test" %>
+    <%= form.text_area :actual_test %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Update Test" %> <!-- This triggers the 'update' action in the controller -->
+  </div>
+<% end %>
+
+<%= link_to "Back to Assignment", assignment_path(@assignment), class: "btn btn-secondary" %>
