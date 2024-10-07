@@ -1,4 +1,5 @@
 class TestsController < ApplicationController
+  include TestsHelper
   before_action :set_test, only: %i[ show edit update destroy ]
 
   # GET /tests or /tests.json
@@ -25,6 +26,8 @@ class TestsController < ApplicationController
 
     respond_to do |format|
       if @test.save
+        current_user, auth_token = current_user_and_token
+        update_remote(current_user, auth_token)
         format.html { redirect_to @test, notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
@@ -38,6 +41,8 @@ class TestsController < ApplicationController
   def update
     respond_to do |format|
       if @test.update(test_params)
+        current_user, auth_token = current_user_and_token
+        update_remote(current_user, auth_token)
         format.html { redirect_to @test, notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
@@ -52,6 +57,8 @@ class TestsController < ApplicationController
     @test.destroy!
 
     respond_to do |format|
+      current_user, auth_token = current_user_and_token
+      update_remote(current_user, auth_token)
       format.html { redirect_to tests_path, status: :see_other, notice: "Test was successfully destroyed." }
       format.json { head :no_content }
     end
