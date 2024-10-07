@@ -78,7 +78,7 @@ class AssignmentsController < ApplicationController
   def create_and_download_zip
     # Find the assignment
     assignment = Assignment.find(params[:id])
-    
+
     # Use Dir.chdir to change directory and run make
     Dir.chdir(assignment.local_repository_path) do
       system("make")

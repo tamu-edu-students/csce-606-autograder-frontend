@@ -184,7 +184,7 @@ RSpec.describe Assignment, type: :model do
         repository_name: 'test-repository'
       )
 
-      # mock 
+      # mock
       allow(assignment).to receive(:create_repo_from_template)
       allow(assignment).to receive(:clone_repo_to_local)
 
