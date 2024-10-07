@@ -1,5 +1,3 @@
 GITHUB_TEMPLATE_REPO_URL: 'philipritchey/autograded-assignment-template'
 GITHUB_COURSE_ORGANIZATION: 'AutograderFrontend'
 ASSIGNMENTS_BASE_PATH: 'assignment-repos/'
-GITHUB_CLIENT_ID: "Ov23liMDAgFqwvCIF4kD"
-GITHUB_CLIENT_SECRET: "38b8bba9e56dfe4273890c7e0e104ae172af7f4e"
