@@ -79,7 +79,7 @@ class TestsController < ApplicationController
     respond_to do |format|
       current_user, auth_token = current_user_and_token
       update_remote(current_user, auth_token)
-      format.html { redirect_to tests_path, status: :see_other, notice: "Test was successfully destroyed." }
+      format.html { redirect_to assignment_path(@assignment), status: :see_other, notice: "Test was successfully destroyed." }
       format.json { head :no_content }
     end
   end
