@@ -41,6 +41,11 @@ Our working agreement is built upon the following Scrum values:
    1. Instead, create a separate branch for your new code, and use pull request (PR) to apply your
       new code to the `main` branch.
 
+- Keep your commits atomic
+   1. Each commit should contain a single unit of work that involves only a single task
+   2. Limiting the scope of a commit enables changes to be more easily applied and reverted
+   3. Commit messages should be descriptive
+
 - Write concise titles and detailed descriptions for PRs.
 
    1. The PR description should be well organized and provide the following information.
@@ -68,6 +73,8 @@ Our working agreement is built upon the following Scrum values:
    1. For small changes, approval from one reviewer is sufficient.
    2. For important changes, all the reviewers need to inspect the content. In this case, the author
       should obtain approvals from all reviewers, and then merge the changes into the `main` branch.
+
+[Additional information on version control best practices](https://about.gitlab.com/topics/version-control/version-control-best-practices/#write-descriptive-commit-messages)
 
 ---
 
