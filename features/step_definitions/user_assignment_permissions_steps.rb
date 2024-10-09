@@ -63,6 +63,18 @@ When("I click Revoke All") do
 end
 
 When("I click {string}") do |button_text|
+  if button_text == "Save Changes"
+    stub_request(:put, /https:\/\/api\.github\.com\/repos\/AutograderFrontend\/.*\/collaborators\/.*/).
+      with(
+        body: /"permission":"(push|pull)"/,
+        headers: {
+          'Accept'=>'application/vnd.github.v3+json',
+          'Authorization'=>/token .+/,
+          'Content-Type'=>'application/json'
+        }
+      ).
+      to_return(status: 200, body: "", headers: {})
+  end
   click_button button_text
 end
 

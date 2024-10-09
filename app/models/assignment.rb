@@ -80,7 +80,7 @@ class Assignment < ActiveRecord::Base
     FileUtils.mkdir_p(repository_name) unless Dir.exist?(repository_name)
 
     file_path = File.join(local_repository_path, "tests", "c++", "code.tests")
-    File.open(file_path, 'w') do |file|
+    File.open(file_path, "w") do |file|
       tests.each do |test|
         file.puts format_test(test)
       end

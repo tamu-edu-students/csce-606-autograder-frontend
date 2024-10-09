@@ -1,7 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    ZenTest (4.12.2)
     action-cable-testing (0.6.1)
       actioncable (>= 5.0)
     actioncable (7.2.1)
@@ -519,7 +518,6 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  ZenTest
   action-cable-testing
   bootsnap
   brakeman

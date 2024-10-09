@@ -12,6 +12,9 @@ require 'cucumber/rails'
 
 require 'rack_session_access/capybara'
 
+require 'webmock/cucumber'
+WebMock.disable_net_connect!(allow_localhost: true)
+
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
 # your application behaves in the production environment, where an error page will
