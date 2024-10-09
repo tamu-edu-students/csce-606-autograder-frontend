@@ -26,48 +26,45 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @assignment = Assignment.find(params[:assignment_id])  # Find the relevant assignment
-    @test = @assignment.tests.new(test_params)  # Associate test with the assignment
-
+    @assignment = Assignment.find(params[:assignment_id])
+    @test = @assignment.tests.new(test_params)
+  
     respond_to do |format|
       if @test.save
         current_user, auth_token = current_user_and_token
         update_remote(current_user, auth_token)
-        # format.html { redirect_to @test, notice: "Test was successfully created." }
-        # format.json { render :show, status: :created, location: @test }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully created." }
       else
-        # Collect error messages and merge them
         error_messages = @test.errors.full_messages
         combined_errors = merge_error_messages(error_messages)
         flash[:alert] = combined_errors
         format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
-        format.json { render json: @test.errors, status: :unprocessable_entity }
       end
     end
   end
+  
+
+  
 
 
   # PATCH/PUT /tests/1 or /tests/1.json
   def update
-    @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
-    @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
-
+    @assignment = Assignment.find(params[:assignment_id])
+    @test = @assignment.tests.find(params[:id])
+  
     respond_to do |format|
       if @test.update(test_params)
         current_user, auth_token = current_user_and_token
-        # update_remote(current_user, auth_token)
-        # format.html { render @test, notice: "Test was successfully updated." }
-        # format.json { render :show, status: :ok, location: @test }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully updated." }
       else
-         # Collect error messages and merge them
-         error_messages = @test.errors.full_messages
-         combined_errors = merge_error_messages(error_messages)
-         flash[:alert] = combined_errors
-         format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
-         format.json { render json: @test.errors, status: :unprocessable_entity }
+        error_messages = @test.errors.full_messages
+        combined_errors = merge_error_messages(error_messages)
+        flash[:alert] = combined_errors
+        format.html { redirect_to assignment_path(@assignment), notice: "#{flash[:alert]}" }
       end
     end
   end
+  
 
 
   # DELETE /assignments/:assignment_id/tests/:id
