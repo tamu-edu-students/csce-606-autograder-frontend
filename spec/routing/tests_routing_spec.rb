@@ -1,55 +1,40 @@
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'Tests Routes', type: :request do
-  let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: "assignment-1") }
-  let(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', actual_test: 'some test') }
+RSpec.describe TestsController, type: :routing do
+  describe "routing" do
+    let(:assignment_id) { "1" }
+    let(:test_id) { "1" }
 
-  describe 'GET /assignments/:assignment_id/tests' do
-    it 'routes to tests#index' do
-      get "/assignments/#{assignment.id}/tests"
-      expect(response).to have_http_status(:ok)
+    it "routes to #index" do
+      expect(get: "/assignments/#{assignment_id}/tests").to route_to("tests#index", assignment_id: assignment_id)
     end
-  end
 
-  describe 'GET /assignments/:assignment_id/tests/new' do
-    it 'routes to tests#new' do
-      get "/assignments/#{assignment.id}/tests/new"
-      expect(response).to have_http_status(:ok)
+    it "routes to #new" do
+      expect(get: "/assignments/#{assignment_id}/tests/new").to route_to("tests#new", assignment_id: assignment_id)
     end
-  end
 
-  describe 'POST /assignments/:assignment_id/tests' do
-    it 'routes to tests#create' do
-      post "/assignments/#{assignment.id}/tests", params: { test: { name: 'Test 2', points: 15, test_type: 'compile', actual_test: 'some test code' } }
-      expect(response).to have_http_status(:found) # Redirect after successful creation
+    it "routes to #show" do
+      expect(get: "/assignments/#{assignment_id}/tests/#{test_id}").to route_to("tests#show", assignment_id: assignment_id, id: test_id)
     end
-  end
 
-  describe 'GET /assignments/:assignment_id/tests/:id' do
-    it 'routes to tests#show' do
-      get "/assignments/#{assignment.id}/tests/#{test_case.id}"
-      expect(response).to have_http_status(:ok)
+    it "routes to #edit" do
+      expect(get: "/assignments/#{assignment_id}/tests/#{test_id}/edit").to route_to("tests#edit", assignment_id: assignment_id, id: test_id)
     end
-  end
 
-  describe 'GET /assignments/:assignment_id/tests/:id/edit' do
-    it 'routes to tests#edit' do
-      get "/assignments/#{assignment.id}/tests/#{test_case.id}/edit"
-      expect(response).to have_http_status(:ok)
+    it "routes to #create" do
+      expect(post: "/assignments/#{assignment_id}/tests").to route_to("tests#create", assignment_id: assignment_id)
     end
-  end
 
-  describe 'PATCH /assignments/:assignment_id/tests/:id' do
-    it 'routes to tests#update' do
-      patch "/assignments/#{assignment.id}/tests/#{test_case.id}", params: { test: { name: 'Updated Test Name' } }
-      expect(response).to have_http_status(:found) # Redirect after update
+    it "routes to #update via PUT" do
+      expect(put: "/assignments/#{assignment_id}/tests/#{test_id}").to route_to("tests#update", assignment_id: assignment_id, id: test_id)
     end
-  end
 
-  describe 'DELETE /assignments/:assignment_id/tests/:id' do
-    it 'routes to tests#destroy' do
-      delete "/assignments/#{assignment.id}/tests/#{test_case.id}"
-      expect(response).to have_http_status(:see_other) # Expect 303 status after deletion
+    it "routes to #update via PATCH" do
+      expect(patch: "/assignments/#{assignment_id}/tests/#{test_id}").to route_to("tests#update", assignment_id: assignment_id, id: test_id)
+    end
+
+    it "routes to #destroy" do
+      expect(delete: "/assignments/#{assignment_id}/tests/#{test_id}").to route_to("tests#destroy", assignment_id: assignment_id, id: test_id)
     end
   end
 end

@@ -16,6 +16,10 @@ Given('I add the Actual Test') do
   fill_in 'Actual test', with: 'actual test'
 end
 
+Given('I bypass the remote update for tests') do
+  allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return([ nil, nil ])
+  allow_any_instance_of(TestsHelper).to receive(:update_remote).and_return(nil)
+end
 
 Then('I should see an error message saying {string}') do |message|
   expect(page).to have_content(message)
