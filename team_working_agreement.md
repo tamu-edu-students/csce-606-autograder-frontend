@@ -11,7 +11,7 @@ Our working agreement is built upon the following Scrum values:
 - Commitment: Be fully dedicated to delivering the sprint goals and supporting the team.
 - Focus: Prioritize work that delivers value and minimizes distractions.
 - Openness: Be transparent about progress, challenges, and ideas.
-- **Respect**: Value each team member’s contribution and maintain a positive work environment.
+- Respect: Value each team member’s contribution and maintain a positive work environment.
 
 ---
 
@@ -30,6 +30,7 @@ Our working agreement is built upon the following Scrum values:
   - Urgent matters via text messages.
 - Response Time:
   - Acknowledge messages within 2 hours during working hours (9 AM – 5 PM).
+    - Even a simple thumbs-up is sufficient
   - Response within 24 hours outside working hours unless marked urgent.
 
 ---
@@ -40,6 +41,11 @@ Our working agreement is built upon the following Scrum values:
 
    1. Instead, create a separate branch for your new code, and use pull request (PR) to apply your
       new code to the `main` branch.
+
+- Keep your commits atomic
+   1. Each commit should contain a single unit of work that involves only a single task
+   2. Limiting the scope of a commit enables changes to be more easily applied and reverted
+   3. Commit messages should be descriptive
 
 - Write concise titles and detailed descriptions for PRs.
 
@@ -69,6 +75,8 @@ Our working agreement is built upon the following Scrum values:
    2. For important changes, all the reviewers need to inspect the content. In this case, the author
       should obtain approvals from all reviewers, and then merge the changes into the `main` branch.
 
+[Additional information on version control best practices](https://about.gitlab.com/topics/version-control/version-control-best-practices/#write-descriptive-commit-messages)
+
 ---
 
 ## Tools & Documentation
@@ -79,22 +87,24 @@ Our working agreement is built upon the following Scrum values:
   - Code Climate used to ensure quality
   
 - **Definition of Done**: 
-  - Code is unit tested.
+  - Code is unit tested
   - Acceptance testing passes
+  - No previously passing tests are failing
   - Reviewed through GitHub pull requests
   - Passes all automated tests
+  - Code has no `rubocop` violations
   
 ---
 
 ## Work Process
 - **Approach**: 
-  - We will use pairing-programming for complex tasks and debugging sessions.
+  - We will use pair-programming for complex tasks and debugging sessions.
   - Each team member is responsible for updating the sprint backlog and marking tasks as complete.
   
 ---
 
 ## Conflict Resolution
-- Issues or conflicts will first be addressed in private between the individuals involved.
+- Issues or conflicts will first be respectfully addressed in private between the individuals involved.
 - If unresolved, bring the issue to the Scrum Master for mediation.
 
 ---
@@ -104,4 +114,4 @@ Our working agreement is built upon the following Scrum values:
 
 ---
 
-_Last Updated: [10/03/2024]_
+_Last Updated: [10/10/2024]_
