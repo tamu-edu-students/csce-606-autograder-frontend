@@ -88,6 +88,7 @@ group :test do
   gem "rspec-rails"
   gem "selenium-webdriver"
   gem "simplecov", require: false
+  gem "simplecov-json"
   gem "webmock", "~> 3.0"
 end
 
