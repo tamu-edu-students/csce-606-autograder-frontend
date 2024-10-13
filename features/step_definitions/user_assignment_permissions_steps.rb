@@ -16,7 +16,7 @@ Given("the following users exist in assignment permissions:") do |table|
   end
 end
 
-Given("I am logged in to view assignment permissions as {string}") do |username|
+Given("I am logged in as {string}") do |username|
   login_as(username)
 end
 
