@@ -24,7 +24,7 @@ Then('the .tests file should contain the properly formatted test') do |table|
     "<test>\n" +
     "#{test_params['test_code']}\n" +
     "</test>\n\n"
-    
+
     file_path = File.join(ENV["ASSIGNMENTS_BASE_PATH"], @assignment.repository_name, "tests", "c++", "code.tests")
     actual_content = File.read(file_path)
     # expect the strings to be equAL
