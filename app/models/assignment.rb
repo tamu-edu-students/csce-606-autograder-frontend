@@ -190,7 +190,7 @@ class Assignment < ActiveRecord::Base
     "*/\n" +
     "<test>\n" +
     "#{test.actual_test}\n" +
-    "</test>\n"
+    "</test>\n\n"
     test.gsub("\r\n", "\n")
   end
 

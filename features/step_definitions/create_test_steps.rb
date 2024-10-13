@@ -74,7 +74,6 @@ Then('I should not see any missing attribute error messages') do
 end
 
 Given('the assignment contains the following test:') do |table|
-  @assignment = Assignment.find_by(assignment_name: 'assignment1')
   table.hashes.each do |test|
     @assignment.tests.create!(
       name: test['test_name'],
@@ -91,7 +90,6 @@ Then('I should not see an error message saying {string}') do |message|
 end
 
 Given('the assignment contains no tests') do
-  @assignment = Assignment.find_by(assignment_name: 'assignment1')
   @assignment.tests.destroy_all
 end
 

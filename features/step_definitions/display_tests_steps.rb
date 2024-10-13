@@ -4,9 +4,9 @@ Given(/^I am logged in as a (instructor|TA)$/) do |role|
 end
 
   Given(/^I am on the "Assignment Management" page for "(.*)"$/) do |assignment_name|
-    @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name, repository_name: assignment_name)
+    @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name)
     # mkdrir_p
-    FileUtils.mkdir_p(File.join(ENV["ASSIGNMENTS_BASE_PATH"], assignment_name))
+    FileUtils.mkdir_p(File.join(@assignment.local_repository_path))
     visit assignment_path(@assignment)
 
     expect(page).to have_content(@assignment.assignment_name)

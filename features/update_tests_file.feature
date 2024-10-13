@@ -39,11 +39,13 @@ Feature: Regenerate .tests file on test creation/update/deletion
     And I click the "Create Test" button
     Then I should see a success message
     And the .tests file should contain both properly formatted tests
+      | type   | name   | points   | target   | test_code   |
+      | <type> | <name> | <points> | <target> | <test_code> |
 
     Examples:
       | type      | name  | points | target   | test_code                                               |
-      | unit_test | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
-      | unit_test | test4 | 1      | code.cpp | EXPECT_TRUE(is_even(64));                               |
+      | unit      | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
+      | unit      | test4 | 1      | code.cpp | EXPECT_TRUE(is_even(64));                               |
 
   Scenario Outline: Delete a unit test
     Given the following assignments exist:
