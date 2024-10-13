@@ -9,6 +9,7 @@ end
 
 After do
   RSpec::Mocks.teardown
+  FileUtils.rm_rf(ENV["ASSIGNMENTS_BASE_PATH"])
 end
 
 

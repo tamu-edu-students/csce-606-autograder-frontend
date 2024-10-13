@@ -5,10 +5,12 @@ Feature: Display test cases
 
     Background:
         Given I am logged in as an "organization member"
+        Given the following assignments exist:
+        | assignment_name | repository_name   |
+        | assignment1     | assignment-1-repo |
         And I am on the "Assignment Management" page for "assignment1"
 
     Scenario: Display test cases
-        And I bypass the remote update for tests
         Given there is a test case of type "<type>"
         And the test case has name "<name>"
         When I click on that test case
