@@ -26,8 +26,9 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @assignment = Assignment.find(params[:assignment_id])  # Find the relevant assignment
-    @test = @assignment.tests.new(test_params)  # Associate test with the assignment
+    @test = Test.new(test_params)
+    @assignment = Assignment.find(params[:assignment_id])
+    @test.assignment = @assignment
 
     respond_to do |format|
       if @test.save
@@ -126,10 +127,10 @@ class TestsController < ApplicationController
   final_error_message.join(", ")
 end
 
+private
 
-
-    # Only allow a list of trusted parameters through.
-    def test_params
-      params.require(:test).permit(:name, :points, :test_type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id, :actual_test)
-    end
+  # Only allow a list of trusted parameters through.
+  def test_params
+    params.require(:test).permit(:name, :points, :test_type, :target, :include, :number, :show_output, :skip, :timeout, :visibility, :assignment_id, :actual_test, :test_grouping_id)
+  end
 end
