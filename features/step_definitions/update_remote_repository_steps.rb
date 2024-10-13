@@ -45,7 +45,7 @@ Given("We have the following users exist in assignment permissions:") do |table|
 
   Given("the following assignments exist:") do |table|
     table.hashes.each do |hash|
-    Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
+      @assignment = Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
     end
   end
 

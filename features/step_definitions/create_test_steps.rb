@@ -33,7 +33,7 @@ end
 #   click_button 'Create Test'
 # end
 
-Given('I go to eidt page') do
+Given('I go to edit page') do
     visit edit_assignment_test_path(@assignment, @test)
 end
 
