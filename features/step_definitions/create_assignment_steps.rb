@@ -16,7 +16,7 @@ end
 After do
   RSpec::Mocks.teardown
   WebMock.disable!
-  # FileUtils.rm_rf('assignment-repos')
+  FileUtils.rm_rf('assignment-repos')
 end
 
 Given('I am logged in as a(n) {string} named {string}') do |role, name|

@@ -13,7 +13,6 @@ RSpec.describe UsersController, type: :controller do
 
   describe "when all the users in the organization are displayed" do
     it "assigns users" do
-      user = User.create!(name: 'Test User')
       get :index
       expect(assigns(:users)).to eq([ user ])
     end

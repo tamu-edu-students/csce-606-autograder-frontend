@@ -62,7 +62,7 @@ When('I fill in the test block with {string}') do |string|
 end
 
 Then('I should see a success message') do
-  expect(page).to have_content('Test was successfully')
+  expect(page).to have_content(/Test was successfully .+/)
 end
 
 Given('the assignment contains one test') do
