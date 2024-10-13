@@ -12,6 +12,7 @@ RSpec.describe TestsHelper, type: :helper do
 
   describe '#update_remote' do
     it 'calls push_changes_to_github on the @assignment with user and auth_token' do
+      expect(assignment).to receive(:generate_tests_file)
       expect(assignment).to receive(:push_changes_to_github).with(user, auth_token)
       helper.update_remote(user, auth_token)
     end

@@ -114,17 +114,21 @@ jobs:
         run: bundle exec rails db:migrate RAILS_ENV=test
 
       - name: Run RSpec
-        run: bundle exec rake spec
+        run: bundle exec rspec
 
       - name: Run Cucumber
-        run: bundle exec rake cucumber
+        run: bundle exec cucumber
       
-      - name: Code Climate Coverage Action
-        uses: paambaati/codeclimate-action@v9.0.0
-        env: 
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageLocations: ${{github.workspace}}/coverage/.resultset.json
+      # - name: Code Climate Coverage Action
+      #   uses: paambaati/codeclimate-action@v9.0.0
+      #   env: 
+      #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      #   with:
+      #     coverageCommand: bundle exec rake tests:run
+      #     coverageLocations: coverage/.resultset.json
+      #     debug: false
+      #     verifyDownload: true
+      #     verifyEnvironment: true
 
 
   # deploy:

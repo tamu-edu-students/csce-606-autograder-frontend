@@ -21,7 +21,6 @@ end
 
 Given('I am logged in as a(n) {string} named {string}') do |role, name|
   user = User.create!(name: "#{name}", email: "#{name}@example.com", role: role)
-
   allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
   visit '/assignments'
 end
@@ -74,7 +73,6 @@ Given('I create an assignment with the name {string} and the repository {string}
 end
 
 Given('I am logged in as a(n) {string}') do |string|
-  puts 'this login function'
   user = User.find_or_create_by!(role: 'instructor')
   # login_as(user.name)
   allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)

@@ -1,3 +1,14 @@
+require 'rspec/mocks'
+
+Before do
+  RSpec::Mocks.setup
+  allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return([ nil, nil ])
+end
+
+After do
+  RSpec::Mocks.teardown
+end
+
 When('I create a new test with type {string}') do |type|
   click_link('Add new test')
 
@@ -16,11 +27,6 @@ Given('I add the Actual Test') do
   fill_in 'Actual test', with: 'actual test'
 end
 
-Given('I bypass the remote update for tests') do
-  allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return([ nil, nil ])
-  allow_any_instance_of(TestsHelper).to receive(:update_remote).and_return(nil)
-end
-
 Then('I should see an error message saying {string}') do |message|
   expect(page).to have_content(message)
 end
@@ -33,7 +39,7 @@ end
 #   click_button 'Create Test'
 # end
 
-Given('I go to eidt page') do
+Given('I go to edit page') do
     visit edit_assignment_test_path(@assignment, @test)
 end
 
@@ -74,7 +80,6 @@ Then('I should not see any missing attribute error messages') do
 end
 
 Given('the assignment contains the following test:') do |table|
-  @assignment = Assignment.find_by(assignment_name: 'assignment1')
   table.hashes.each do |test|
     @assignment.tests.create!(
       name: test['test_name'],
@@ -91,7 +96,6 @@ Then('I should not see an error message saying {string}') do |message|
 end
 
 Given('the assignment contains no tests') do
-  @assignment = Assignment.find_by(assignment_name: 'assignment1')
   @assignment.tests.destroy_all
 end
 

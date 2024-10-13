@@ -14,7 +14,7 @@ Feature: Grant or revoke a user's write permissions to an assignment
       | alice    | ta         | read               | read               | read               |
       | bob      | ta         | read-write         | read-write         | read-write         |
       | charlie  | instructor | read-write         | read-write         | read-write         |
-    And I am logged in to view assignment permissions as "charlie"
+    And I am logged in as "charlie"
     And I am on the "Manage Users" page for assignment permissions
 
   Scenario: Grant a user write access to a single assignment

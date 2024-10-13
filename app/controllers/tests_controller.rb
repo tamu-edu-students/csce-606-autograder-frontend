@@ -55,7 +55,7 @@ class TestsController < ApplicationController
     respond_to do |format|
       if @test.update(test_params)
         current_user, auth_token = current_user_and_token
-        # update_remote(current_user, auth_token)
+        update_remote(current_user, auth_token)
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully updated." }
         format.json { render :show, status: :ok, location: @test }
       else
@@ -88,14 +88,14 @@ class TestsController < ApplicationController
 
   private
 
-    def set_assignment
-      @assignment = Assignment.find(params[:assignment_id])
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_test
-      @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
-      @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
-    end
+  def set_assignment
+    @assignment = Assignment.find(params[:assignment_id])
+  end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_test
+    @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
+    @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
+  end
 
   def merge_error_messages(errors)
     # Separate "Missing attribute" errors and other errors

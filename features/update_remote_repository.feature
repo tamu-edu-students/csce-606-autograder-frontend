@@ -4,13 +4,13 @@ Feature: Update remote assignment repository
     I want to push any assignment changes to the remote GitHub repository
 
     Background:
-        Given We have the following users exist in assignment permissions:
+        Given the following users exist in assignment permissions:
         | name     | role       | assignment1_access | assignment2_access | assignment3_access |
         | alice    | ta         | read               | read               | read               |
         | bob      | ta         | read-write         | read-write         | read-write         |
         | charlie  | instructor | read-write         | read-write         | read-write         |
-        Given The user logging in is "charlie"
-        Given We have the following assignments:
+        Given I am logged in as "charlie"
+        Given the following assignments exist:
         | assignment_name | repository_name   |
         | csce-120-hw1    | csce-120-hw1      |
         Given "charlie" has write access to the "csce-120-hw1" repository

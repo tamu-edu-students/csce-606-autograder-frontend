@@ -35,6 +35,10 @@ RSpec.describe Assignment, type: :model do
       allow(Octokit::Client).to receive(:new).and_return(mock_client)
     end
 
+    after do
+      FileUtils.rm_rf(File.join("destination_path", "secrets"))
+    end
+
     subject(:create_deploy_key) do
       assignment.send(:create_and_add_deploy_key, 'test_token', 'repo_name', 'organization_name', 'destination_path')
     end

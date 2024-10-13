@@ -5,8 +5,10 @@ Feature: Update an existing test case
 
     Scenario Outline: Update an existing test case
         Given I am logged in as an "instructor"
+        Given the following assignments exist:
+        | assignment_name | repository_name   |
+        | assignment1     | assignment-1-repo |
         Given I am on the "Assignment Management" page for "assignment1"
-        And I bypass the remote update for tests
         And I have created a test case of type "<type>"
         When I update the test case with valid input
         Then I should see the updated test case in the assignment
@@ -24,8 +26,10 @@ Feature: Update an existing test case
 
     Scenario Outline: Update an existing test case with invalid input
         Given I am logged in as an "instructor"
+        Given the following assignments exist:
+        | assignment_name | repository_name   |
+        | assignment1     | assignment-1-repo |
         Given I am on the "Assignment Management" page for "assignment1"
-        And I bypass the remote update for tests
         And I have created a test case of type "<type>"
         When I update the test case with invalid input
         Then I should see an error message

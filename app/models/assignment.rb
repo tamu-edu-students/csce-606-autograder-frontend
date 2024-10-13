@@ -77,10 +77,11 @@ class Assignment < ActiveRecord::Base
   end
 
   def generate_tests_file
-    FileUtils.mkdir_p(repository_name) unless Dir.exist?(repository_name)
+    directory_path = File.join(local_repository_path, "tests", "c++")
+    FileUtils.mkdir_p(directory_path)
 
-    file_path = File.join(local_repository_path, "tests", "c++", "code.tests")
-    File.open(file_path, "w") do |file|
+    file_path = File.join(directory_path, "code.tests")
+    File.open(file_path, File::WRONLY | File::CREAT | File::TRUNC) do |file|
       tests.each do |test|
         file.puts format_test(test)
       end
@@ -181,27 +182,27 @@ class Assignment < ActiveRecord::Base
   end
 
   def format_test(test)
-    <<~TEST_SPEC
-    /*
-    @name: #{test.name}
-    @points: #{test.points}
-    @test_type: #{test.test_type}
-    */
-    <test>
-    #{test.actual_test}
-    </test>
-    TEST_SPEC
+    test = "/*\n" +
+    "@name: #{test.name}\n" +
+    "@points: #{test.points.to_f}\n" +
+    "@test_type: #{test.test_type}\n" +
+    "#{format_optional_attributes(test)}" +
+    "*/\n" +
+    "<test>\n" +
+    "#{test.actual_test}\n" +
+    "</test>\n\n"
+    test.gsub("\r\n", "\n")
   end
 
   def format_optional_attributes(test)
     optional_attrs = ""
     optional_attrs += "@target: #{test.target}\n" if test.target.present?
-    optional_attrs += "@include: #{test.include_files}\n" if test.include_files.present?
+    optional_attrs += "@include: #{test.include}\n" if test.include.present?
     optional_attrs += "@number: #{test.number}\n" if test.number.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
     optional_attrs += "@skip: #{test.skip}\n" if test.skip.present?
     optional_attrs += "@timeout: #{test.timeout}\n" if test.timeout.present?
-    optional_attrs += "@visibility: #{test.visibility}\n" if test.visibility.present?
+    optional_attrs += "@visibility: #{test.visibility}\n" if test.visibility == "hidden"
     optional_attrs
   end
 end

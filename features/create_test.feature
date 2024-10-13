@@ -22,7 +22,6 @@ Feature: Create a new test case
         And with the points "<points>"
         And with the target "<target>"
         And I add the Actual Test
-        And I bypass the remote update for tests
         And I click the "Create Test" button
         Then I should not see any missing attribute error messages
     
@@ -42,7 +41,6 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And I add the Actual Test
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then I should not see any missing attribute error messages
 
@@ -57,7 +55,6 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And I add the Actual Test
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: target"
 
@@ -75,7 +72,6 @@ Feature: Create a new test case
       And with the points "<points>"
       And with the target "<target>"
       And I add the Actual Test
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute>"
 
@@ -91,7 +87,6 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And I add the Actual Test
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute1>, <attribute2>"
 
@@ -108,9 +103,6 @@ Feature: Create a new test case
       Given the following assignments exist:
         | assignment_name | repository_name   |
         | assignment1     | assignment-1-repo |
-      And the assignment contains the following test:
-        | test_name | test_type | test_points | test_target | actual_test|
-        | test1     | unit      | 10          | target1.cpp | test.cpp   |
       And I am logged in as an "instructor"
       And I am on the "Assignment Management" page for "assignment1"
 
@@ -120,18 +112,21 @@ Feature: Create a new test case
       And with the points "10"
       And with the target "target1.cpp"
       And I add the Actual Test
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then I should not see an error message saying "Test name must be unique"
 
     Scenario: Test names are not unique
-      Given I am on the "Assignment Management" page for "assignment1"
       When I create a new test with type "unit"
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
       And I add the Actual Test
-      And I bypass the remote update for tests
+      And I click the "Create Test" button
+      When I create a new test with type "unit"
+      And with the name "test1"
+      And with the points "10"
+      And with the target "target1.cpp"
+      And I add the Actual Test
       And I click the "Create Test" button
       Then I should see an error message saying "Test name must be unique"
 
@@ -150,7 +145,6 @@ Feature: Create a new test case
       And with the points "10"
       And with the target "target1.cpp"
       And I add the Actual Test
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then the test block should contain the fields "<fields>"
 
@@ -182,7 +176,6 @@ Feature: Create a new test case
     Scenario Outline: Valid script test block
       Given the test block contains the field "Script Path"
       When I fill in the field with "<script>"
-      And I bypass the remote update for tests
       And I click the "Create Test" button
       Then I should see the test added to the list of tests in assignment1
       And I should see a message saying "Test was successfully created"
