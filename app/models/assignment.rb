@@ -1,6 +1,8 @@
 class Assignment < ActiveRecord::Base
   has_and_belongs_to_many :users
-  has_many :tests
+  has_many :test_groupings, dependent: :destroy
+  has_many :tests, through: :test_groupings, dependent: :destroy
+  has_many :tests, dependent: :destroy # TODO: remove this association once TestGrouping CRUD is implemented
   validates :repository_name, uniqueness: { message: "must be unique. This repository name is already taken." }
   validates :assignment_name, :repository_name, presence: true
 

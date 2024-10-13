@@ -1,5 +1,6 @@
 class Test < ApplicationRecord
   belongs_to :assignment
+  belongs_to :test_grouping
   validates :actual_test, presence: true
 
 
