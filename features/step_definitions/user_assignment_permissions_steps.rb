@@ -6,12 +6,6 @@ def login_as(name)
   page.set_rack_session(github_token: 'fake_github_token')
 end
 
-Given("the following assignments exist:") do |table|
-  table.hashes.each do |hash|
-    Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
-  end
-end
-
 Given("the following users exist in assignment permissions:") do |table|
   table.hashes.each do |hash|
     user = User.create!(name: hash['name'], role: hash['role'])

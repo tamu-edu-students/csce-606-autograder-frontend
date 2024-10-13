@@ -10,7 +10,7 @@ Feature: Update remote assignment repository
         | bob      | ta         | read-write         | read-write         | read-write         |
         | charlie  | instructor | read-write         | read-write         | read-write         |
         Given The user logging in is "charlie"
-        Given We have the following assignments:
+        Given the following assignments exist:
         | assignment_name | repository_name   |
         | csce-120-hw1    | csce-120-hw1      |
         Given "charlie" has write access to the "csce-120-hw1" repository

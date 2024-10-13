@@ -43,7 +43,7 @@ Given("We have the following users exist in assignment permissions:") do |table|
     page.set_rack_session(github_token: 'fake_github_token')
   end
 
-  Given("We have the following assignments:") do |table|
+  Given("the following assignments exist:") do |table|
     table.hashes.each do |hash|
     Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
     end
