@@ -96,3 +96,6 @@ group :production do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "pg"
 end
+
+gem 'searchkick'
+gem 'elasticsearch', '~> 7.17'
