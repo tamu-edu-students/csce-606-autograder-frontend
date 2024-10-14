@@ -20,6 +20,7 @@ Then('the .tests file should contain the properly formatted test') do |table|
     "@points: #{test_params['points'].to_f}\n" +
     "@test_type: #{test_params['type']}\n" +
     "@target: #{test_params['target']}\n" +
+    "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
     "#{test_params['test_code']}\n" +
@@ -78,6 +79,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@points: 10.0\n" +
     "@test_type: unit\n" +
     "@target: target.cpp\n" +
+    "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
     "actual test\n" +
@@ -87,6 +89,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@points: #{test['points'].to_f}\n" +
     "@test_type: #{test['type']}\n" +
     "@target: #{test['target']}\n" +
+    "@number: 2\n" +
     "*/\n" +
     "<test>\n" +
     "#{test['test_code']}\n" +
