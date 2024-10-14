@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post "users/:id/update_assignments", to: "users#update_assignments", as: "update_user_assignments"
   
   resources :assignments do
+    resources :tests
     resources :test_groupings do
       resources :tests
     end
