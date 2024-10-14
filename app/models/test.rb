@@ -1,5 +1,6 @@
 class Test < ApplicationRecord
   belongs_to :assignment
+  belongs_to :test_grouping
   validates :actual_test, presence: true
 
 
@@ -17,7 +18,15 @@ class Test < ApplicationRecord
   attribute :timeout, :float
   attribute :visibility, :string, default: "visible"
 
+  before_validation :set_default_test_grouping, on: :create
+
   def regenerate_tests_file
     assignment.generate_tests_file
+  end
+
+  private
+
+  def set_default_test_grouping
+    self.test_grouping ||= TestGrouping.find_by(name: "Miscellaneous Tests")
   end
 end
