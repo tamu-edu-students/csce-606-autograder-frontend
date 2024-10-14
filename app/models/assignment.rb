@@ -1,8 +1,12 @@
 class Assignment < ActiveRecord::Base
   has_and_belongs_to_many :users
-  has_many :tests
+  has_many :test_groupings, dependent: :destroy
+  has_many :tests, through: :test_groupings, dependent: :destroy
+  has_many :tests, dependent: :destroy # TODO: remove this association once TestGrouping CRUD is implemented
   validates :repository_name, uniqueness: { message: "must be unique. This repository name is already taken." }
   validates :assignment_name, :repository_name, presence: true
+
+  after_create :ensure_default_test_grouping
 
   def repository_identifier
     File.join(ENV["GITHUB_COURSE_ORGANIZATION"], self.repository_name)
@@ -89,6 +93,10 @@ class Assignment < ActiveRecord::Base
   end
 
   private
+
+  def ensure_default_test_grouping
+    test_groupings.find_or_create_by!(name: "Miscellaneous Tests")
+  end
 
   # Commit local changes to the repository
   def commit_local_changes(local_repo_path, user)
