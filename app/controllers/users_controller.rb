@@ -11,7 +11,10 @@ class UsersController < ApplicationController
     def update_assignments
         @user = User.find(params[:id])
         @assignments = Assignment.all
-        new_assignment_ids = (params[:assignment_ids] || []).map(&:to_i)
+
+        new_read_assignment_ids = (params[:read_assignment_ids] || []).map(&:to_i)
+        new_write_assignment_ids = (params[:write_assignment_ids] || []).map(&:to_i)
+        
         old_assignment_ids = @user.assignment_ids
 
 
