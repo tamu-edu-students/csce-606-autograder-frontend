@@ -4,7 +4,7 @@ class AssignmentsController < ApplicationController
   # GET /assignments or /assignments.json
   def index
     if params[:query].present?
-      @assignments = Assignment.where("assignment_name LIKE ?", "%#{params[:query]}%")
+      @assignments = Assignment.where("repository_name LIKE ?", "%#{params[:query]}%")
     else
       @assignments = Assignment.all
     end
