@@ -36,25 +36,20 @@ class Assignment < ActiveRecord::Base
 
   # Push any changes to the remote GitHub repository
   def push_changes_to_github(user, auth_token)
-      # Retrieve the base path for all assignments from the environment variable
-      base_repo_path = ENV["ASSIGNMENTS_BASE_PATH"] # Base directory for all repositories
-      repository_name = self.repository_name # Repository name is a property of the assignment
-
-      # Construct the local path to the specific assignment's repository
-      local_repo_path = File.join(base_repo_path, repository_name)
+      if !Dir.exist?(self.local_repository_path)
+        clone_repo_to_local(auth_token)
+      end
 
       # Set the remote URL for the repository
       # system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
-    
-      set_remote_origin(local_repo_path, authenticated_url(auth_token))
-
+      set_remote_origin(self.local_repository_path, authenticated_url(auth_token))
 
       # Check if the local repo exists before committing and pushing changes
-      if Dir.exist?(local_repo_path)
-        commit_local_changes(local_repo_path, user)
-        sync_to_github(local_repo_path)
+      if Dir.exist?(self.local_repository_path)
+        commit_local_changes(self.local_repository_path, user)
+        sync_to_github(self.local_repository_path)
       else
-        Rails.logger.error "Local repository not found for #{repository_name}"
+        Rails.logger.error "Local repository not found for #{self.repository_name}"
       end
   end
 
