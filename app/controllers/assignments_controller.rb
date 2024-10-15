@@ -3,7 +3,19 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments or /assignments.json
   def index
-    @assignments = Assignment.all
+    if params[:query].present?
+      @assignments = Assignment.where("assignment_name LIKE ?", "%#{params[:query]}%")
+    else
+      @assignments = Assignment.all
+    end
+
+    if @assignments.empty?
+      flash.now[:alert] = "No matching assignments found"
+    end
+
+    respond_to do |format|
+      format.html # For normal page load
+    end
   end
 
   def show
@@ -24,6 +36,7 @@ class AssignmentsController < ApplicationController
 
   # POST /assignments or /assignments.json
   def create
+    assignment_params[:repository_name].downcase!
     @assignment = Assignment.new(assignment_params)
 
     github_token = session[:github_token]
@@ -41,8 +54,9 @@ class AssignmentsController < ApplicationController
   end
 
   # PATCH/PUT /assignments/1 or /assignments/1.json
-  # PATCH/PUT /assignments/1 or /assignments/1.json
   def update
+    assignment_params[:repository_name].downcase!
+
     respond_to do |format|
       if @assignment.update(assignment_params)
         format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }
@@ -53,7 +67,6 @@ class AssignmentsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /assignments/1 or /assignments/1.json
   def destroy
@@ -97,15 +110,21 @@ class AssignmentsController < ApplicationController
     end
   end
 
-
+  
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_assignment
-      @assignment = Assignment.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def assignment_params
-      params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+  # Use callbacks to share common setup or constraints between actions.
+  def set_assignment
+    #For redirecting to index function, as query route leads to show action being called inadvertently
+    if params[:query].present?
+      redirect_to assignments_path(query: params[:query]) and return
     end
+    
+    @assignment = Assignment.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def assignment_params
+    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+  end
 end
