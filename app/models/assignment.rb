@@ -45,7 +45,7 @@ class Assignment < ActiveRecord::Base
 
       # Set the remote URL for the repository
       # system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
-
+    
       set_remote_origin(local_repo_path, authenticated_url(auth_token))
 
 
@@ -93,7 +93,7 @@ class Assignment < ActiveRecord::Base
   private
 
   def authenticated_url(github_token)
-    "https://#{github_token}@#{repository_url[8..]}"
+    "https://#{github_token}@github.com/#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}.git"
   end
 
   def ensure_default_test_grouping
