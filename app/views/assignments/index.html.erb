@@ -1,14 +1,13 @@
-<% content_for :title, "Assignments" %>
+<div class="assignments-wrapper">
+  <h1>Assignments</h1>
 
-<h1>Assignments</h1>
-
-<div id="assignments">
   <% @assignments.each do |assignment| %>
-    <%= render assignment %>
-    <p>
-      <%= link_to "Show this assignment", assignment%>
-    </p>
+    <div class="assignment-item">
+      <p><strong>Assignment <%= assignment.assignment_name %>: </strong><%= assignment.assignment_name %></p>
+      <p><strong>Repository Name: </strong><%= assignment.repository_name %></p>
+      <%= link_to "Show This Assignment", assignment_path(assignment), class: "btn btn-primary" %>
+    </div>
   <% end %>
-</div>
 
-<%= link_to "Create Assignment", new_assignment_path %>
+  <%= link_to "Create Assignment", new_assignment_path, class: "btn btn-primary create-assignment-btn" %>
+</div>

@@ -15,7 +15,7 @@
       </ul>
 
       <!-- Link to add a new test -->
-      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
+      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil),  class: 'btn btn-primary' %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
 
     </div>
@@ -88,7 +88,7 @@
           </div>
         <% end %>
         
-      <%= link_to 'Back to Assignment', assignments_path %>
+      <%= link_to "Back to Assignment", assignment_path, class: 'btn btn-primary back-btn' %>
       </div>
     </div>
   </div>
