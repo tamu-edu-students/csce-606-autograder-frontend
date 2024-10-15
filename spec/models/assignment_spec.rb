@@ -5,12 +5,13 @@ require 'octokit'
 
 RSpec.describe Assignment, type: :model do
   let(:user) { instance_double('User', name: 'testuser') }
-  let(:assignment) { Assignment.new(assignment_name: 'test_assignment', repository_name: 'test_repo') }
+  let(:assignment) { Assignment.new(assignment_name: 'test_assignment', repository_name: 'test_repo', repository_url: 'https://github.com/user/test-repository.git') }
   let(:local_repo_path) { File.join(ENV['ASSIGNMENTS_BASE_PATH'], assignment.repository_name) }
   let(:auth_token) { 'fake_auth_token' }
   let(:remote_url) { "https://#{auth_token}@github.com/#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{assignment.repository_name}.git" }
   let(:git) { instance_double('Git::Base') } # Define git here
   let(:client) { double('OctokitClient', add_deploy_key: true) }
+  let(:authenticated_url) { 'https://fake_auth_token@github.com/user/test-repository.git' }
 
   before do
     # Set the environment variable for the test
@@ -128,20 +129,20 @@ RSpec.describe Assignment, type: :model do
   end
 
   describe '#clone_repo_to_local' do
-    let(:assignment) { Assignment.new(assignment_name: 'Test Assignment', repository_name: 'test-repository') }
+    let(:assignment) { Assignment.new(assignment_name: 'Test Assignment', repository_name: 'test-repository', repository_url: 'https://github.com/user/test-repository.git') }
 
     before do
       allow(Git).to receive(:clone)
     end
 
     it 'clones the repository successfully' do
-      expect(Git).to receive(:clone).with(assignment.repository_url, assignment.local_repository_path).and_return(true)
-      assignment.send(:clone_repo_to_local)
+      expect(Git).to receive(:clone).with(authenticated_url, assignment.local_repository_path).and_return(true)
+      assignment.send(:clone_repo_to_local, auth_token)
     end
 
     it 'rescues the error when Git clone fails' do
       allow(Git).to receive(:clone).and_raise(Git::Error.new("Failed to clone"))
-      expect { assignment.send(:clone_repo_to_local) }.to output(/An error occurred: Failed to clone/).to_stdout
+      expect { assignment.send(:clone_repo_to_local, auth_token) }.to output(/An error occurred: Failed to clone/).to_stdout
     end
   end
 
