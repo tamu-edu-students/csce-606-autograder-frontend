@@ -1,0 +1,27 @@
+<%= form_with(
+  url: search_path(query: params[:query] || ''),
+  method: :get,
+  data: {
+    controller: "search",
+    action: "search#search",
+    url: search_path(query: params[:query] || '') # Add this to fetch all assignments
+  }
+) do |form| %>
+  
+  <div class="search-input-wrapper">
+    <%= form.text_field :query,
+      value: params[:query], 
+      data: {
+        search_target: "input",
+        action: "keypress->search#handleEnter"
+      },
+      class: "search-input",
+      placeholder: "Search...", autocomplete: "off" %>
+
+    <!-- Cross button inside the text box -->
+    <button data-search-target="clearButton" type="button" id="clear_search" class="clear-button">
+      ✕
+    </button>
+    <%= form.submit "Search Assignment", class: "search-button" %>
+  </div>
+<% end %>
