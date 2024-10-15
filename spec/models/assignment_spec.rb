@@ -4,7 +4,7 @@ require 'open3'
 require 'octokit'
 
 RSpec.describe Assignment, type: :model do
-  let(:user) { instance_double('User', name: 'testuser') }
+  let(:user) { instance_double('User', name: 'testuser', email: 'test-email@test.net') }
   let(:assignment) { Assignment.new(assignment_name: 'test_assignment', repository_name: 'test_repo', repository_url: 'https://github.com/user/test-repository.git') }
   let(:local_repo_path) { File.join(ENV['ASSIGNMENTS_BASE_PATH'], assignment.repository_name) }
   let(:auth_token) { 'fake_auth_token' }
@@ -277,6 +277,8 @@ RSpec.describe Assignment, type: :model do
   describe '#commit_local_changes' do
     it 'adds and commits changes to the local repository' do
       expect(Git).to receive(:open).with(local_repo_path).and_return(git)
+      expect(git).to receive(:config).with("user.name", user.name)
+      expect(git).to receive(:config).with("user.email", anything)
       expect(git).to receive(:add).with(all: true)
       expect(git).to receive(:commit).with("Changes made by #{user.name}")
 
