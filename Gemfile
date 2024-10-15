@@ -95,5 +95,5 @@ end
 group :production do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "pg"
-  gem 'aws-sdk-s3', require: false
+  gem "aws-sdk-s3", require: false
 end
