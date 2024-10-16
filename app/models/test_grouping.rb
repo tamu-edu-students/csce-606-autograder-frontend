@@ -15,7 +15,7 @@ class TestGrouping < ApplicationRecord
       tests.destroy_all
       return
     end
-
-    tests.update_all(test_grouping_id: default_grouping.id)
+    # delet this line to run the seed Oct16 afternoon
+    #tests.update_all(test_grouping_id: default_grouping.id)
   end
 end
