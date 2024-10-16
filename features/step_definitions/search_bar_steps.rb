@@ -28,5 +28,9 @@
     expect(page).to have_content(repository_name)
   end
   
+  Then('I should see a message indicating no matching assignments found') do
+    expect(page).to have_content('No matching assignments found') # Ensure this message matches your app's output
+  end
+  
   
   
