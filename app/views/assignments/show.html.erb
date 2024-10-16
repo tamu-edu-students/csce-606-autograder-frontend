@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag 'assignment_show', media: 'all' %>
+
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
 <!-- Display tests for the assignment -->
@@ -5,14 +7,45 @@
   <div class="row">
     <div id = 'test' class="col-md-6">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
-      <ul>
-        <% @tests.each do |test| %>
-          <li>
-            <%= test.name %> - <%= test.points %> points - <%= test.test_type %>
-            <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
-          </li>
-        <% end %>
-      </ul>
+      <div class="scrollable-container">
+        <ul class="test-grouping-list">
+          <% if @test_groupings.present? %>
+            <% @test_groupings.each_with_index do |grouping, index| %>
+
+              <li class="test-grouping-item">
+
+                <!-- Use a hidden checkbox to control the dropdown -->
+                
+                <input type="checkbox" id="group-<%= index %>" class="dropdown-checkbox">
+                <label for="group-<%= index %>" class="grouping-title">
+                  <div class="grouping-bar">
+                    <span class="grouping-name"><%= grouping.name %></span>
+                  </div>
+                </label>
+                <ul class="test-list" data-controller="drag">
+                  <% grouping.tests.each do |test| %>
+                    <li class="test-item" data-test-id="<%= test.id %>">
+                      <%= link_to assignment_path(@assignment, test_id: test.id), class: "test-link" do %>
+                        <div class="test-bar">
+                          <span class="test-name"><%= test.name %></span>
+                          <span class="test-points"><%= test.points %> points</span>
+                          <span class="test-type"><%= test.test_type %></span>
+                        </div>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+
+              </li>
+
+            <% end %>
+          <% else %>
+            <p>No test groupings available.</p>
+          <% end %>
+        </ul>
+      </div>
+    
+    
 
       <!-- Link to add a new test -->
       <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
