@@ -210,14 +210,11 @@ form {
     background-color: #2980b9;
     outline: none;
   }
+
   body {
-    padding-top: 20px; /* Adjust as needed */
+    padding-top: 20px;
   }
   
-  .container {
-    padding-top: 80px; /* Additional padding if needed */
-  }
-
 
   /* Edit button styling */
 .edit-btn {
@@ -244,4 +241,15 @@ form {
   content: "\270E"; /* Pencil icon */
   margin-right: 5px;
   font-size: 16px;
+}
+
+.assignment-page {
+  padding-top: 20px;
+}
+
+.assignment-page h1 {
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  padding-top: 180px
 }
