@@ -43,5 +43,9 @@
     end
   end
   
+  When('I click the search button without entering any text') do
+    fill_in 'query', with: ''
+    click_button 'Search Assignment'
+  end
   
   
