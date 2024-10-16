@@ -100,12 +100,21 @@ class AssignmentsController < ApplicationController
 
   def search
     if params[:query].present?
-      @assignments = Assignment.where("name LIKE ?", "%#{params[:query]}%")
+      @assignments = Assignment.where("repository_name LIKE ?", "%#{params[:query]}%")
     else
       @assignments = Assignment.all
+      redirect_to assignments_path
+      return
     end
 
-    render json: @assignments
+    if @assignments.empty?
+      flash[:alert] = "No matching assignments found"
+      @assignments = Assignment.all
+      redirect_to assignments_path
+      return
+    end
+
+    render :index
   end
 
   private
