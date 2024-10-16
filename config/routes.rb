@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   resources :assignments do
     resources :tests
     collection do
-      get 'search'
+      get "search"
     end
     member do
       get "create_and_download_zip"

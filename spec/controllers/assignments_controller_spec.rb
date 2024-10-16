@@ -139,7 +139,7 @@ RSpec.describe AssignmentsController, type: :controller do
   describe 'GET #search' do
     let!(:assignment1) { Assignment.create!(repository_name: 'test-repository-1', assignment_name: 'Test Assignment 1') }
     let!(:assignment2) { Assignment.create!(repository_name: 'test-repository-2', assignment_name: 'Test Assignment 2') }
-    
+
     describe 'when query is present and there is a match' do
       it 'renders the index template' do
         get :search, params: { query: 'test-repository-1' }
@@ -147,7 +147,7 @@ RSpec.describe AssignmentsController, type: :controller do
       end
       it 'shows only the matching assignments in the rendered view' do
         get :search, params: { query: 'test-repository-1' }
-        expect(assigns(:assignments)).to eq([assignment1])
+        expect(assigns(:assignments)).to eq([ assignment1 ])
       end
     end
 
@@ -158,7 +158,7 @@ RSpec.describe AssignmentsController, type: :controller do
       end
       it 'shows all the assignments in the rendered view' do
         get :search, params: { query: 'Nonexistent' }
-        expect(assigns(:assignments)).to eq([assignment1, assignment2])  # Redirects to show all assignments
+        expect(assigns(:assignments)).to eq([ assignment1, assignment2 ])  # Redirects to show all assignments
       end
       it 'shows a flash alert in the rendered view' do
         get :search, params: { query: 'Nonexistent' }
@@ -169,7 +169,7 @@ RSpec.describe AssignmentsController, type: :controller do
     describe 'when query is not present' do
       it 'redirects to the default index view path' do
         get :search
-        expect(response).to redirect_to(assignments_path)      
+        expect(response).to redirect_to(assignments_path)
       end
     end
   end
