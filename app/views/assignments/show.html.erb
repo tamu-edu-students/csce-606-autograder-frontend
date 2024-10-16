@@ -8,16 +8,16 @@
     <div id = 'test' class="col-md-6">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
       <div class="scrollable-container">
-        <div class="test-grouping-list">
+        <div class="test-grouping-list" data-controller="test_grouping_card">
           <% @test_groupings.sort_by(&:position).each do | test_grouping| %>
-            <div class="test-grouping-item">
-              <h3 class="grouping-title" data-test-grouping-id="<%= test_grouping.id %>">
+            <div class="test-grouping-card">
+              <div class="test-grouping-title" data-action="click->test-grouping-#toggleTestGrouping data-test-grouping-id="<%= test_grouping.id %>">
                 <%= "#{test_grouping.position}) #{test_grouping.name}" %>
-              </h3>
+              </div>
 
-              <div class="test-list" data-controller="test_display">
+              <div class="test-list" data-controller="test_card" style="display: none;">
                 <% test_grouping.tests.sort_by(&:position).each do |test| %>
-                  <div class="test-item" data-test-id="<%= test.id %>">
+                  <div class="test-card data-test-id="<%= test.id %>">
                     <%= "#{test.position}) #{test.name} (#{test.points} pts.)" %>
                   </div>
                 <% end %>

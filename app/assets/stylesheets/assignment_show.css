@@ -9,22 +9,8 @@
     background-color: #f9f9f9;
   }
   
-  /* Remove list styling */
-  .test-grouping-list,
-  .test-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Styling for individual items */
-  .test-grouping-item,
-  .test-item {
-    margin-bottom: 10px;
-  }
-  
   /* Title styling and hiding the default disclosure triangle */
-  .grouping-title {
+  .test-grouping-title {
     cursor: pointer;
     font-weight: bold;
     display: block;
@@ -34,24 +20,36 @@
     margin-bottom: 10px;
     position: relative;
   }
+
+  /* Remove list styling */
+  .test-grouping-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .test-grouping-item {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .test-list {
+    margin-top: 10px;
+    padding-left: 15px;
+    display: none;
+  }
+  
+  .test-card {
+    padding: 5px;
+    margin: 5px 0;
+    cursor: pointer;
+  }
+  
+  
   
   /* Checkbox to control dropdown - hidden */
   .dropdown-checkbox {
     display: none;
-  }
-  
-  /* Dropdown content - hidden initially */
-  .test-list {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    margin-left: 20px; /* Indent tests under the grouping */
-    padding: 0 10px;
-  }
-  
-  /* Display dropdown content when checkbox is checked */
-  .dropdown-checkbox:checked + .grouping-title + .test-list {
-    max-height: 500px; /* Adjust max-height to fit content */
   }
   
   /* Remove the default disclosure triangle */
