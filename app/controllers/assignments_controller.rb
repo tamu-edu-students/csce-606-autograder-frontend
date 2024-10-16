@@ -3,19 +3,7 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments or /assignments.json
   def index
-    if params[:query].present?
-      @assignments = Assignment.where("repository_name LIKE ?", "%#{params[:query]}%")
-    else
-      @assignments = Assignment.all
-    end
-
-    if @assignments.empty?
-      flash.now[:alert] = "No matching assignments found"
-    end
-
-    respond_to do |format|
-      format.html # For normal page load
-    end
+    @assignments = Assignment.all
   end
 
   def show
@@ -110,16 +98,20 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  
+  def search
+    if params[:query].present?
+      @assignments = Assignment.where("name LIKE ?", "%#{params[:query]}%")
+    else
+      @assignments = Assignment.all
+    end
+
+    render json: @assignments
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_assignment
-    #For redirecting to index function, as query route leads to show action being called inadvertently
-    if params[:query].present?
-      redirect_to assignments_path(query: params[:query]) and return
-    end
-    
     @assignment = Assignment.find(params[:id])
   end
 
