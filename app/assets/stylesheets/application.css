@@ -217,3 +217,31 @@ form {
   .container {
     padding-top: 80px; /* Additional padding if needed */
   }
+
+
+  /* Edit button styling */
+.edit-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #3498db; 
+  border: none;
+  border-radius: 20px; 
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9; 
+  transform: scale(1.05); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pencil Icon for Edit Button */
+.edit-btn::before {
+  content: "\270E"; /* Pencil icon */
+  margin-right: 5px;
+  font-size: 16px;
+}

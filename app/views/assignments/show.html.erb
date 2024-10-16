@@ -9,7 +9,7 @@
         <% @tests.each do |test| %>
           <li>
             <%= test.name %> - <%= test.points %> points - <%= test.test_type %>
-            <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
+            <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id), class: "edit-btn" %> <!-- Link to edit test -->
           </li>
         <% end %>
       </ul>
