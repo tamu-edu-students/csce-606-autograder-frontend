@@ -166,14 +166,16 @@ form {
   
   /* Style for dropdown */
   select {
-    appearance: none;
-    background-color: white;
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik00LjMgNy4ybDEuNCAxLjQgNC4zIDQuMyA0LjMtNC4zIDEuNC0xLjRMOCAxMi42bC00LjMtNC4zeiIvPgo8L3N2Zz4=');
+    border: 2px solid #3498db;
+    background-color: #ffffff;
+    padding-right: 30px;
+    border-radius: 50px;
+    cursor: pointer;
     background-repeat: no-repeat;
     background-position: right 10px center;
-    background-size: 12px;
-    padding-right: 30px;
-  }
+    background-size: 15px;
+}
+
   
   /* Style for checkbox */
   input[type="checkbox"] {
