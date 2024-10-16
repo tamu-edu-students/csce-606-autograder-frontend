@@ -12,17 +12,31 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         @assignments = Assignment.all
 
+        all_assignment_ids = Assignment.pluck(:id)
+
         new_read_assignment_ids = (params[:read_assignment_ids] || []).map(&:to_i)
         new_write_assignment_ids = (params[:write_assignment_ids] || []).map(&:to_i)
-        
+
         old_assignment_ids = @user.assignment_ids
 
-
-        assignments_to_remove = old_assignment_ids - new_assignment_ids
+        assignments_to_remove = old_assignment_ids - new_read_assignment_ids
         @user.assignments.delete(Assignment.where(id: assignments_to_remove))
 
-        # Add new assignments
-        @user.assignment_ids = new_assignment_ids
+        # Update or create assignments with appropriate access levels
+        all_assignment_ids.each do |assignment_id|
+          if new_write_assignment_ids.include?(assignment_id)
+            # Write access (implies read access as well)
+            @user.assignments << Assignment.find(assignment_id) unless @user.assignment_ids.include?(assignment_id)
+            @user.assignments.where(id: assignment_id).update_all(access_level: 'write')
+          elsif new_read_assignment_ids.include?(assignment_id)
+            # Read access only
+            @user.assignments << Assignment.find(assignment_id) unless @user.assignment_ids.include?(assignment_id)
+            @user.assignments.where(id: assignment_id).update_all(access_level: 'read')
+          else
+            # Neither read nor write access, remove the association
+            @user.assignments.delete(Assignment.where(id: assignment_id))
+          end
+        end
 
         if @user.save
             # Update GitHub permissions
