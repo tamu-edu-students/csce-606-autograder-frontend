@@ -91,3 +91,19 @@
     margin: 0 5px;
   }
   
+  .new-test-grouping-form .form-group {
+    margin-right: 10px;
+  }
+  
+  .new-test-grouping-form button span {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .plus-button {
+    font-size: 18px;
+    margin: 0;
+  }
