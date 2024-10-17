@@ -1,5 +1,5 @@
 <div class="centered-container">
-<h1>Assignments</h1>
+  <h1>Assignments</h1>
   <div class="assignments-table-container">
     <table id="assignments-table" class="assignments-table">
       <thead>
@@ -14,8 +14,9 @@
         <% @assignments.each do |assignment| %>
           <tr>
             <td><%= assignment.assignment_name %></td>
-            <td><%= assignment.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-            <td><%= assignment.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <!-- Format the date as month-day-year hour:minute -->
+            <td><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
+            <td><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
             <td>
               <%= link_to 'Edit', edit_assignment_path(assignment), class: "btn btn-primary" %>
               <%= link_to 'Show', assignment_path(assignment), class: "btn btn-secondary" %>
@@ -25,38 +26,48 @@
       </tbody>
     </table>
   </div>
+  
+  <!-- Button to create a new assignment -->
   <%= link_to 'Create Assignment', new_assignment_path, class: 'btn btn-primary create-assignment-btn' %>
 </div>
 
-
 <script>
+  // Function to sort the table when clicking on headers
   function sortTable(n) {
     const table = document.getElementById("assignments-table");
     let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     switching = true;
-    dir = "asc"; // Set the sorting direction to ascending
-    
+    dir = "asc"; // Set the sorting direction to ascending by default
+
     while (switching) {
       switching = false;
       rows = table.rows;
-      
+
       for (i = 1; i < (rows.length - 1); i++) {
         shouldSwitch = false;
         x = rows[i].getElementsByTagName("TD")[n];
         y = rows[i + 1].getElementsByTagName("TD")[n];
-        
-        if (dir === "asc") {
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+
+        // Compare values based on column content
+        if (n === 1 || n === 2) { // If sorting by date (Created On or Last Updated)
+          if (dir === "asc" && new Date(x.innerHTML) > new Date(y.innerHTML)) {
+            shouldSwitch = true;
+            break;
+          } else if (dir === "desc" && new Date(x.innerHTML) < new Date(y.innerHTML)) {
             shouldSwitch = true;
             break;
           }
-        } else if (dir === "desc") {
-          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+        } else { // Sorting by name or other text-based columns
+          if (dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          } else if (dir === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
             shouldSwitch = true;
             break;
           }
         }
       }
+
       if (shouldSwitch) {
         rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
         switching = true;
