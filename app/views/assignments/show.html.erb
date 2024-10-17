@@ -1,21 +1,20 @@
-<h1>Assignment: <%= @assignment.assignment_name %></h1>
-
-<!-- Display tests for the assignment -->
-<div class="container">
-  <div class="row">
+<div class="assignment-page">
+   <h1>Assignment: <%= @assignment.assignment_name %></h1>
+   </div>
+   <div class="row">
     <div id = 'test' class="col-md-6">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
       <ul>
         <% @tests.each do |test| %>
           <li>
             <%= test.name %> - <%= test.points %> points - <%= test.test_type %>
-            <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
+            <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id), class: "edit-btn" %> <!-- Link to edit test -->
           </li>
         <% end %>
       </ul>
 
       <!-- Link to add a new test -->
-      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
+      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
 
     </div>
@@ -24,7 +23,7 @@
       <!-- Form to create or edit a test -->
       <div class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
-        
+
         <%= form_with model: [@assignment, @test], local: true do |form| %>
           <div class="form-grid">
             <div class = "form-group">
@@ -39,7 +38,7 @@
               <%= form.label :test_type %>
               <%= form.select :test_type, options_for_select([['coverage', 'coverage'], ['compile', 'compile'], ['approved_includes', 'approved_includes'], ['memory_errors', 'memory_errors'], ['unit', 'unit'], ['i/o', 'i/o'], ['performance', 'performance'], ['script', 'script']], @test.test_type), class:"form-control" %>
             </div>
-          
+
             <div class = "form-group">
             <%= form.label :target %>
             <%= form.text_field :target, class:"form-control" %>
@@ -81,15 +80,13 @@
             <%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
           </div>
         <% end %>
-
         <% if @test.persisted? %>
           <div class="delete-actions">
             <%= button_to "Destroy this test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
           </div>
         <% end %>
         
-      <%= link_to 'Back to Assignment', assignments_path %>
+      <%= link_to 'Back to Assignment', assignments_path, class: 'btn btn-primary back-btn' %>
       </div>
     </div>
   </div>
-</div>
