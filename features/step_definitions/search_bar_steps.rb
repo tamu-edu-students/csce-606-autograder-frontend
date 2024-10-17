@@ -1,7 +1,3 @@
-  When('I enter {string} into the search bar') do |query|
-    fill_in 'query', with: query
-  end
-
   Given('I have searched for {string}') do |query|
     fill_in 'query', with: query
     click_button 'Search Assignment'
