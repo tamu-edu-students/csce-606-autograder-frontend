@@ -3,6 +3,9 @@ class Assignment < ActiveRecord::Base
   has_many :test_groupings, dependent: :destroy
   has_many :tests, through: :test_groupings, dependent: :destroy
   has_many :tests, dependent: :destroy # TODO: remove this association once TestGrouping CRUD is implemented
+
+  before_validation :normalize_repo_name
+
   validates :repository_name, uniqueness: { message: "must be unique. This repository name is already taken." }
   validates :assignment_name, :repository_name, presence: true
 
@@ -212,5 +215,22 @@ class Assignment < ActiveRecord::Base
     optional_attrs += "@timeout: #{test.timeout}\n" if test.timeout.present?
     optional_attrs += "@visibility: #{test.visibility}\n" if test.visibility == "hidden"
     optional_attrs
+  end
+
+  def normalize_repo_name
+    if self.repository_name.present?
+      repository_name = self.repository_name.downcase
+  
+      # Replace spaces/underscores with hyphens
+      repository_name = repository_name.gsub(/[ _]/, '-')
+  
+      # Remove any non-alphanumeric/hyphen chars
+      repository_name = repository_name.gsub(/[^a-z0-9\-]/, '')
+  
+      # Remove leading/trailing hyphens
+      repository_name = repository_name.gsub(/^-+|-+$/, '')
+
+      self.repository_name = repository_name
+    end
   end
 end
