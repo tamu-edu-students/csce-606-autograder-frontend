@@ -16,6 +16,8 @@ class TestGrouping < ApplicationRecord
       nil
     end
 
-    tests.update_all(test_grouping_id: default_grouping.id)
+    if !default_grouping.nil?
+      tests.update_all(test_grouping_id: default_grouping.id)
+    end
   end
 end
