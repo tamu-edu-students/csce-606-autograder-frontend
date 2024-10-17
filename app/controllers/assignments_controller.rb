@@ -24,14 +24,12 @@ class AssignmentsController < ApplicationController
 
   # POST /assignments or /assignments.json
   def create
-    assignment_params[:repository_name].downcase!
     @assignment = Assignment.new(assignment_params)
-
     github_token = session[:github_token]
-    @assignment.assignment_repo_init(github_token)
 
     respond_to do |format|
       if @assignment.save
+        @assignment.assignment_repo_init(github_token)
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
         format.json { render :show, status: :created, location: @assignment }
       else
@@ -43,8 +41,6 @@ class AssignmentsController < ApplicationController
 
   # PATCH/PUT /assignments/1 or /assignments/1.json
   def update
-    assignment_params[:repository_name].downcase!
-
     respond_to do |format|
       if @assignment.update(assignment_params)
         format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }
