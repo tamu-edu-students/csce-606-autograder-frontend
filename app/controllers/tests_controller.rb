@@ -1,7 +1,7 @@
 
 class TestsController < ApplicationController
   include TestsHelper
-
+  before_action :require_login
   before_action :set_assignment
   before_action :set_test, only: [ :show, :edit, :update, :destroy ]
 

@@ -1,5 +1,7 @@
 class AssignmentsController < ApplicationController
+  before_action :require_login
   before_action :set_assignment, only: %i[ show edit update destroy ]
+  
 
   # GET /assignments or /assignments.json
   def index
