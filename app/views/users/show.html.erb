@@ -22,8 +22,8 @@
             <% @assignments.each do |assignment| %>
             <tr>
                 <td><%= assignment.repository_name %></td>
-                <td><%= check_box_tag "read_assignment_ids[]", assignment.id, @user.assignments.include?(assignment), id: "read_assignment_#{assignment.id}" %></td>
-                <td><%= check_box_tag "write_assignment_ids[]", assignment.id, @user.assignments.include?(assignment), id: "write_assignment_#{assignment.id}" %></td>
+                <td><%= check_box_tag "read_assignment_ids[]", assignment.id, @user.permissions.where(assignment: assignment).exists?(role: "read") || @user.permissions.where(assignment: assignment).exists?(role: "read_write") , id: "read_assignment_#{assignment.id}" %></td>
+                <td><%= check_box_tag "write_assignment_ids[]", assignment.id, @user.permissions.where(assignment: assignment).exists?(role: "read_write"), id: "write_assignment_#{assignment.id}" %></td>
             </tr>
             <% end %>
         </tbody>
@@ -33,31 +33,93 @@
     <% end %>
 
     <script>
+        // Ensure Read checkbox is checked when Write checkbox is checked
+        function checkReadCheckbox(writeCheckboxId, readCheckboxId) {
+            const writeCheckbox = document.getElementById(writeCheckboxId);
+            const readCheckbox = document.getElementById(readCheckboxId);
+
+            writeCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    readCheckbox.checked = true;
+                }
+            });
+        }
+
+        // Ensure Write checkbox is unchecked when Read checkbox is unchecked
+        function uncheckWriteCheckbox(writeCheckboxId, readCheckboxId) {
+            const writeCheckbox = document.getElementById(writeCheckboxId);
+            const readCheckbox = document.getElementById(readCheckboxId);
+
+            readCheckbox.addEventListener('change', function() {
+                if (!this.checked) {
+                    writeCheckbox.checked = false;
+                }
+            });
+        }
+
+        // Add event listeners for each Read checkbox
+        function applyReadListeners() {
+            document.querySelectorAll('input[id^="read_assignment_"]').forEach(function(readCheckbox) {
+                const assignmentId = readCheckbox.id.split('_').pop(); // Get assignment ID from the ID
+                uncheckWriteCheckbox(`write_assignment_${assignmentId}`, `read_assignment_${assignmentId}`);
+            });
+        }
+
+        // Add event listeners for each Write checkbox
+        function applyWriteListeners() {
+            document.querySelectorAll('input[id^="write_assignment_"]').forEach(function(writeCheckbox) {
+                const assignmentId = writeCheckbox.id.split('_').pop(); // Get assignment ID from the ID
+                checkReadCheckbox(writeCheckbox.id, `read_assignment_${assignmentId}`);
+            });
+        }
+
+        // Initial application of listeners
+        applyReadListeners();
+        applyWriteListeners();
+
+        // Bulk select/deselect for Read checkboxes
         document.getElementById('select-all-read').addEventListener('click', function() {
             var checkboxes = document.querySelectorAll('input[id^="read_assignment_"]');
             var allChecked = Array.from(checkboxes).every(cb => cb.checked);
             checkboxes.forEach(function(checkbox) {
-            checkbox.checked = !allChecked;
+                checkbox.checked = !allChecked;
+                const assignmentId = checkbox.id.split('_').pop();
+                if (allChecked) {
+                    document.getElementById(`write_assignment_${assignmentId}`).checked = false;
+                }
             });
         });
+
+        // Bulk revoke for Read checkboxes
         document.getElementById('revoke-all-read').addEventListener('click', function() {
             var checkboxes = document.querySelectorAll('input[id^="read_assignment_"]');
             checkboxes.forEach(function(checkbox) {
                 checkbox.checked = false;
+                const assignmentId = checkbox.id.split('_').pop();
+                document.getElementById(`write_assignment_${assignmentId}`).checked = false;
             });
         });
+
+        // Bulk select/deselect for Write checkboxes
         document.getElementById('select-all-write').addEventListener('click', function() {
             var checkboxes = document.querySelectorAll('input[id^="write_assignment_"]');
             var allChecked = Array.from(checkboxes).every(cb => cb.checked);
             checkboxes.forEach(function(checkbox) {
-            checkbox.checked = !allChecked;
+                checkbox.checked = !allChecked;
+                const assignmentId = checkbox.id.split('_').pop();
+                if (!allChecked) {
+                    document.getElementById(`read_assignment_${assignmentId}`).checked = true;
+                }
             });
         });
+
+        // Bulk revoke for Write checkboxes
         document.getElementById('revoke-all-write').addEventListener('click', function() {
             var checkboxes = document.querySelectorAll('input[id^="write_assignment_"]');
             checkboxes.forEach(function(checkbox) {
                 checkbox.checked = false;
             });
         });
+
     </script>
 </div>
