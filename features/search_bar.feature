@@ -1,7 +1,7 @@
 Feature: Search functionality on the assignments page
 
     Background:
-    Given We have the following assignments exist:
+    Given the following assignments exist:
         | assignment_name   | repository_name   |
         | assignment-1      | assignment-1-repo |
         | assignment-2      | assignment-2-repo |
@@ -9,24 +9,24 @@ Feature: Search functionality on the assignments page
 
 
     Scenario: User searches for an assignment by name
-        Given I am on the assignments page
+        Given I am on the "Assignments" page
         When I enter "assignment-1" into the search bar
-        And I click the search button
+        And I click the "Search Assignment" button
         Then I should see "assignment-1-repo" in the list of assignments
 
     Scenario: User searches with no matching assignments
-        Given I am on the assignments page
+        Given I am on the "Assignments" page
         When I enter "random" into the search bar
-        And I click the search button
+        And I click the "Search Assignment" button
         Then I should see a message indicating no matching assignments found
 
     Scenario: User clears the search results
-        Given I am on the assignments page
+        Given I am on the "Assignments" page
         And I have searched for "assignment-2"
         When I clear the search bar
         Then I should see the full list of assignments
 
     Scenario: User performs an empty search
-        Given I am on the assignments page
+        Given I am on the "Assignments" page
         When I click the search button without entering any text
         Then I should see the full list of assignments
