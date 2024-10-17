@@ -1,8 +1,3 @@
-  Given('I have searched for {string}') do |query|
-    fill_in 'query', with: query
-    click_button 'Search Assignment'
-  end
-
   Then('I should see {string} in the list of assignments') do |repository_name|
     expect(page).to have_content(repository_name)
   end
