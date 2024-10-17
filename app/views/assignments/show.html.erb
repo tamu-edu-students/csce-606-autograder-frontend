@@ -8,7 +8,7 @@
       <ul>
         <% @tests.each do |test| %>
           <li>
-            <%= test.name %> - <%= test.points %> points - <%= test.test_type %>
+            <%= test.name %> - <%= test.points %> points - <%= test.test_type %> 
             <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
           </li>
         <% end %>
@@ -25,8 +25,17 @@
       <div class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
         
+        <div id="grouping" class="col-md-12 text-right">
+          <h3>Grouping Number: <%= @test.test_grouping_id %></h3>
+        </div>
+
+
         <%= form_with model: [@assignment, @test], local: true do |form| %>
           <div class="form-grid">
+            <div class="form-group">
+              <%= form.label :test_grouping_id, "Group Number" %>
+              <%= form.text_field :test_grouping_id, class: "form-control" %>
+            </div>
             <div class = "form-group">
               <%= form.label :name %>
               <%= form.text_field :name, class:"form-control" %>

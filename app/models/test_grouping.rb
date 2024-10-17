@@ -1,7 +1,7 @@
 class TestGrouping < ApplicationRecord
   belongs_to :assignment
   has_many :tests
-  
+
   acts_as_list scope: :assignment
 
   after_destroy :reassign_tests_to_default_grouping
@@ -13,7 +13,7 @@ class TestGrouping < ApplicationRecord
     # if deleted grouping is the default grouping, delete all tests
     if name == "Miscellaneous Tests"
       tests.destroy_all
-      return
+      nil
     end
 
     tests.update_all(test_grouping_id: default_grouping.id)
