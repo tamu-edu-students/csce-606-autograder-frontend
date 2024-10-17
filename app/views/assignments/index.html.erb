@@ -4,7 +4,7 @@
     <table id="assignments-table" class="assignments-table">
       <thead>
         <tr>
-          <th onclick="sortTable(0)">Assignment Name &#x25B2;&#x25BC;</th>
+          <th onclick="sortTable(0)">Repository Name &#x25B2;&#x25BC;</th>
           <th onclick="sortTable(1)">Created On &#x25B2;&#x25BC;</th>
           <th onclick="sortTable(2)">Last Updated &#x25B2;&#x25BC;</th>
           <th>Actions</th>
@@ -13,8 +13,9 @@
       <tbody>
         <% @assignments.each do |assignment| %>
           <tr>
-            <td><%= assignment.assignment_name %></td>
-            <!-- Format the date as month-day-year hour:minute -->
+            <td>
+              <%= link_to assignment.repository_name, assignment.github_repository_url, target: "_blank", class: "btn-link" %>
+            </td>
             <td><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
             <td><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
             <td>
@@ -26,8 +27,6 @@
       </tbody>
     </table>
   </div>
-  
-  <!-- Button to create a new assignment -->
   <%= link_to 'Create Assignment', new_assignment_path, class: 'btn btn-primary create-assignment-btn' %>
 </div>
 
