@@ -13,6 +13,12 @@ class TestsController < ApplicationController
 
   # GET /tests/1 or /tests/1.json
   def show
+    @test = Test.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: @test }
+      format.js { render partial: 'assignments/test_form', locals: { assignment: @test.assignment, test: @test } }
+    end
   end
 
   # GET /tests/new
