@@ -1,21 +1,18 @@
-Feature: Consistent button styling and clear labels
+Feature: Links styled as buttons with clear labels
   As a CSCE 120 GitHub organization member
-  So that I understand how to navigate about the app
-  I want to see buttons, rather than links, with intuitive labels
+  So that I can navigate the app easily
+  I want to see links styled as buttons with clear, descriptive labels
 
   Background:
     Given I am a member of the CSCE 120 GitHub organization
 
-
-  Scenario: Verify absence of links where buttons are required
+  Scenario Outline: Verify links styled as buttons with clear labels on various pages
     Given I am on the <page> page
-    Then I should not see any navigation links
-    And all navigation elements should be buttons with clear labels
+    Then primary navigation elements should be links styled as buttons with clear labels
 
     Examples:
-            | page              |
-            | assignments       |
-            | tests             |
-            | users             |
-
-
+      | page          |
+      | Assignments   |
+      | Tests         |
+      | Users         |
+      | Login         |
