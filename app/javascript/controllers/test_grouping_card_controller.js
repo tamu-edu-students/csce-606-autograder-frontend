@@ -9,7 +9,7 @@ export default class extends Controller {
     //   onEnd: this.end.bind(this) // Bind the end function to handle drag-end events
     // })
     console.log("Reached")
-    let testGroupingTitles = this.element.querySelectorAll("test-grouping-title");
+    let testGroupingTitles = this.element.querySelectorAll(".test-grouping-title");
     testGroupingTitles.forEach((title) => {
       title.addEventListener("click", this.toggleTestGrouping.bind(this));
       console.log(`Title: ${title}`)
