@@ -10,13 +10,13 @@ Feature: Search functionality on the assignments page
 
     Scenario: User searches for an assignment by name
         Given I am on the "Assignments" page
-        When I enter "assignment-1" into the search bar
+        When I fill in "query" with "assignment-1"
         And I click the "Search Assignment" button
         Then I should see "assignment-1-repo" in the list of assignments
 
     Scenario: User searches with no matching assignments
         Given I am on the "Assignments" page
-        When I enter "random" into the search bar
+        When I fill in "query" with "random"
         And I click the "Search Assignment" button
         Then I should see a message indicating no matching assignments found
 
