@@ -1,0 +1,68 @@
+<%= form_with model: [@assignment, @test], local: true do |form| %>
+    <div class="form-grid">
+    <div class="form-group">
+        <%= form.label :test_grouping_id, "Group Number" %>
+        <%= form.text_field :test_grouping_id, class: "form-control" %>
+    </div>
+    <div class = "form-group">
+        <%= form.label :name %>
+        <%= form.text_field :name, class:"form-control" %>
+    </div>
+    <div class = "form-group">
+        <%= form.label :points %>
+        <%= form.number_field :points, class:"form-control" %>
+    </div>
+    <div class = "form-group">
+        <%= form.label :test_type %>
+        <%= form.select :test_type, options_for_select([['coverage', 'coverage'], ['compile', 'compile'], ['approved_includes', 'approved_includes'], ['memory_errors', 'memory_errors'], ['unit', 'unit'], ['i/o', 'i/o'], ['performance', 'performance'], ['script', 'script']], @test.test_type), class:"form-control" %>
+    </div>
+    
+    <div class = "form-group">
+    <%= form.label :target %>
+    <%= form.text_field :target, class:"form-control" %>
+    </div>
+    <div class = "form-group">
+    <%= form.label :include %>
+    <%= form.text_area :include , class:"form-control"%>
+    </div>
+    <div class = "form-group">
+    <%= form.label :position %>
+    <%= form.text_field :position , class:"form-control"%>
+    </div>
+
+    <div class = "form-group">
+        <%= form.label :show_output %>
+        <%= form.check_box :show_output%>
+    </div>
+    <div class = "form-group">
+        <%= form.label :skip %>
+        <%= form.check_box :skip %>
+    </div>
+    <div class = "form-group">
+        <%= form.label :timeout %>
+        <%= form.number_field :timeout, class:"form-control" %>
+    </div>
+    <div class="field">
+        <%= form.label :visibility %>
+        <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
+                                                        ['After Due Date', 'after_due_date'], 
+                                                        ['After Published', 'after_published'], 
+                                                        ['Visible', 'visible']], @test.visibility || 'visible'), class:"form-control" %>
+    </div>
+    <div class = "form-group">
+        <%= form.label :actual_test %>
+        <%= form.text_area :actual_test, class:"form-control" %>
+    </div>
+    </div class = "form-group">
+    <div class="form-actions">
+    <%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
+    </div>
+<% end %>
+
+<% if @test.persisted? %>
+    <div class="delete-actions">
+    <%= button_to "Destroy this test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
+    </div>
+<% end %>
+
+<%= link_to 'Back to Assignment', assignments_path %>

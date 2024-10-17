@@ -7,7 +7,7 @@ Feature: Test Case Groupings CRUD
     Given I am logged in as a CSCE 120 GitHub organization member
     Given I am on the "Assignment Management" page for "assignment1"
     And the following test case groupings exist:
-      | grouping_name  |
+      | grouping_name       |
       | Basic Functionality |
       | Edge Cases          |
 
