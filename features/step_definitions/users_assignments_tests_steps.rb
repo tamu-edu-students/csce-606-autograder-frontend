@@ -15,6 +15,8 @@ Given('I am on the {string} page') do |page_name|
     path = case page_name
     when
         'Login' then root_path
+    when 
+        'Assignments' then assignments_path
     else
         raise "Unknown page: #{page_name}"
     end
