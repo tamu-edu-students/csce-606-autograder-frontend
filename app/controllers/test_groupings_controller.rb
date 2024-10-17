@@ -1,4 +1,5 @@
 class TestGroupingsController < ApplicationController
+  before_action :set_assignment
   before_action :set_test_grouping, only: %i[ show edit update destroy ]
 
   # GET /test_groupings or /test_groupings.json
@@ -22,10 +23,12 @@ class TestGroupingsController < ApplicationController
   # POST /test_groupings or /test_groupings.json
   def create
     @test_grouping = TestGrouping.new(test_grouping_params)
+    @assignment = Assignment.find(params[:assignment_id])
+    @test_grouping.assignment = @assignment
 
     respond_to do |format|
       if @test_grouping.save
-        format.html { redirect_to @test_grouping, notice: "Test grouping was successfully created." }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test grouping was successfully created." }
         format.json { render :show, status: :created, location: @test_grouping }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -58,13 +61,17 @@ class TestGroupingsController < ApplicationController
   end
 
   private
+    def set_assignment
+      @assignment = Assignment.find(params[:assignment_id])
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_test_grouping
-      @test_grouping = TestGrouping.find(params[:id])
+      @assignment = Assignment.find(params[:assignment_id])
+      @test_grouping = @assignment.test_groupings.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def test_grouping_params
-      params.fetch(:test_grouping, {})
+      params.require(:test_grouping).permit(:name)
     end
 end
