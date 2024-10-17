@@ -7,8 +7,8 @@ Feature: Create a new assignment
   Scenario: Create a new assignment as an instructor
     Given I am logged in as an "instructor" named "alice"
     When I click the "Create Assignment" button
-    And I fill in "Assignment name" with "Homework 1"
-    And I fill in "Repository name" with "csce-120-hw1"
+    And I fill in "Assignment Name" with "Homework 1"
+    And I fill in "Repository Name" with "csce-120-hw1"
     And I click the "Submit" button
     Then I should see the "Homework 1" assignment
     And I should see a local clone of the "csce-120-hw1" repository

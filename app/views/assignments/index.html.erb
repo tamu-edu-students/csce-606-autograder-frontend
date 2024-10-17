@@ -1,13 +1,72 @@
-<div class="assignments-wrapper">
-  <h1>Assignments</h1>
-
-  <% @assignments.each do |assignment| %>
-    <div class="assignment-item">
-      <p><strong>Assignment <%= assignment.assignment_name %>: </strong><%= assignment.assignment_name %></p>
-      <p><strong>Repository Name: </strong><%= assignment.repository_name %></p>
-      <%= link_to "Show This Assignment", assignment_path(assignment), class: "btn btn-primary" %>
-    </div>
-  <% end %>
-
-  <%= link_to "Create Assignment", new_assignment_path, class: "btn btn-primary create-assignment-btn" %>
+<div class="centered-container">
+<h1>Assignments</h1>
+  <div class="assignments-table-container">
+    <table id="assignments-table" class="assignments-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Assignment Name &#x25B2;&#x25BC;</th>
+          <th onclick="sortTable(1)">Created On &#x25B2;&#x25BC;</th>
+          <th onclick="sortTable(2)">Last Updated &#x25B2;&#x25BC;</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @assignments.each do |assignment| %>
+          <tr>
+            <td><%= assignment.assignment_name %></td>
+            <td><%= assignment.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td><%= assignment.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td>
+              <%= link_to 'Edit', edit_assignment_path(assignment), class: "btn btn-primary" %>
+              <%= link_to 'Show', assignment_path(assignment), class: "btn btn-secondary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= link_to 'Create Assignment', new_assignment_path, class: 'btn btn-primary create-assignment-btn' %>
 </div>
+
+
+<script>
+  function sortTable(n) {
+    const table = document.getElementById("assignments-table");
+    let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    switching = true;
+    dir = "asc"; // Set the sorting direction to ascending
+    
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("TD")[n];
+        y = rows[i + 1].getElementsByTagName("TD")[n];
+        
+        if (dir === "asc") {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        } else if (dir === "desc") {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        switchcount++;
+      } else {
+        if (switchcount === 0 && dir === "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+  }
+</script>
