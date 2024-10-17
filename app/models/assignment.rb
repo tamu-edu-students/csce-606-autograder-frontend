@@ -224,15 +224,15 @@ class Assignment < ActiveRecord::Base
   def normalize_repo_name
     if self.repository_name.present?
       repository_name = self.repository_name.downcase
-  
+
       # Replace spaces/underscores with hyphens
-      repository_name = repository_name.gsub(/[ _]/, '-')
-  
+      repository_name = repository_name.gsub(/[ _]/, "-")
+
       # Remove any non-alphanumeric/hyphen chars
-      repository_name = repository_name.gsub(/[^a-z0-9\-]/, '')
-  
+      repository_name = repository_name.gsub(/[^a-z0-9\-]/, "")
+
       # Remove leading/trailing hyphens
-      repository_name = repository_name.gsub(/^-+|-+$/, '')
+      repository_name = repository_name.gsub(/^-+|-+$/, "")
 
       self.repository_name = repository_name
     end
