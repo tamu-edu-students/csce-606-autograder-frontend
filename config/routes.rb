@@ -8,10 +8,14 @@ Rails.application.routes.draw do
 
   resources :assignments do
     resources :tests
+    collection do
+      get "search"
+    end
     member do
       get "create_and_download_zip"
     end
   end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get "/auth/github/callback", to: "sessions#create"
   get "/auth/failure", to: "sessions#failure"

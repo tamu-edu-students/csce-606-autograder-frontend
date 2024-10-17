@@ -25,12 +25,11 @@ class AssignmentsController < ApplicationController
   # POST /assignments or /assignments.json
   def create
     @assignment = Assignment.new(assignment_params)
-
     github_token = session[:github_token]
-    @assignment.assignment_repo_init(github_token)
 
     respond_to do |format|
       if @assignment.save
+        @assignment.assignment_repo_init(github_token)
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
         format.json { render :show, status: :created, location: @assignment }
       else
@@ -40,7 +39,6 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /assignments/1 or /assignments/1.json
   # PATCH/PUT /assignments/1 or /assignments/1.json
   def update
     respond_to do |format|
@@ -53,7 +51,6 @@ class AssignmentsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /assignments/1 or /assignments/1.json
   def destroy
@@ -97,15 +94,31 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def search
+    if params[:query].present?
+      @assignments = Assignment.where("repository_name LIKE ?", "%#{params[:query]}%")
+    else
+      redirect_to assignments_path
+      return
+    end
+
+    if @assignments.empty?
+      flash.now[:alert] = "No matching assignments found"
+      @assignments = Assignment.all
+    end
+
+    render :index
+  end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_assignment
-      @assignment = Assignment.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def assignment_params
-      params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_assignment
+    @assignment = Assignment.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def assignment_params
+    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+  end
 end
