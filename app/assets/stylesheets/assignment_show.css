@@ -1,0 +1,88 @@
+/* Container with scrollable behavior */
+.scrollable-container {
+    width: 300px;
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+  }
+  
+  /* Title styling and hiding the default disclosure triangle */
+  .test-card,
+  .test-grouping-card {
+    cursor: pointer;
+    font-weight: bold;
+    display: block;
+    padding: 5px 10px;
+    background-color: #e3e3e3;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  /* Remove list styling */
+  .test-grouping-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .test-grouping-item {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .test-list {
+    margin-top: 10px;
+    padding-left: 15px;
+    display: none;
+  }
+
+  .test-list.visible {
+    display: block;
+  }
+  
+  .test-card {
+    padding: 5px;
+    margin: 5px 0;
+    cursor: pointer;
+  }
+  
+  
+  
+  /* Checkbox to control dropdown - hidden */
+  .dropdown-checkbox {
+    display: none;
+  }
+  
+  /* Remove the default disclosure triangle */
+  .grouping-title::before {
+    content: ""; /* Removes the arrow by not displaying anything */
+    display: inline-block;
+    width: 0;
+    height: 0;
+  }
+  
+  /* Link styling */
+  .test-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Flexbox styling for test bar */
+  .test-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+  
+  /* Minor spacing adjustments for test details */
+  .test-name, .test-points, .test-type {
+    margin: 0 5px;
+  }
+  

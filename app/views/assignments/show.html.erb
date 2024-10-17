@@ -1,19 +1,34 @@
+<%= stylesheet_link_tag 'assignment_show', media: 'all' %>
+
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
 <!-- Display tests for the assignment -->
 <div class="container">
-  <div class="row">
+2  <div class="row">
     <div id = 'test' class="col-md-6">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
-      <ul>
-        <% @tests.each do |test| %>
-          <li>
-            <%= test.name %> - <%= test.points %> points - <%= test.test_type %> 
-            <%= link_to 'Edit', assignment_path(@assignment, test_id: test.id) %> <!-- Link to edit test -->
-          </li>
-        <% end %>
-      </ul>
+      <div class="scrollable-container">
+        <div class="test-grouping-list" data-controller="test_grouping_card">
+          <% @test_groupings.sort_by(&:position).each do | test_grouping| %>
+            <div class="test-grouping-card">
+              <div class="test-grouping-title"
+                  data-action="click->test-grouping-#toggleTestGrouping"
+                  data-test-grouping-id="<%= test_grouping.id %>">
+                <%= "#{test_grouping.position}) #{test_grouping.name}" %>
+              </div>
 
+              <div class="test-list" id="test-list-<%= test_grouping.id %>" data-controller="test_card">
+                <% test_grouping.tests.sort_by(&:position).each do |test| %>
+                  <div class="test-card" data-test-id="<%= test.id %>">
+                    <%= "#{test.position}) #{test.name} (#{test.points} pts.)" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    
       <!-- Link to add a new test -->
       <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
