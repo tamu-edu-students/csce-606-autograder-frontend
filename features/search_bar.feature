@@ -22,7 +22,8 @@ Feature: Search functionality on the assignments page
 
     Scenario: User clears the search results
         Given I am on the "Assignments" page
-        And I have searched for "assignment-2"
+        Given I fill in "query" with "assignment-2"
+        And I click the "Search Assignment" button
         When I clear the search bar
         Then I should see the full list of assignments
 
