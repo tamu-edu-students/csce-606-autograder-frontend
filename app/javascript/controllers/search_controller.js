@@ -4,13 +4,6 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["input", "clearButton"];
 
-  // Trigger search on Enter key press
-  handleEnter(event) {
-    if (event.key === "Enter") {
-      // No need to prevent form submission, allow it to happen
-    }
-  }
-
   connect() {
     console.log("Search controller connected");
 
@@ -24,7 +17,7 @@ export default class extends Controller {
 
   // Clear the search input and trigger a new search with an empty query
   clearSearch() {
-    this.inputTarget.value = ""; // Clear the search input
+  this.inputTarget.value = ""; // Clear the search input
   const url = "/assignments"; // The URL for the assignments index
 
   // Redirect to the assignments index path
