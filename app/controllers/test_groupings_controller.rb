@@ -25,13 +25,12 @@ class TestGroupingsController < ApplicationController
     @test_grouping = TestGrouping.new(test_grouping_params)
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping.assignment = @assignment
-
     respond_to do |format|
       if @test_grouping.save
-        format.html { redirect_to assignment_path(@assignment), notice: "Test grouping was successfully created." }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test case grouping '#{@test_grouping.name}' created successfully" }
         format.json { render :show, status: :created, location: @test_grouping }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { redirect_to assignment_path(@assignment), alert: @test_grouping.errors.full_messages.to_sentence }
         format.json { render json: @test_grouping.errors, status: :unprocessable_entity }
       end
     end
