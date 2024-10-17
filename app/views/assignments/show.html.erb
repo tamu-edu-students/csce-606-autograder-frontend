@@ -11,13 +11,15 @@
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% @test_groupings.sort_by(&:position).each do | test_grouping| %>
             <div class="test-grouping-card">
-              <div class="test-grouping-title" data-action="click->test-grouping-#toggleTestGrouping data-test-grouping-id="<%= test_grouping.id %>">
+              <div class="test-grouping-title"
+                  data-action="click->test-grouping-#toggleTestGrouping"
+                  data-test-grouping-id="<%= test_grouping.id %>">
                 <%= "#{test_grouping.position}) #{test_grouping.name}" %>
               </div>
 
-              <div class="test-list" data-controller="test_card" style="display: none;">
+              <div class="test-list" id="test-list-<%= test_grouping.id %>" data-controller="test_card">
                 <% test_grouping.tests.sort_by(&:position).each do |test| %>
-                  <div class="test-card data-test-id="<%= test.id %>">
+                  <div class="test-card" data-test-id="<%= test.id %>">
                     <%= "#{test.position}) #{test.name} (#{test.points} pts.)" %>
                   </div>
                 <% end %>

@@ -10,7 +10,8 @@
   }
   
   /* Title styling and hiding the default disclosure triangle */
-  .test-grouping-title {
+  .test-card,
+  .test-grouping-card {
     cursor: pointer;
     font-weight: bold;
     display: block;
@@ -37,6 +38,10 @@
     margin-top: 10px;
     padding-left: 15px;
     display: none;
+  }
+
+  .test-list.visible {
+    display: block;
   }
   
   .test-card {

@@ -25,15 +25,17 @@ export default class extends Controller {
 
   toggleTestGrouping(event) {
     console.log("Toggle")
+    console.log(`Event: ${JSON.stringify(event)}`)
     let title = event.currentTarget;
+    console.log(`Title: ${title}`)
     let testGroupingId = title.getAttribute("data-test-grouping-id");
-    let testContainer = this.element.querySelector(`#test-grouping-${testGroupingId}`)
+    console.log(`Test Grouping ID: ${testGroupingId}`)
+    let testContainer = this.element.querySelector(`#test-list-${testGroupingId}`)
 
-    if (testContainer.style.display === "none" || testContainer.style.display === "") {
-      testContainer.style.display = "block";
-    }
-    else {
-      testContainer.style.display = "none";
+    console.log(`Test Container: ${testContainer}`)
+
+    if (testContainer) {
+      testContainer.classList.toggle("visible");
     }
   }
 
