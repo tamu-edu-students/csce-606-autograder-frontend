@@ -30,22 +30,6 @@ body {
     margin-bottom: 20px;
   }
   
-  .users-show #select-all {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    font-size: 1em;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .users-show #select-all:hover, #select-all:focus {
-    background-color: #2980b9;
-  }
-  
   .users-show ul {
     list-style-type: none;
     padding: 0;
@@ -100,6 +84,71 @@ body {
   .users-show input[type="submit"]:hover, input[type="submit"]:focus {
     background-color: #27ae60;
   }
+
+  .users-show table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+  }
+
+  .users-show table th, table td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+  }
+
+  .users-show table th {
+      background-color: #f2f2f2;
+      position: relative;
+      padding-right: 200px;
+  }
+
+  .users-show table tr:nth-child(even) {
+      background-color: #f9f9f9;
+  }
+
+  .users-show .small-button {
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 15px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .users-show small-button:hover {
+    opacity: 0.8;
+  }
+
+  .users-show #select-all-read {
+    background-color: #007bff;
+  }
+
+  .users-show #revoke-all-read {
+    background-color: #dc3545;
+  }
+
+  .users-show #select-all-write {
+    background-color: #007bff;
+  }
+
+  .users-show #revoke-all-write {
+    background-color: #dc3545;
+  }
+
+  .users-show .button-group {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 5px; 
+  }
+  
   
   @media screen and (max-width: 768px) {
     .container {
@@ -118,9 +167,5 @@ body {
     .users-show label {
       font-size: 1em;
     }
-  
-    .users-show #select-all, input[type="submit"] {
-      width: 100%;
-      margin-bottom: 10px;
-    }
+
   }
