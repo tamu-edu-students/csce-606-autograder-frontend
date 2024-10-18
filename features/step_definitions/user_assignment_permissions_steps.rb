@@ -16,6 +16,14 @@ Given("the following users exist in assignment permissions:") do |table|
   end
 end
 
+Given("the following permissions exist:") do |table|
+  table.hashes.each do |hash|
+    user = User.find_or_create_by!(name: hash['user'])
+    assignment = Assignment.find_or_create_by!(repository_name: hash['assignment'])
+    @permission = Permission.create!(user: user, assignment: assignment, role: hash['role'])
+  end
+end
+
 Given("I am logged in as {string}") do |username|
   login_as(username)
 end
@@ -29,77 +37,123 @@ When("I click on {string}") do |username|
   click_link username
 end
 
-When("I select the assignment on the page {string}") do |repo_name|
-  assignment = Assignment.find_by(repository_name: repo_name)
-  find(:css, "input[type='checkbox'][value='#{assignment.id}']").set(true)
-end
+When('I {string} {string} for the assignment {string}') do |action, access, repository_name|
+  stub_request(:put, %r{https://api\.github\.com/repos/AutograderFrontend/.+/collaborators/.+})
+  .with(
+    body: hash_including("permission"),
+    headers: {
+      'Accept' => 'application/vnd.github.v3+json',
+      'Content-Type' => 'application/json',
+      'User-Agent' => /Octokit Ruby Gem.*/
+    }
+  )
+  .to_return(status: 200, body: "", headers: {})
+  assignment = Assignment.find_by(repository_name: repository_name)
+  checkbox_id = "#{access}_assignment_#{assignment.id}"
 
-When("I select the assignments on the page {string} and {string}") do |repo1, repo2|
-  [ repo1, repo2 ].each do |repo_name|
-    assignment = Assignment.find_by(repository_name: repo_name)
-    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
-    checkbox.set(true)
+  case action.downcase
+  when "select"
+    check(checkbox_id)
+  when "deselect"
+    uncheck(checkbox_id)
+  else
+    raise "Unknown action: #{action}. Use 'select' or 'deselect'."
   end
 end
 
-When("I click Select All") do
-  Assignment.all.each do |assignment|
-    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
-    checkbox.set(true) unless checkbox.checked?
-  end
-end
+When('I select {string} for the {string} permission') do |action, permission_type|
+    button_id = case [action, permission_type]
+    when [ "Select All", "read" ]
+      "select-all-read"
+    when ["Revoke All", "read"]
+      "revoke-all-read"
+    when ["Select All", "write"]
+      "select-all-write"
+    when ["Revoke All", "write"]
+      "revoke-all-write"
+    else
+      raise "Unknown action or permission type: #{action} #{permission_type}"
+    end
 
-When("I click Revoke All") do
-  Assignment.all.each do |assignment|
-    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
-    checkbox.set(false) if checkbox.checked?
-  end
+    # Click the appropriate button
+    #click_button(button_id)
+    find(button_id).click
+    # find_button(button_id).click
+    # Get all checkboxes for the given permission type
+    checkboxes = all("input[id^='#{permission_type}_assignment_']")
+
+    # Check that all checkboxes are in the correct state
+    expected_state = (action == "Select All")
+
+    checkboxes.each do |checkbox|
+      actual_state = checkbox.checked?
+      expect(actual_state).to eq(expected_state), 
+        "Expected checkbox #{checkbox[:id]} to be #{expected_state ? 'checked' : 'unchecked'}, but it was #{actual_state ? 'checked' : 'unchecked'}"
+    end
 end
 
 When("I click {string}") do |button_text|
   if button_text == "Save Changes"
-    stub_request(:put, /https:\/\/api\.github\.com\/repos\/AutograderFrontend\/.*\/collaborators\/.*/).
-      with(
-        body: /"permission":"(push|pull)"/,
-        headers: {
-          'Accept'=>'application/vnd.github.v3+json',
-          'Authorization'=>/token .+/,
-          'Content-Type'=>'application/json'
-        }
-      ).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:put, %r{https://api\.github\.com/repos/AutograderFrontend/.+/collaborators/.+})
+    .with(
+      body: hash_including("permission"),
+      headers: {
+        'Accept' => 'application/vnd.github.v3+json',
+        'Content-Type' => 'application/json',
+        'User-Agent' => /Octokit Ruby Gem.*/
+      }
+    )
+    .to_return(status: 200, body: "", headers: {})
+    stub_request(:delete, %r{https://api\.github\.com/repos/AutograderFrontend/.+/collaborators/.+})
+    .with(
+      headers: {
+        'Accept' => 'application/vnd.github.v3+json',
+        'Content-Type' => 'application/json',
+        'User-Agent' => /Octokit Ruby Gem.*/
+      }
+    )
+    .to_return(status: 204, body: "", headers: {})
   end
   click_button button_text
-end
-
-When("I de-select the assignment on the page {string}") do |repo_name|
-  assignment = Assignment.find_by(repository_name: repo_name)
-  checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
-  checkbox.set(false) unless !checkbox.checked?
-end
-
-When("I de-select the assignments on the page {string} and {string}") do |repo1, repo2|
-  [ repo1, repo2 ].each do |repo_name|
-    assignment = Assignment.find_by(repository_name: repo_name)
-    checkbox = find(:css, "input[type='checkbox'][value='#{assignment.id}']", visible: :all)
-    checkbox.set(false) unless !checkbox.checked?
-  end
 end
 
 # Step definitions for verifying results
 Then("I should see that {string} has {string} access to the remote {string} repository") do |name, access_type, repo_name|
   user = User.find_by(name: name)
   assignment = Assignment.find_by(repository_name: repo_name)
+  permission = Permission.find_by(user: user, assignment: assignment)
 
-  # Mock the GitHub API call
-  allow_any_instance_of(Octokit::Client).to receive(:add_collaborator)
-    .with("AutograderFrontend/#{repo_name}", name, permission: access_type == 'read-write' ? 'push' : 'pull')
-    .and_return(true)
-
-  # Verify the user's assignment access in the database
-  if access_type == 'read-write'
-    expect(user.assignments).to include(assignment)
+  expected_role = case access_type
+  when "read"
+    "read"
+  when "write"
+    "read_write"
   else
-    expect(user.assignments).not_to include(assignment)
+    "no-permission"
   end
+
+  github_permission = (permission.role == "read_write") ? "push" : "pull"
+
+  if permission.role == "read" || permission.role == "read_write" 
+    expect(WebMock).to have_requested(:put, %r{https://api\.github\.com/repos/AutograderFrontend/#{repo_name}/collaborators/#{user.name}})
+      .with(
+        body: hash_including("permission" => github_permission),
+        headers: {
+          'Accept' => 'application/vnd.github.v3+json',
+          'Content-Type' => 'application/json',
+          'User-Agent' => /Octokit Ruby Gem.*/
+        }
+      )
+  elsif permission.role == "no-permission" 
+    expect(WebMock).to have_requested(:delete, "https://api.github.com/repos/#{repo_identifier}/collaborators/#{user_name}")
+      .with(
+        headers: {
+          'Accept' => 'application/vnd.github.v3+json',
+          'Content-Type' => 'application/json',
+          'User-Agent' => /Octokit Ruby Gem.*/
+        }
+      )
+  end
+
+
 end
