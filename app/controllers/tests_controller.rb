@@ -99,10 +99,10 @@ class TestsController < ApplicationController
   def set_assignment
     @assignment = Assignment.find(params[:assignment_id])
   end
-  # Use callbacks to share common setup or constraints between actions.
-  def set_test_grouping
-    @test_grouping = TestGrouping.find(params[:test_grouping_id]) if params[:test_grouping_id]
-  end
+  # # Use callbacks to share common setup or constraints between actions.
+  # def set_test_grouping
+  #   @test_grouping = TestGrouping.find(params[:test_grouping_id]) if params[:test_grouping_id]
+  # end
 
   def set_test
     @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
