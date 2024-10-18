@@ -8,7 +8,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
       | assignment_name | repository_name   |
       | assignment1     | assignment-1-repo |
     And the assignment contains no tests
-    And I am logged in as an "instructor" named "alice"
+    And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"
     When I add a new unit test called "<name>"
     And I set it to "<points>" points
@@ -30,7 +30,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
       | assignment_name | repository_name   |
       | assignment1     | assignment-1-repo |
     And the assignment contains one test
-    And I am logged in as an "instructor" named "alice"
+    And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"
     When I add a new unit test called "<name>"
     And I set it to "<points>" points
@@ -52,7 +52,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
       | assignment_name | repository_name   |
       | assignment1     | assignment-1-repo |
     And the assignment contains "<number_of_tests>" tests
-    And I am logged in as an "instructor" named "alice"
+    And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"
     When I delete the "<position>" test
     Then I should see a success message
