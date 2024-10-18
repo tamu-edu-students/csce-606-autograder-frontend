@@ -1,3 +1,6 @@
+<%= stylesheet_link_tag 'assignment_show', media: 'all' %>
+
+
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
 <!-- Display tests for the assignment -->
@@ -20,7 +23,7 @@
 
     </div>
 
-    <div id = 'details' class="col-md-4">
+    <div id = 'details' class="col-md-4" data-controller="test_block">
       <!-- Form to create or edit a test -->
       <div class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
@@ -35,9 +38,19 @@
               <%= form.label :points %>
               <%= form.number_field :points, class:"form-control" %>
             </div>
-            <div class = "form-group">
+            <div class="form-group" data-action="change->test_block#loadTestBlockPartial">
               <%= form.label :test_type %>
-              <%= form.select :test_type, options_for_select([['coverage', 'coverage'], ['compile', 'compile'], ['approved_includes', 'approved_includes'], ['memory_errors', 'memory_errors'], ['unit', 'unit'], ['i/o', 'i/o'], ['performance', 'performance'], ['script', 'script']], @test.test_type), class:"form-control" %>
+              <%= form.select :test_type,
+                options_for_select([
+                  ['coverage', 'coverage'], 
+                  ['compile', 'compile'], 
+                  ['approved_includes', 'approved_includes'], 
+                  ['memory_errors', 'memory_errors'], 
+                  ['unit', 'unit'], 
+                  ['i/o', 'i/o'], 
+                  ['performance', 'performance'], 
+                  ['script', 'script']
+                ], @test.test_type), { class: "form-control", data: { test_block_target: "select" } }%>
             </div>
           
             <div class = "form-group">
@@ -93,11 +106,15 @@
     </div>
 
     <div id='dynamic-test-block' class="col-md-4">
-      <h2>Dynamic Test Block</h2>
-          
-      <%#= render 'assignments/code_block' %>
-      <%#= render 'assignments/coverage_test_block' %>
-      <%= render 'assignments/io_test_block' %>
-    </div>
+      <h2>Test Block</h2>
+      <div data-test-block-target="testBlockPartial" data-test-type="coverage" class="hidden">
+        <%= render 'assignments/coverage_test_block' %>
+      </div>
+      <div data-test-block-target="testBlockPartial" data-test-type="io" class="hidden">
+        <%= render 'assignments/io_test_block' %>
+      </div>
+      <div data-test-block-target="testBlockPartial" data-test-type="performance" class="hidden">
+        <%= render 'assignments/code_block' %>
+      </div>
   </div>
 </div>
