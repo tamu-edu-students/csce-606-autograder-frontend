@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       get "create_and_download_zip"
     end
   end
+
+  get 'test_groupings/find_by_position', to: 'test_groupings#find_by_position'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get "/auth/github/callback", to: "sessions#create"
   get "/auth/failure", to: "sessions#failure"

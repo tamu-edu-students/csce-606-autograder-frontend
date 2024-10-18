@@ -20,11 +20,15 @@
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% if @test_groupings.present? %>
             <% @test_groupings.sort_by(&:position).each do | test_grouping | %>
-              <div class="test-grouping-card">
+              <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card">
                 <div class="test-grouping-title"
                     data-action="click->test-grouping-#toggleTestGrouping"
                     data-test-grouping-id="<%= test_grouping.id %>">
                   <%= "#{test_grouping.position}) #{test_grouping.name}" %>
+                  <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, data: { confirm: "Are you sure you want to delete this test group?" }, class: "delete-button" %>
+                </div>
+
+                <div>
                 </div>
 
                 <div class="test-list" id="test-list-<%= test_grouping.id %>">
@@ -41,8 +45,8 @@
           <% end %>
         </div>
       </div>
-      
-      
+
+
       <!-- Link to add a new test -->
       <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
@@ -53,11 +57,11 @@
       <!-- Form to create or edit a test -->
       <div id="test-form" class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
-        
+
         <div id="grouping" class="col-md-12 text-right">
           <h3>Grouping Number: <%= @test.test_grouping_id %></h3>
         </div>
-        
+
         <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
     </div>

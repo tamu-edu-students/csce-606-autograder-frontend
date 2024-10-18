@@ -3,6 +3,7 @@ class TestsController < ApplicationController
   include TestsHelper
 
   before_action :set_assignment
+  # before_action :set_test_grouping
   before_action :set_test, only: [ :show, :edit, :update, :destroy ]
 
 
@@ -33,6 +34,7 @@ class TestsController < ApplicationController
   # POST /tests or /tests.json
   def create
     @test = Test.new(test_params)
+    set_test_grouping_id
     @assignment = Assignment.find(params[:assignment_id])
     @test.assignment = @assignment
 
@@ -58,7 +60,8 @@ class TestsController < ApplicationController
   def update
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
-
+    set_test_grouping_id
+    
     respond_to do |format|
       if @test.update(test_params)
         current_user, auth_token = current_user_and_token
@@ -91,17 +94,25 @@ class TestsController < ApplicationController
     end
   end
 
-
-
   private
 
   def set_assignment
     @assignment = Assignment.find(params[:assignment_id])
   end
   # Use callbacks to share common setup or constraints between actions.
+  # def set_test_grouping
+  #   @test_grouping = TestGrouping.find(params[:test_grouping_id]) if params[:test_grouping_id]
+  # end
+
   def set_test
     @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first
     @test = @assignment.tests.find(params[:id])  # Find the test within the context of the assignment
+  end
+
+  def set_test_grouping_id
+    position = params[:test][:test_grouping_position]
+    test_grouping = TestGrouping.find_by(position: position)
+    @test.test_grouping_id = test_grouping.id if test_grouping
   end
 
   def merge_error_messages(errors)
