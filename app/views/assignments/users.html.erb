@@ -1,0 +1,134 @@
+<!-- app/views/users/show.html.erb -->
+<div class="container users-show">
+    <h1>Access Management for <%= @assignment.repository_name %></h1>
+
+    <%= form_tag update_assignment_users_path(@assignment), method: :post do %>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                
+                    <th>Read
+                    <div class="button-group">
+
+                        <button type="button" class="small-button" id="select-all-read">Select All</button>
+                        <button type="button" class="small-button" id="revoke-all-read">Revoke All</button>
+                    </div>
+                    </th>
+                
+                
+                    <th>Write
+                    <div class="button-group">
+                        <button type="button" class="small-button" id="select-all-write">Select All</button>
+                        <button type="button" class="small-button" id="revoke-all-write">Revoke All</button>
+                    </div>
+                    </th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <% @users.each do |user| %>
+            <tr>
+                <td><%= user.name %></td>
+                <td><%= check_box_tag "read_user_ids[]", user.id, @assignment.permissions.where(user: user).exists?(role: "read") || @assignment.permissions.where(user: user).exists?(role: "read_write") , id: "read_user_#{user.id}" %></td>
+                <td><%= check_box_tag "write_user_ids[]", user.id, @assignment.permissions.where(user: user).exists?(role: "read_write"), id: "write_user_#{user.id}" %></td>
+            </tr>
+            <% end %>
+        </tbody>
+    </table>
+
+    <%= submit_tag 'Save Changes' %>
+    <% end %>
+
+    <script>
+        // Ensure Read checkbox is checked when Write checkbox is checked
+        function checkReadCheckbox(writeCheckboxId, readCheckboxId) {
+            const writeCheckbox = document.getElementById(writeCheckboxId);
+            const readCheckbox = document.getElementById(readCheckboxId);
+
+            writeCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    readCheckbox.checked = true;
+                }
+            });
+        }
+
+        // Ensure Write checkbox is unchecked when Read checkbox is unchecked
+        function uncheckWriteCheckbox(writeCheckboxId, readCheckboxId) {
+            const writeCheckbox = document.getElementById(writeCheckboxId);
+            const readCheckbox = document.getElementById(readCheckboxId);
+
+            readCheckbox.addEventListener('change', function() {
+                if (!this.checked) {
+                    writeCheckbox.checked = false;
+                }
+            });
+        }
+
+        // Add event listeners for each Read checkbox
+        function applyReadListeners() {
+            document.querySelectorAll('input[id^="read_user_"]').forEach(function(readCheckbox) {
+                const userId = readCheckbox.id.split('_').pop(); // Get assignment ID from the ID
+                uncheckWriteCheckbox(`write_user_${userId}`, readCheckbox.id);
+            });
+        }
+
+        // Add event listeners for each Write checkbox
+        function applyWriteListeners() {
+            document.querySelectorAll('input[id^="write_user_"]').forEach(function(writeCheckbox) {
+                const userId = writeCheckbox.id.split('_').pop(); // Get assignment ID from the ID
+                checkReadCheckbox(writeCheckbox.id, `read_user_${userId}`);
+            });
+        }
+
+        // Initial application of listeners
+        applyReadListeners();
+        applyWriteListeners();
+
+        // Bulk select/deselect for Read checkboxes
+        document.getElementById('select-all-read').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('input[id^="read_user_"]');
+            var allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = !allChecked;
+                const userId = checkbox.id.split('_').pop();
+                if (allChecked) {
+                    document.getElementById(`write_user_${userId}`).checked = false;
+                }
+            });
+        });
+
+        // Bulk revoke for Read checkboxes
+        document.getElementById('revoke-all-read').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('input[id^="read_user_"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+                const assignmentId = checkbox.id.split('_').pop();
+                document.getElementById(`write_user_${assignmentId}`).checked = false;
+            });
+        });
+
+        // Bulk select/deselect for Write checkboxes
+        document.getElementById('select-all-write').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('input[id^="write_user_"]');
+            var allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = !allChecked;
+                const userId = checkbox.id.split('_').pop();
+                if (!allChecked) {
+                    document.getElementById(`read_user_${userId}`).checked = true;
+                }
+            });
+        });
+
+        // Bulk revoke for Write checkboxes
+        document.getElementById('revoke-all-write').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('input[id^="write_user_"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+        });
+
+    </script>
+</div>

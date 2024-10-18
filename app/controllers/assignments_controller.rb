@@ -97,6 +97,58 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def users
+    @users = User.all
+    @assignment = Assignment.find(params[:id])
+  end
+
+  def update_users
+    @assignment = Assignment.find(params[:id])
+    @users = User.all
+
+    all_user_ids = User.pluck(:id)
+
+    read_user_ids = (params[:read_user_ids] || []).map(&:to_i)
+    write_user_ids = (params[:write_user_ids] || []).map(&:to_i)
+
+    # Get assignment ids not in read or write
+    none_user_ids = all_user_ids - (read_user_ids + write_user_ids)
+
+    # Update or create permissions for read access
+    read_user_ids.each do |user_id|
+      permission = Permission.find_or_initialize_by(user_id: user_id, assignment: @assignment)
+      permission.update(role: "read")
+    end
+
+    # Update or create permissions for write access
+    write_user_ids.each do |user_id|
+      permission = Permission.find_or_initialize_by(user_id: user_id, assignment: @assignment)
+      permission.update(role: "read_write")
+    end
+
+    none_user_ids.each do |user_id|
+      permission = Permission.find_or_initialize_by(user_id: user_id, assignment: @assignment)
+      permission.update(role: "no_permission")
+    end
+
+    if @assignment.save
+        # Update GitHub permissions
+        begin
+            update_github_permissions(@assignment)
+            flash[:notice] = "Assignment #{@assignment.repository_name} permission updated successfully."
+            redirect_to assignments_path
+        rescue Octokit::Error => e
+            Rails.logger.error "Failed to update GitHub permissions: #{e.message}"
+            flash[:alert] = "Failed to update assignments. Please try again."
+            @users = User.all
+            render :show
+        end
+    else
+        @assignments ||= []
+        flash.now[:alert] = "Failed to update assignments. Please try again."
+        render :show
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -107,5 +159,45 @@ class AssignmentsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def assignment_params
       params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+    end
+
+    def update_github_permissions(assignment)
+      access_token = session[:github_token]
+      client = Octokit::Client.new(access_token: access_token)
+      org_name = "AutograderFrontend"
+
+      # All assignments that need to be updated
+      @users = User.all
+
+
+      @users.each do |user|
+        repo_identifier = "#{org_name}/#{assignment.repository_name}"
+
+        # Fetch the user's permission for the current assignment
+        permission = Permission.find_by(user: user, assignment: assignment)
+
+
+        if permission.role == "no_permission" || permission.role.nil?
+          begin
+            client.remove_collaborator(repo_identifier, user.name)
+            Rails.logger.info "Removed collaborator #{user.name} from #{repo_identifier} due to 'none' permission"
+          rescue Octokit::Error => e
+            Rails.logger.error "Failed to remove collaborator #{user.name} from #{repo_identifier}: #{e.message}"
+            raise
+          end
+        elsif permission.role == "read_write" || permission.role == "read"
+          # Use ternary operator for selecting permission
+          github_permission = (permission.role == "read_write") ? "push" : "pull"
+          begin
+            client.add_collaborator(repo_identifier, user.name, permission: github_permission)
+            Rails.logger.info "Updated collaborator #{user.name} on #{repo_identifier} with #{github_permission} access"
+          rescue Octokit::Error => e
+            Rails.logger.error "Failed to update collaborator #{user.name} on #{repo_identifier}: #{e.message}"
+            raise
+          end
+        else
+          Rails.logger.error "Unknown permission role: #{permission.role} for user #{user.name} on assignment #{assignment.id}"
+        end
+      end
     end
 end

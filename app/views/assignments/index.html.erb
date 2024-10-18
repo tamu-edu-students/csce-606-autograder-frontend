@@ -7,6 +7,7 @@
     <%= render assignment %>
     <p>
       <%= link_to "Show this assignment", assignment%>
+      <%= link_to "Management Assignment Permissions", users_assignment_path(assignment) %>
     </p>
   <% end %>
 </div>
