@@ -16,6 +16,13 @@ Given('I am on the {string} page') do |page_name|
     when
         'Login' then root_path
     when
+        'Home' then pages_home_path
+    when
+        'Assignments' then assignments_path
+    when
+        'Users' then users_path
+    when
+        'tests' then assignment_tests_path
         'Assignments' then assignments_path
     else
         raise "Unknown page: #{page_name}"
