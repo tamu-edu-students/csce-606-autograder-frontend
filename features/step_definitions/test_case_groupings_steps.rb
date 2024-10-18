@@ -62,67 +62,48 @@
     pending # Write code here that turns the phrase above into concrete actions
   end
 
-  When('I click on the {string} button') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+  When('I click on the {string} link') do |string|
+    click_link string
   end
 
-  When('I should see the Create test part on the right') do
-    pending # Write code here that turns the phrase above into concrete actions
+  When('I should see the {string} view') do |string|
+    expect(page).to have_css("##{string}")
   end
 
-  When('I click on the {string} grouping name') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+  When('I click on the {string} grouping') do |string|
+    # click on the grouping
+    find(".scrollable-container .test-grouping-title", text: string).click
   end
 
   When('I should see the list of test cases associated with {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+    # expect the .test-list that is in the same div as the test-grouping-title with text {string} to be visible
+    expect(find(".scrollable-container .test-grouping-title", text: string).sibling(".test-list")).to be_visible
   end
 
   When('I click on the {string} test case name') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+    find(".scrollable-container .test-grouping-title", text: string).sibling(".test-list").find(".test-card", text: string).click
   end
 
-  When('I should see the test sub-number within grouping and other paras on the right') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
+  When('I should see the test displayed in the test-form view') do |string|
 
-  When('I scroll down in test case grouping block') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  When('I should see a button named {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Then('I should be taken to the top of the test case groupings block') do
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  Given('the {string} test case grouping exists') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
   end
 
   When('I click on the {string} button next to {string}') do |string, string2|
-    pending # Write code here that turns the phrase above into concrete actions
+    # click on the button next to the test case grouping
+    find(".scrollable-container .test-grouping-title", text: string2).find(".button_to").click
   end
 
-  When('I update the {string} to {string}') do |string, string2|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  When('I attempt to update an existing test case grouping with the name {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
-  end
-
-  When('I confirm the deletion') do
-    pending # Write code here that turns the phrase above into concrete actions
+  When('I attempt to update an existing test case grouping {string}') do |string|
+    TestGrouping.create(name: string, assignment: @assignment)
   end
 
   Then('I should no longer see {string} in the list of test case groupings') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+    within(".scrollable-container") do
+      expect(page).not_to have_content(string)
+    end
   end
 
   Then('I should see a message {string}') do |string|
-    pending # Write code here that turns the phrase above into concrete actions
+    expect(page).to have_content(string)
   end
 

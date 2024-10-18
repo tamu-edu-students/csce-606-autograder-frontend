@@ -20,6 +20,11 @@ require 'cucumber/rails'
 require 'rack_session_access/capybara'
 
 require 'webmock/cucumber'
+require 'capybara/rspec'
+require 'selenium-webdriver'
+
+Capybara.javascript_driver = :selenium_chrome
+
 WebMock.disable_net_connect!(allow_localhost: true)
 
 # By default, any exception happening in your Rails application will bubble up
