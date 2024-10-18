@@ -3,7 +3,7 @@
 <!-- Display tests for the assignment -->
 <div class="container">
   <div class="row">
-    <div id = 'test' class="col-md-6">
+    <div id = 'test' class="col-md-4">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
       <ul>
         <% @tests.each do |test| %>
@@ -20,7 +20,7 @@
 
     </div>
 
-    <div id = 'details' class="col-md-6">
+    <div id = 'details' class="col-md-4">
       <!-- Form to create or edit a test -->
       <div class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
@@ -90,6 +90,14 @@
         
       <%= link_to 'Back to Assignment', assignments_path %>
       </div>
+    </div>
+
+    <div id='dynamic-test-block' class="col-md-4">
+      <h2>Dynamic Test Block</h2>
+          
+      <%#= render 'assignments/code_block' %>
+      <%#= render 'assignments/coverage_test_block' %>
+      <%= render 'assignments/io_test_block' %>
     </div>
   </div>
 </div>
