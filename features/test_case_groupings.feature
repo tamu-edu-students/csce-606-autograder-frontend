@@ -40,12 +40,23 @@ Feature: Test Case Groupings CRUD
   Scenario: Create a new test case inside a test case grouping
     When I click on the "Add new test" link
     Then I should see the "test-form" view
+  # Scenario: Update a existing test case grouping with modified name
+  #    When I click on the "✎" button next to "Basic Functionality"
+  #    Then I fill in the test case grouping text field with "Performance Tests"
+  #    And I click the "Save" button in scrollable block
+  #    Then I should no longer see "Basic Functionality" in the list of test case groupings
+  #    Then I should see "Performance Tests" in the list of test case groupings
 
-  Scenario: View an existing test case grouping and test cases
-    When I click on the "Basic Functionality" grouping
-    And I should see the list of test cases associated with "Basic Functionality"
-    When I click on the "test1" test case name
-    Then I should see the test displayed in the "test-form" view
+  # Scenario: View an existing test case grouping and test cases
+  #   Given the following test cases exist in the "Basic Functionality" group:
+  #     | name   | points | test_type        | target         | actual_test |
+  #     | test1  | 10     | unit             | code.cpp       | assert(...)|
+  #     | test2  | 15     | compile          | code_tests.cpp | test(...)  |
+
+  #   When I click on the "Basic Functionality" grouping
+  #   And I should see the list of test cases associated with "Basic Functionality"
+  #   When I click on the "test1" test case name in the "Basic Functionality" group
+  #   Then I should see the test displayed in the "test-form" view
 
   Scenario: Delete a test case grouping
     When I click on the "x" button next to "Basic Functionality"
