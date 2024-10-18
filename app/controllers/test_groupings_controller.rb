@@ -25,13 +25,12 @@ class TestGroupingsController < ApplicationController
     @test_grouping = TestGrouping.new(test_grouping_params)
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping.assignment = @assignment
-
     respond_to do |format|
       if @test_grouping.save
-        format.html { redirect_to assignment_path(@assignment), notice: "Test grouping was successfully created." }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test case grouping '#{@test_grouping.name}' created successfully" }
         format.json { render :show, status: :created, location: @test_grouping }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { redirect_to assignment_path(@assignment), alert: @test_grouping.errors.full_messages.to_sentence }
         format.json { render json: @test_grouping.errors, status: :unprocessable_entity }
       end
     end
@@ -53,14 +52,13 @@ class TestGroupingsController < ApplicationController
   # DELETE /test_groupings/1 or /test_groupings/1.json
   def destroy
     @test_grouping.destroy!
-
     respond_to do |format|
-      format.html { redirect_to test_groupings_path, status: :see_other, notice: "Test grouping was successfully destroyed." }
+      format.html { redirect_to assignment_path(@assignment), notice: "Test grouping was successfully deleted." }
       format.json { head :no_content }
+      format.js
     end
   end
 
-  private
     def set_assignment
       @assignment = Assignment.find(params[:assignment_id])
     end
