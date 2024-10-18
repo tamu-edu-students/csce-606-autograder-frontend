@@ -29,9 +29,9 @@ Then('I should see the {string} page') do |page_name|
         "Course Dashboard" then assignments_path
     when
         "Login" then root_path
-    when 
+    when
         "Assignments" then assignments_path
-    when 
+    when
         "Manage Users" then users_path
     end
 

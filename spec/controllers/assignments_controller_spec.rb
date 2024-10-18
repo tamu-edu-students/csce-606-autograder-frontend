@@ -20,10 +20,9 @@ RSpec.describe AssignmentsController, type: :controller do
 
   before do
     allow(controller).to receive(:require_login).and_return(true)
-    #allow(controller).to receive(:session).and_return({ github_token: mock_github_token })
+    # allow(controller).to receive(:session).and_return({ github_token: mock_github_token })
     allow(controller).to receive(:current_user).and_return(user)  # Mock current_user to return a user
     allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: mock_github_token })  # Mock the session
-  
   end
 
   describe 'GET #index' do
