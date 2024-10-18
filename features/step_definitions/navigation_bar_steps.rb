@@ -27,5 +27,28 @@
     expect(page).to have_content('Logged out successfully')  # Ensure the logout link is no longer visible after logging out
   end
   
+  Then("I should be redirected to the {string} page") do |page_name|
+    path = case page_name
+           when "login"
+             root_path
+           when "course dashboard"
+             assignments_path
+           when "manage users"
+             users_path
+           else
+             root_path  # Default to root if page_name is not recognized
+           end
+    expect(page).to have_current_path(path, wait: 10)  # Wait for the correct page redirection
+  end
+  
+  Then("I should still see the navigation bar at the top of the page") do
+    expect(page).to have_css('nav.navbar')  # Ensure the navigation bar persists across pages
+  end
+
+  When("I click the app name in the navigation bar") do
+    within('nav.navbar') do
+      click_link("Autograder Frontend")
+    end
+  end
   
   
