@@ -23,6 +23,7 @@ Given('I am on the {string} page') do |page_name|
         'Users' then users_path
     when
         'tests' then assignment_tests_path
+        'Assignments' then assignments_path
     else
         raise "Unknown page: #{page_name}"
     end

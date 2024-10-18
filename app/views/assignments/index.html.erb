@@ -1,6 +1,13 @@
 <div class="assignments-wrapper">
   <h1>Assignments</h1>
 
+<h1>Assignments</h1>
+
+<div class="flex justify-center">
+  <%= render partial: "search/form", locals: { results: [] } %>
+</div>
+
+<div id="assignments">
   <% @assignments.each do |assignment| %>
     <div class="assignment-item">
       <p><strong>Assignment <%= assignment.assignment_name %>: </strong><%= assignment.assignment_name %></p>
