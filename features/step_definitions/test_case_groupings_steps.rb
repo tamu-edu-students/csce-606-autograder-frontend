@@ -70,8 +70,32 @@
     expect(page).to have_css("##{string}")
   end
 
+  Given('the following test cases exist in the {string} group:') do |grouping_name, table|
+    # Find the correct test grouping by name
+    test_grouping = TestGrouping.find_by(name: grouping_name)
+  
+    # Ensure the test grouping exists
+    raise "Test grouping '#{grouping_name}' not found" if test_grouping.nil?
+  
+    # Iterate over the test cases provided in the table and create them
+    table.hashes.each do |row|
+      # Use the row data to create a test with all necessary attributes
+      Test.create!(
+        name: row['name'],                   # Validate presence and uniqueness
+        points: row['points'],               # Validate presence and numericality
+        test_type: row['test_type'],         # Validate inclusion in VALID_TEST_TYPES
+        target: row['target'],               # Validate presence unless test_type is exempt
+        actual_test: row['actual_test'],     # Validate presence
+        test_grouping: test_grouping,        # Associate the test with the test group
+        assignment: test_grouping.assignment # Associate with the assignment
+      )
+    end
+  end
+  
+
   When('I click on the {string} grouping') do |string|
     # click on the grouping
+    @string = string
     find(".scrollable-container .test-grouping-title", text: string).click
   end
 
@@ -81,17 +105,67 @@
   end
 
   When('I click on the {string} test case name') do |string|
-    find(".scrollable-container .test-grouping-title", text: string).sibling(".test-list").find(".test-card", text: string).click
+    #find(".scrollable-container .test-grouping-title", text: @string).sibling(".test-list").find(".test-card", text: string).click
+    within(".test-grouping-card") do
+        # Click the specific test card with the test case name inside the test-list
+        find(".test-card", text: string).click
+      end
   end
 
   When('I should see the test displayed in the test-form view') do |string|
 
   end
 
-  When('I click on the {string} button next to {string}') do |string, string2|
-    # click on the button next to the test case grouping
-    find(".scrollable-container .test-grouping-title", text: string2).find(".button_to").click
+  When('I click on the {string} button next to {string}') do |button_text, group_name|
+
+    within(".scrollable-container") do
+      # Log information to confirm the test grouping title is found
+      grouping_title = find(".test-grouping-title", text: group_name)
+      puts "Found test grouping: #{group_name}"
+      
+      # Check if the button exists and print the button text
+      if button_text == "✎"
+        # Try to find the edit button
+        edit_button = grouping_title.find('button', text: button_text)
+        puts "Found edit button with text: #{button_text}"
+        
+        # Click the edit button
+        edit_button.click
+        puts "Clicked the edit button for: #{group_name}"
+        
+        within("#test-grouping-card-#{grouping_title[:'data-test-grouping-id']}") do
+            expect(page).to have_selector('input[name="test_grouping[name]"]', visible: true,wait: 50000000000)
+        end
+        puts "Edit form with input field appeared for: #{group_name}"
+      elsif button_text == "x"
+        # For the delete button, same logic can apply
+        delete_button = grouping_title.find('button', text: button_text)
+        delete_button.click
+      else
+        raise "Button text not recognized"
+      end
+    end
   end
+  
+  
+  
+
+  Then('I fill in the test case grouping text field with {string}') do |string|
+    #pending # Write code here that turns the phrase above into concrete actions
+    within(".scrollable-container") do
+        # Find the visible input field for the test grouping name
+        fill_in 'test_grouping[name]', with: string
+      end
+  end
+
+  And('I click the {string} button in scrollable block') do |button_text|
+    within(".scrollable-container") do
+
+        # Wait for the Save button to be visible after AJAX renders it
+        expect(page).to have_button(button_text, visible: true) # This will wait for the button to appear
+        click_button button_text
+    end
+end
 
   When('I attempt to update an existing test case grouping {string}') do |string|
     TestGrouping.create(name: string, assignment: @assignment)
