@@ -37,12 +37,22 @@ Feature: Test Case Groupings CRUD
     And I click the add button
     Then I should see an error message "Test grouping name can't be blank"
 
+  # Scenario: Create test case without grouping number
+  #   When I create a new test case without grouping number
+  #   Then I should see the test case in Miscellaneous test group
+
+  # Scenario: Create test case with grouping number
+  #   When I create a new test case with existing grouping number
+  #   Then I should see the test case in the target test group
+
+  # Scenario: Update test case by grouping number
+  #   When I create a new test case with existing grouping number
+  #   And I update the test case by changing the grouping number to another existing grouping number
+  #   Then I should see the test case in the new test group
 
 
 
-  # Scenario: Create a new test case inside a test case grouping
-  #   When I click on the "Create New Test Case" button
-  #   And I should see the Create test part on the right
+
 
   # Scenario: View an existing test case grouping and test cases
   #   When I click on the "Basic Functionality" grouping name
