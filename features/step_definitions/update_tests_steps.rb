@@ -25,7 +25,7 @@ Given(/^I am logged in as an instructor$/) do
     visit  assignment_path(@assignment, test_id: @test_case.id)
 
     # Find and edit the test
-    within('#details') do
+    within('#test-details') do
       fill_in 'Name', with: "Updated #{@test_case.name}"
       fill_in 'Points', with: 10.0
       select 'i/o', from: 'Test type'
@@ -58,7 +58,7 @@ Given(/^I am logged in as an instructor$/) do
      visit assignment_path(@assignment, test_id: @test_case.id)
 
      # Find and edit the test
-     within('#details') do
+     within('#test-details') do
        fill_in 'Name', with: ""
        fill_in 'Points', with: -5
        click_button 'Update Test'  # Update button in the form

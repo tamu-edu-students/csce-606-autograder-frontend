@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.3.2"
 
+gem "acts_as_list"
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"

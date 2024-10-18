@@ -1,8 +1,10 @@
 class Test < ApplicationRecord
   belongs_to :assignment
   belongs_to :test_grouping
-  validates :actual_test, presence: true
 
+  acts_as_list scope: :test_grouping
+
+  validates :actual_test, presence: true
 
   # Validations for required fields
   validates :name, presence: { message: "Missing attribute: name" },  uniqueness: { scope: :assignment_id, message: "Test name must be unique" }

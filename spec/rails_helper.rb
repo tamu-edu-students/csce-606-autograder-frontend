@@ -1,6 +1,11 @@
 require 'simplecov'
 require 'simplecov-json'
 require 'omniauth'
+require 'capybara/rspec'
+require 'selenium-webdriver'
+
+Capybara.javascript_driver = :selenium_chrome
+
 SimpleCov.start 'rails' do
   enable_coverage :branch
   SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
