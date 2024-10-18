@@ -1,11 +1,17 @@
 require 'rails_helper'
 RSpec.describe TestsController, type: :controller do
   let!(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: 'assignment-1') }
+  
   let!(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', actual_test: 'Test code') }
+  
+  let(:user) { User.create!(name: 'User', email: 'test@example.com') }
   # Mock authentication helper methods
   before do
     allow(controller).to receive(:current_user_and_token).and_return([ double("User"), "mock_auth_token" ])
     allow(controller).to receive(:update_remote)
+    
+    allow(controller).to receive(:current_user).and_return(user)  # Mock current_user to return a user
+    allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: "mock_auth_token" })
   end
 
   describe "GET #index" do
