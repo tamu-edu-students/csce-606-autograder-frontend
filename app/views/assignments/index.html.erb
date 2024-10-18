@@ -10,7 +10,7 @@
 <div id="assignments">
   <% @assignments.each do |assignment| %>
     <div class="assignment-item">
-      <p><strong>Assignment <%= assignment.assignment_name %>: </strong><%= assignment.assignment_name %></p>
+      <p><strong>Assignment: </strong><%= assignment.assignment_name %></p>
       <p><strong>Repository Name: </strong><%= assignment.repository_name %></p>
       <%= link_to "Show This Assignment", assignment_path(assignment), class: "btn btn-primary" %>
     </div>
