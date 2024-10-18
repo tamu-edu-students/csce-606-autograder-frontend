@@ -4,7 +4,12 @@ Before do
   RSpec::Mocks.setup
   allow_any_instance_of(Assignment).to receive(:push_changes_to_github)
   allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return(
-  [ User.create!(id: 1, name: 'Test User', email: 'test@example.com'), 'fake_github_token' ])
+    [ User.create!(name: 'Test User', email: 'test@example.com'), 'fake_github_token' ]
+  )
+
+  # Simulate login by setting session and current_user
+  @current_user = User.create!(name: 'sam', email: 'sam@example.com', role: 'instructor')
+  page.set_rack_session(user_id: @current_user.id)
 end
 
 After do
@@ -40,20 +45,20 @@ end
 
 When('I add a new unit test called {string}') do |string|
   steps %(
-        When I create a new test with type "unit"
-        And with the name "#{string}"
+    When I create a new test with type "unit"
+    And with the name "#{string}"
   )
 end
 
 When('I set it to {string} points') do |string|
   steps %(
-        When with the points "#{string}"
+    When with the points "#{string}"
   )
 end
 
 When('I set the target to {string}') do |string|
   steps %(
-        When with the target "#{string}"
+    When with the target "#{string}"
   )
 end
 
