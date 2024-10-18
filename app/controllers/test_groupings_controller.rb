@@ -16,7 +16,7 @@ class TestGroupingsController < ApplicationController
     @test_grouping = TestGrouping.new
   end
 
-  #Comment this edit function to reach the coverage
+  # Comment this edit function to reach the coverage
 
   # GET /test_groupings/1/edit
   # def edit
@@ -33,21 +33,21 @@ class TestGroupingsController < ApplicationController
     @test_grouping = TestGrouping.new(test_grouping_params)
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping.assignment = @assignment
-  
+
     respond_to do |format|
       if @test_grouping.save
         format.html { redirect_to assignment_path(@assignment), notice: "Test case grouping '#{@test_grouping.name}' created successfully" }
-        format.json { render json: @test_grouping, status: :created }  
+        format.json { render json: @test_grouping, status: :created }
       else
         format.html { redirect_to assignment_path(@assignment), alert: @test_grouping.errors.full_messages.to_sentence }
         format.json { render json: @test_grouping.errors, status: :unprocessable_entity }
       end
     end
   end
-  
 
-  #Comment this update function to reach the coverage
-  
+
+  # Comment this update function to reach the coverage
+
   # # # PATCH/PUT /test_groupings/1 or /test_groupings/1.json
   # def update
   #   respond_to do |format|
@@ -60,7 +60,7 @@ class TestGroupingsController < ApplicationController
   #     end
   #   end
   # end
-  
+
 
   # DELETE /test_groupings/1 or /test_groupings/1.json
   def destroy
