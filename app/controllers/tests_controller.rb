@@ -61,7 +61,7 @@ class TestsController < ApplicationController
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
     set_test_grouping_id
-    
+
     respond_to do |format|
       if @test.update(test_params)
         current_user, auth_token = current_user_and_token
@@ -100,9 +100,9 @@ class TestsController < ApplicationController
     @assignment = Assignment.find(params[:assignment_id])
   end
   # Use callbacks to share common setup or constraints between actions.
-  # def set_test_grouping
-  #   @test_grouping = TestGrouping.find(params[:test_grouping_id]) if params[:test_grouping_id]
-  # end
+  def set_test_grouping
+    @test_grouping = TestGrouping.find(params[:test_grouping_id]) if params[:test_grouping_id]
+  end
 
   def set_test
     @assignment = Assignment.find(params[:assignment_id])  # Find the assignment first

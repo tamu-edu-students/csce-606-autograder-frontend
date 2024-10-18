@@ -1,0 +1,14 @@
+console.log('edit.js.erb rendered');
+$("#test-grouping-card-<%= @test_grouping.id %> .test-grouping-title").html(`
+  <%= form_with model: @test_grouping, url: assignment_test_grouping_path(@assignment, @test_grouping), method: :patch, local: true, remote: true do |form| %>
+    <div class="d-inline-block">
+      <%= form.text_field :name, value: @test_grouping.name, class: "form-control d-inline" %>
+    </div>
+    <%= form.submit "Save", class: "btn btn-sm btn-primary" %>
+    <button class="btn btn-sm btn-secondary" onclick="window.location.reload()">Cancel</button>
+  <% end %>
+`);
+
+
+
+
