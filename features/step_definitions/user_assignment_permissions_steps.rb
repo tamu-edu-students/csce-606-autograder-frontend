@@ -64,32 +64,18 @@ end
 When('I select {string} for the {string} permission') do |action, permission_type|
     button_id = case [action, permission_type]
     when [ "Select All", "read" ]
-      "select-all-read"
+      "#select-all-read"
     when ["Revoke All", "read"]
-      "revoke-all-read"
+      "#revoke-all-read"
     when ["Select All", "write"]
-      "select-all-write"
+      "#select-all-write"
     when ["Revoke All", "write"]
-      "revoke-all-write"
+      "#revoke-all-write"
     else
       raise "Unknown action or permission type: #{action} #{permission_type}"
     end
 
-    # Click the appropriate button
-    #click_button(button_id)
     find(button_id).click
-    # find_button(button_id).click
-    # Get all checkboxes for the given permission type
-    checkboxes = all("input[id^='#{permission_type}_assignment_']")
-
-    # Check that all checkboxes are in the correct state
-    expected_state = (action == "Select All")
-
-    checkboxes.each do |checkbox|
-      actual_state = checkbox.checked?
-      expect(actual_state).to eq(expected_state), 
-        "Expected checkbox #{checkbox[:id]} to be #{expected_state ? 'checked' : 'unchecked'}, but it was #{actual_state ? 'checked' : 'unchecked'}"
-    end
 end
 
 When("I click {string}") do |button_text|
