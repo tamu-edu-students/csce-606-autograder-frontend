@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+    before_action :require_login
     def index
         @users = User.all
     end
@@ -11,20 +12,36 @@ class UsersController < ApplicationController
     def update_assignments
         @user = User.find(params[:id])
         @assignments = Assignment.all
-        new_assignment_ids = (params[:assignment_ids] || []).map(&:to_i)
-        old_assignment_ids = @user.assignment_ids
 
+        all_assignment_ids = Assignment.pluck(:id)
 
-        assignments_to_remove = old_assignment_ids - new_assignment_ids
-        @user.assignments.delete(Assignment.where(id: assignments_to_remove))
+        read_assignment_ids = (params[:read_assignment_ids] || []).map(&:to_i)
+        write_assignment_ids = (params[:write_assignment_ids] || []).map(&:to_i)
 
-        # Add new assignments
-        @user.assignment_ids = new_assignment_ids
+        # Get assignment ids not in read or write
+        none_assignment_ids = all_assignment_ids - (read_assignment_ids + write_assignment_ids)
+
+        # Update or create permissions for read access
+        read_assignment_ids.each do |assignment_id|
+          permission = Permission.find_or_initialize_by(user: @user, assignment_id: assignment_id)
+          permission.update(role: "read")
+        end
+
+        # Update or create permissions for write access
+        write_assignment_ids.each do |assignment_id|
+          permission = Permission.find_or_initialize_by(user: @user, assignment_id: assignment_id)
+          permission.update(role: "read_write")
+        end
+
+        none_assignment_ids.each do |assignment_id|
+          permission = Permission.find_or_initialize_by(user: @user, assignment_id: assignment_id)
+          permission.update(role: "no_permission")
+        end
 
         if @user.save
             # Update GitHub permissions
             begin
-                update_github_permissions(@user, new_assignment_ids, old_assignment_ids)
+                update_github_permissions(@user)
                 flash[:notice] = "Assignments updated successfully."
                 redirect_to users_path
             rescue Octokit::Error => e
@@ -42,25 +59,42 @@ class UsersController < ApplicationController
 
       private
 
-      def update_github_permissions(user, new_assignment_ids, old_assignment_ids)
+      def update_github_permissions(user)
         access_token = session[:github_token]
         client = Octokit::Client.new(access_token: access_token)
         org_name = "AutograderFrontend"
 
         # All assignments that need to be updated
-        all_assignments = Assignment.where(id: new_assignment_ids | old_assignment_ids)
+        @assignments = Assignment.all
 
 
-        all_assignments.each do |assignment|
+        @assignments.each do |assignment|
           repo_identifier = "#{org_name}/#{assignment.repository_name}"
-          permission = new_assignment_ids.include?(assignment.id) ? "push" : "pull"
 
-          begin
-            client.add_collaborator(repo_identifier, user.name, permission: permission)
-            Rails.logger.info "Updated collaborator #{user.name} on #{repo_identifier} with #{permission} access"
-          rescue Octokit::Error => e
-            Rails.logger.error "Failed to update collaborator #{user.name} on #{repo_identifier}: #{e.message}"
-            raise
+          # Fetch the user's permission for the current assignment
+          permission = Permission.find_by(user: user, assignment: assignment)
+
+
+          if permission.role == "no_permission" || permission.role.nil?
+            begin
+              client.remove_collaborator(repo_identifier, user.name)
+              Rails.logger.info "Removed collaborator #{user.name} from #{repo_identifier} due to 'none' permission"
+            rescue Octokit::Error => e
+              Rails.logger.error "Failed to remove collaborator #{user.name} from #{repo_identifier}: #{e.message}"
+              raise
+            end
+          elsif permission.role == "read_write" || permission.role == "read"
+            # Use ternary operator for selecting permission
+            github_permission = (permission.role == "read_write") ? "push" : "pull"
+            begin
+              client.add_collaborator(repo_identifier, user.name, permission: github_permission)
+              Rails.logger.info "Updated collaborator #{user.name} on #{repo_identifier} with #{github_permission} access"
+            rescue Octokit::Error => e
+              Rails.logger.error "Failed to update collaborator #{user.name} on #{repo_identifier}: #{e.message}"
+              raise
+            end
+          else
+            Rails.logger.error "Unknown permission role: #{permission.role} for user #{user.name} on assignment #{assignment.id}"
           end
         end
       end
