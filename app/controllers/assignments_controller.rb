@@ -1,5 +1,7 @@
 class AssignmentsController < ApplicationController
+  before_action :require_login
   before_action :set_assignment, only: %i[ show edit update destroy ]
+
 
   # GET /assignments or /assignments.json
   def index
@@ -9,6 +11,7 @@ class AssignmentsController < ApplicationController
   def show
     @assignment = Assignment.find(params[:id])
     @tests = @assignment.tests
+    @test_groupings = @assignment.test_groupings.includes(:tests)
     @test = Test.find(params[:test_id]) if params[:test_id]  # If a specific test is selected
     @test ||= Test.new(assignment: @assignment)  # Default to a new test if no test is selected
   end

@@ -1,5 +1,6 @@
 class Assignment < ActiveRecord::Base
-  has_and_belongs_to_many :users
+  has_many :permissions, dependent: :destroy
+  has_many :users, through: :permissions
   has_many :test_groupings, dependent: :destroy
   has_many :tests, through: :test_groupings, dependent: :destroy
   has_many :tests, dependent: :destroy # TODO: remove this association once TestGrouping CRUD is implemented
@@ -213,7 +214,7 @@ class Assignment < ActiveRecord::Base
     optional_attrs = ""
     optional_attrs += "@target: #{test.target}\n" if test.target.present?
     optional_attrs += "@include: #{test.include}\n" if test.include.present?
-    optional_attrs += "@number: #{test.number}\n" if test.number.present?
+    optional_attrs += "@number: #{test.position}\n" if test.position.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
     optional_attrs += "@skip: #{test.skip}\n" if test.skip.present?
     optional_attrs += "@timeout: #{test.timeout}\n" if test.timeout.present?

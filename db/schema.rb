@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_13_193346) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_16_160845) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,18 +47,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_13_193346) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "assignments_users", id: false, force: :cascade do |t|
+  create_table "permissions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "assignment_id", null: false
+    t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["assignment_id"], name: "index_assignments_users_on_assignment_id"
-    t.index ["user_id"], name: "index_assignments_users_on_user_id"
+    t.index ["assignment_id"], name: "index_permissions_on_assignment_id"
+    t.index ["user_id"], name: "index_permissions_on_user_id"
   end
 
   create_table "test_groupings", force: :cascade do |t|
     t.string "name"
-    t.integer "number"
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "assignment_id", null: false
@@ -71,7 +72,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_13_193346) do
     t.string "test_type"
     t.string "target"
     t.text "include"
-    t.string "number"
+    t.integer "position"
     t.boolean "show_output"
     t.boolean "skip"
     t.float "timeout"
@@ -97,8 +98,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_13_193346) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "assignments_users", "assignments"
-  add_foreign_key "assignments_users", "users"
+  add_foreign_key "permissions", "assignments"
+  add_foreign_key "permissions", "users"
   add_foreign_key "test_groupings", "assignments"
   add_foreign_key "tests", "assignments"
   add_foreign_key "tests", "test_groupings"
