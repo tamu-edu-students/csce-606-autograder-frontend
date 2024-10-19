@@ -74,7 +74,7 @@
       <!-- Form to create or edit a test -->
       <div id="test-form" class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
-
+        <%= link_to 'Back to Assignment', assignments_path, class: 'btn btn-primary back-btn' %>
         <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
     </div>
