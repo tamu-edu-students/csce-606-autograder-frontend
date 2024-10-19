@@ -1,5 +1,7 @@
 class AssignmentsController < ApplicationController
+  before_action :require_login
   before_action :set_assignment, only: %i[ show edit update destroy ]
+
 
   # GET /assignments or /assignments.json
   def index
@@ -9,6 +11,7 @@ class AssignmentsController < ApplicationController
   def show
     @assignment = Assignment.find(params[:id])
     @tests = @assignment.tests
+    @test_groupings = @assignment.test_groupings.includes(:tests)
     @test = Test.find(params[:test_id]) if params[:test_id]  # If a specific test is selected
     @test ||= Test.new(assignment: @assignment)  # Default to a new test if no test is selected
   end
@@ -25,12 +28,11 @@ class AssignmentsController < ApplicationController
   # POST /assignments or /assignments.json
   def create
     @assignment = Assignment.new(assignment_params)
-
     github_token = session[:github_token]
-    @assignment.assignment_repo_init(github_token)
 
     respond_to do |format|
       if @assignment.save
+        @assignment.assignment_repo_init(github_token)
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
         format.json { render :show, status: :created, location: @assignment }
       else
@@ -40,7 +42,6 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /assignments/1 or /assignments/1.json
   # PATCH/PUT /assignments/1 or /assignments/1.json
   def update
     respond_to do |format|
@@ -53,7 +54,6 @@ class AssignmentsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /assignments/1 or /assignments/1.json
   def destroy
@@ -97,6 +97,21 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def search
+    if params[:query].present?
+      @assignments = Assignment.where("repository_name LIKE ?", "%#{params[:query]}%")
+    else
+      redirect_to assignments_path
+      return
+    end
+
+    if @assignments.empty?
+      flash.now[:alert] = "No matching assignments found"
+      @assignments = Assignment.all
+    end
+
+    render :index
+  end
   def users
     @users = User.all
     @assignment = Assignment.find(params[:id])
@@ -151,15 +166,16 @@ class AssignmentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_assignment
-      @assignment = Assignment.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def assignment_params
-      params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_assignment
+    @assignment = Assignment.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def assignment_params
+    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+  end
 
     def update_github_permissions(assignment)
       access_token = session[:github_token]

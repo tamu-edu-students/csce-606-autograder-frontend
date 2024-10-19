@@ -10,11 +10,19 @@ Rails.application.routes.draw do
 
   resources :assignments do
     resources :tests
+    resources :test_groupings do
+      resources :tests
+    end
+    collection do
+      get "search"
+    end
     member do
       get "users"
       get "create_and_download_zip"
     end
   end
+
+  get "test_groupings/find_by_position", to: "test_groupings#find_by_position"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get "/auth/github/callback", to: "sessions#create"
   get "/auth/failure", to: "sessions#failure"

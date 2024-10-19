@@ -17,6 +17,13 @@ class SessionsController < ApplicationController
         redirect_to root_path
     end
 
+    def destroy
+        session[:user_id] = nil
+        session[:github_token] = nil
+        flash[:notice] = "Logged out successfully."
+        redirect_to root_path
+      end
+
     private
 
     def user_belongs_to_organization?(auth_hash)
