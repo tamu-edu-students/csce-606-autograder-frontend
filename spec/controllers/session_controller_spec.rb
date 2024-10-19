@@ -67,4 +67,31 @@ RSpec.describe SessionsController, type: :controller do
       expect(flash[:warning]).to eq('GitHub authentication failed. Please try again.')
     end
   end
+
+  describe "DELETE #destroy" do
+    before do
+      # Simulate a logged-in user by setting session variables
+      session[:user_id] = 1
+      session[:github_token] = 'valid_token'
+    end
+
+    it "clears the session" do
+      delete :destroy
+
+      expect(session[:user_id]).to be_nil
+      expect(session[:github_token]).to be_nil
+    end
+
+    it "sets a flash notice for successful logout" do
+      delete :destroy
+
+      expect(flash[:notice]).to eq("Logged out successfully.")
+    end
+
+    it "redirects to the root path after logging out" do
+      delete :destroy
+
+      expect(response).to redirect_to(root_path)
+    end
+  end
 end

@@ -4,6 +4,9 @@ class Assignment < ActiveRecord::Base
   has_many :test_groupings, dependent: :destroy
   has_many :tests, through: :test_groupings, dependent: :destroy
   has_many :tests, dependent: :destroy # TODO: remove this association once TestGrouping CRUD is implemented
+
+  before_validation :normalize_repo_name
+
   validates :repository_name, uniqueness: { message: "must be unique. This repository name is already taken." }
   validates :assignment_name, :repository_name, presence: true
 
@@ -44,13 +47,10 @@ class Assignment < ActiveRecord::Base
       # Construct the local path to the specific assignment's repository
       local_repo_path = File.join(base_repo_path, repository_name)
 
-      # Construct the remote GitHub URL using the environment variable and the repository name
-      remote_repo_url = "https://#{auth_token}@github.com/#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}.git"
-
       # Set the remote URL for the repository
       # system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
 
-      set_remote_origin(local_repo_path, remote_repo_url)
+      set_remote_origin(local_repo_path, authenticated_url(auth_token))
 
 
       # Check if the local repo exists before committing and pushing changes
@@ -64,7 +64,7 @@ class Assignment < ActiveRecord::Base
 
   def assignment_repo_init(github_token)
     create_repo_from_template(github_token)
-    clone_repo_to_local
+    clone_repo_to_local(github_token)
     create_and_add_deploy_key(
       github_token,
       self.repository_name,
@@ -72,6 +72,7 @@ class Assignment < ActiveRecord::Base
       self.local_repository_path,
       false
     )
+    # TODO: This should add the key to the auto-grader core repo
     create_and_add_deploy_key(
       github_token,
       self.repository_name,
@@ -95,6 +96,10 @@ class Assignment < ActiveRecord::Base
 
   private
 
+  def authenticated_url(github_token)
+    "https://#{github_token}@#{repository_url[8..]}"
+  end
+
   def ensure_default_test_grouping
     test_groupings.find_or_create_by!(name: "Miscellaneous Tests")
   end
@@ -102,6 +107,8 @@ class Assignment < ActiveRecord::Base
   # Commit local changes to the repository
   def commit_local_changes(local_repo_path, user)
       git = Git.open(local_repo_path) # Assuming the `ruby-git` gem is being used
+      git.config("user.name", user.name) # Set the Git user name
+      git.config("user.email", user.email) # Set the Git user email
       git.add(all: true) # Add all changes (new, modified, deleted files)
       git.commit("Changes made by #{user.name}") # Use the passed user object to get username
   end
@@ -169,11 +176,11 @@ class Assignment < ActiveRecord::Base
     self.repository_url = new_repo[:html_url]
   end
 
-  def clone_repo_to_local
+  def clone_repo_to_local(github_token)
       # wait for remote repo to be initialized
       sleep(3)
       begin
-        Git.clone(self.repository_url, self.local_repository_path)
+        Git.clone(authenticated_url(github_token), self.local_repository_path)
       rescue Git::Error => e
         puts "An error occurred: #{e.message}"
         nil
@@ -207,11 +214,28 @@ class Assignment < ActiveRecord::Base
     optional_attrs = ""
     optional_attrs += "@target: #{test.target}\n" if test.target.present?
     optional_attrs += "@include: #{test.include}\n" if test.include.present?
-    optional_attrs += "@number: #{test.number}\n" if test.number.present?
+    optional_attrs += "@number: #{test.position}\n" if test.position.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
     optional_attrs += "@skip: #{test.skip}\n" if test.skip.present?
     optional_attrs += "@timeout: #{test.timeout}\n" if test.timeout.present?
     optional_attrs += "@visibility: #{test.visibility}\n" if test.visibility == "hidden"
     optional_attrs
+  end
+
+  def normalize_repo_name
+    if self.repository_name.present?
+      repository_name = self.repository_name.downcase
+
+      # Replace spaces/underscores with hyphens
+      repository_name = repository_name.gsub(/[ _]/, "-")
+
+      # Remove any non-alphanumeric/hyphen chars
+      repository_name = repository_name.gsub(/[^a-z0-9\-]/, "")
+
+      # Remove leading/trailing hyphens
+      repository_name = repository_name.gsub(/^-+|-+$/, "")
+
+      self.repository_name = repository_name
+    end
   end
 end

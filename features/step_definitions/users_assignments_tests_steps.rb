@@ -15,6 +15,10 @@ Given('I am on the {string} page') do |page_name|
     path = case page_name
     when
         'Login' then root_path
+    when
+        'Assignments' then assignments_path
+    when
+        'Course Dashboard' then assignments_path
     else
         raise "Unknown page: #{page_name}"
     end
@@ -27,6 +31,10 @@ Then('I should see the {string} page') do |page_name|
         "Course Dashboard" then assignments_path
     when
         "Login" then root_path
+    when
+        "Assignments" then assignments_path
+    when
+        "Manage Users" then users_path
     end
 
     expect(current_path).to eq(expected_path)
