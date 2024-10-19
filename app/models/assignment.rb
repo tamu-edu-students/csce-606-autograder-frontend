@@ -1,5 +1,6 @@
 class Assignment < ActiveRecord::Base
-  has_and_belongs_to_many :users
+  has_many :permissions, dependent: :destroy
+  has_many :users, through: :permissions
   has_many :test_groupings, dependent: :destroy
   has_many :tests, through: :test_groupings, dependent: :destroy
   has_many :tests, dependent: :destroy # TODO: remove this association once TestGrouping CRUD is implemented
