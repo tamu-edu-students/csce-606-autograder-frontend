@@ -37,8 +37,7 @@ Given(/^I am logged in as an instructor$/) do
 
   When('I delete the test case') do
     visit assignment_path(@assignment, test_id: @test_case.id)
-
-    click_button 'Destroy this test'
+    click_button 'Delete Test'
   end
 
   Then(/^I should see the updated test case in the assignment$/) do

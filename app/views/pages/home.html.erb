@@ -13,11 +13,13 @@
   <%= link_to "Course Dashboard", assignments_path, class: "btn btn-primary", data: { turbo: false } %>
   <%= link_to "Manage Users", users_path, class: "btn btn-primary", data: { turbo: false } %>
   </div>
+
     <% else %>
       <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
         <button type="submit">Login With GitHub</button> 
       <% end %>
     <% end %>
-  </div> <!-- Close wrapper div -->
+  </div>
+  </div>
 </body>
 

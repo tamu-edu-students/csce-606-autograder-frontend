@@ -255,6 +255,11 @@ form {
   padding-top: 180px
 }
 
+body.assignment-show-page {
+  padding-top: 500px;
+}
+
+
 .assignments-table {
   width: 100%;
   border-collapse: collapse;
