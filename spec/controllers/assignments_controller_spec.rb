@@ -16,9 +16,13 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   let(:mock_github_token) { 'mock_github_token' }
+  let(:user) { User.create!(name: 'Test User', email: 'test@example.com') }
 
   before do
-    allow(controller).to receive(:session).and_return({ github_token: mock_github_token })
+    allow(controller).to receive(:require_login).and_return(true)
+    # allow(controller).to receive(:session).and_return({ github_token: mock_github_token })
+    allow(controller).to receive(:current_user).and_return(user)  # Mock current_user to return a user
+    allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: mock_github_token })  # Mock the session
   end
 
   describe 'GET #index' do
@@ -94,7 +98,7 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:assignment) { Assignment.create! valid_attributes }
     let(:user) { User.create!(name: 'Test User', email: 'test@example.com') }
     let(:auth_token) { 'mock_github_token' }
-    let(:new_attributes) do { assignment_name: 'Updated Assignment' } end
+    let(:new_attributes) do { repository_name: 'updated-repository' } end
 
     describe 'with valid parameters' do
       before do
@@ -104,7 +108,7 @@ RSpec.describe AssignmentsController, type: :controller do
       it 'updates the requested assignment' do
         put :update, params: { id: assignment.to_param, assignment: new_attributes }
         assignment.reload
-        expect(assignment.assignment_name).to eq('Updated Assignment')
+        expect(assignment.repository_name).to eq('updated-repository')
       end
 
       it 'redirects to the assignment' do
@@ -133,6 +137,44 @@ RSpec.describe AssignmentsController, type: :controller do
     it 'redirects to the assignments list' do
       delete :destroy, params: { id: assignment.to_param }
       expect(response).to redirect_to(assignments_path)
+    end
+  end
+
+  describe 'GET #search' do
+    let!(:assignment1) { Assignment.create!(repository_name: 'test-repository-1', assignment_name: 'Test Assignment 1') }
+    let!(:assignment2) { Assignment.create!(repository_name: 'test-repository-2', assignment_name: 'Test Assignment 2') }
+
+    describe 'when query is present and there is a match' do
+      it 'renders the index template' do
+        get :search, params: { query: 'test-repository-1' }
+        expect(response).to render_template(:index)
+      end
+      it 'shows only the matching assignments in the rendered view' do
+        get :search, params: { query: 'test-repository-1' }
+        expect(assigns(:assignments)).to eq([ assignment1 ])
+      end
+    end
+
+    describe 'when query is present and there is no match' do
+      it 'renders the index template' do
+        get :search, params: { query: 'Nonexistent' }
+        expect(response).to render_template(:index)
+      end
+      it 'shows all the assignments in the rendered view' do
+        get :search, params: { query: 'Nonexistent' }
+        expect(assigns(:assignments)).to eq([ assignment1, assignment2 ])  # Redirects to show all assignments
+      end
+      it 'shows a flash alert in the rendered view' do
+        get :search, params: { query: 'Nonexistent' }
+        expect(flash.now[:alert]).to eq('No matching assignments found')
+      end
+    end
+
+    describe 'when query is not present' do
+      it 'redirects to the default index view path' do
+        get :search
+        expect(response).to redirect_to(assignments_path)
+      end
     end
   end
 end
