@@ -1,10 +1,11 @@
 <%= stylesheet_link_tag 'assignment_show', media: 'all' %>
+<body class="assignment-show-page">
 
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
 <!-- Display tests for the assignment -->
 <div class="container" data-assignment-id="<%= @assignment.id %>">
-2  <div class="row">
+  <div class="row">
     <div id = 'test' class="col-md-6">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
       <div class="scrollable-container">
@@ -64,7 +65,7 @@
 
 
       <!-- Link to add a new test -->
-      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
+      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
 
     </div>
@@ -74,8 +75,12 @@
       <div id="test-form" class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
 
+        
+        
+      <%= link_to 'Back to Assignment', assignments_path, class: 'btn btn-primary back-btn' %>
         <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
     </div>
   </div>
 </div>
+</body>
