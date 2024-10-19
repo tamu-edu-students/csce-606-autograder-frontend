@@ -62,14 +62,14 @@ When('I {string} {string} for the assignment {string}') do |action, access, repo
 end
 
 When('I select {string} for the {string} permission') do |action, permission_type|
-    button_id = case [action, permission_type]
+    button_id = case [ action, permission_type ]
     when [ "Select All", "read" ]
       "#select-all-read"
-    when ["Revoke All", "read"]
+    when [ "Revoke All", "read" ]
       "#revoke-all-read"
-    when ["Select All", "write"]
+    when [ "Select All", "write" ]
       "#select-all-write"
-    when ["Revoke All", "write"]
+    when [ "Revoke All", "write" ]
       "#revoke-all-write"
     else
       raise "Unknown action or permission type: #{action} #{permission_type}"
@@ -120,7 +120,7 @@ Then("I should see that {string} has {string} access to the remote {string} repo
 
   github_permission = (permission.role == "read_write") ? "push" : "pull"
 
-  if permission.role == "read" || permission.role == "read_write" 
+  if permission.role == "read" || permission.role == "read_write"
     expect(WebMock).to have_requested(:put, %r{https://api\.github\.com/repos/AutograderFrontend/#{repo_name}/collaborators/#{user.name}})
       .with(
         body: hash_including("permission" => github_permission),
@@ -130,7 +130,7 @@ Then("I should see that {string} has {string} access to the remote {string} repo
           'User-Agent' => /Octokit Ruby Gem.*/
         }
       )
-  elsif permission.role == "no-permission" 
+  elsif permission.role == "no-permission"
     expect(WebMock).to have_requested(:delete, "https://api.github.com/repos/#{repo_identifier}/collaborators/#{user_name}")
       .with(
         headers: {
@@ -140,6 +140,4 @@ Then("I should see that {string} has {string} access to the remote {string} repo
         }
       )
   end
-
-
 end
