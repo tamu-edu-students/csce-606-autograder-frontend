@@ -63,9 +63,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 @media screen and (max-width: 600px) {
-  body {
-      padding: 10px;
-  }
+  
 
   h1 {
       font-size: 2em;

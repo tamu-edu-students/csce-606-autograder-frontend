@@ -1,5 +1,9 @@
 <div class="centered-container">
   <h1>Assignments</h1>
+
+<div class="flex justify-center">
+  <%= render partial: "search/form", locals: { results: [] } %>
+</div>
   <div class="assignments-table-container">
     <table id="assignments-table" class="assignments-table">
       <thead>
