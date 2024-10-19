@@ -93,9 +93,9 @@ class Assignment < ActiveRecord::Base
       end
     end
   end
-# To make the Github Repo Link
+  # To make the Github Repo Link
   def github_repository_url
-    organization = ENV['GITHUB_COURSE_ORGANIZATION']
+    organization = ENV["GITHUB_COURSE_ORGANIZATION"]
     "https://github.com/#{organization}/#{repository_name}"
   end
 

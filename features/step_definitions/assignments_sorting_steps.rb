@@ -31,10 +31,10 @@ Then('the assignments should be sorted by {string} in {word} order') do |column,
       'creation date' => 1,
       'last updated date' => 2
     }[column.downcase]
-  
+
     rows = all('#assignments-table tbody tr')
     values = rows.map { |row| row.all('td')[column_index].text }
-  
+
     if column.downcase.include?('date')
       # Convert string dates to DateTime objects for comparison
       parsed_values = values.map { |v| DateTime.strptime(v, '%d-%m-%Y %H:%M') }
@@ -47,19 +47,19 @@ Then('the assignments should be sorted by {string} in {word} order') do |column,
       sorted_values = values.sort
       expected_values = order == 'ascending' ? sorted_values.reverse : sorted_values
     end
-  
+
     expect(values).to eq(expected_values)
   end
 
 Then('I should see a {word} arrow') do |direction|
     arrow_id = case direction
-                when 'downward'
-                    '&#x25BC;'  
-                when 'upward'
-                    '&#x25B2;'  
-                else
+    when 'downward'
+                    '&#x25BC;'
+    when 'upward'
+                    '&#x25B2;'
+    else
                     raise "Unknown direction: #{direction}"
-                end
+    end
 
     within('#assignments-table thead') do
         expect(page).to have_css("span[id^='arrow-']", text: arrow_id, visible: :all)

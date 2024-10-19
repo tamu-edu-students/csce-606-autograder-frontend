@@ -15,7 +15,7 @@ Given('I am on the {string} page') do |page_name|
     path = case page_name
     when
         'Login' then root_path
-    when 
+    when
         'Assignment' then assignments_path
     when
         'Home' then pages_home_path
