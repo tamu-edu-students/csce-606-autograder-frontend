@@ -1,16 +1,19 @@
 
 <body>
-<div class="card">
-  <div class="card-body">
-    <h1>Welcome to Autograder!</h1>
+  <div class="wrapper"> <!-- New wrapper div to center the whole content -->
+    <div class="text-container">
+      <h1>Welcome to Autograder!</h1>
 
     <p>This autograding system allows for an easier creation and maintenance of assignments and their constituent tests</p>
 
-    <% if current_user %>
-      <p>You are logged in as <%= current_user.name %>!</p>
-      <%= link_to "Course Dashboard", assignments_path, class: "button", data: { turbo: false } %>
-      <br>
-      <%= link_to "Manage Users", users_path, class: "button", data: { turbo: false } %>
+      <% if current_user %>
+        <p>You are logged in as <%= current_user.name %>!</p>
+      </div>
+      <div class="buttons-container">
+  <%= link_to "Course Dashboard", assignments_path, class: "btn btn-primary", data: { turbo: false } %>
+  <%= link_to "Manage Users", users_path, class: "btn btn-primary", data: { turbo: false } %>
+  </div>
+
     <% else %>
       <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
         <button type="submit">Login With GitHub</button> 

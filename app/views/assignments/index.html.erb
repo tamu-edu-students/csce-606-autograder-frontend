@@ -1,19 +1,100 @@
-<% content_for :title, "Assignments" %>
+<div class="assignments-wrapper">
 
 <h1>Assignments</h1>
 
 <div class="flex justify-center">
   <%= render partial: "search/form", locals: { results: [] } %>
 </div>
-
-<div id="assignments">
-  <% @assignments.each do |assignment| %>
-    <%= render assignment %>
-    <p>
-      <%= link_to "Show this assignment", assignment%>
-      <%= link_to "Management Assignment Permissions", users_assignment_path(assignment) %>
-    </p>
-  <% end %>
+  <div class="assignments-table-container">
+    <table id="assignments-table" class="assignments-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Repository Name <span id="arrow-0">&#x25B2;</span></th>
+          <th onclick="sortTable(1)">Created On <span id="arrow-1">&#x25B2;</span></th>
+          <th onclick="sortTable(2)">Last Updated <span id="arrow-2">&#x25B2;</span></th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @assignments.each do |assignment| %>
+          <tr>
+            <td>
+              <%= link_to assignment.repository_name, assignment.github_repository_url, target: "_blank", class: "btn-link" %>
+            </td>
+            <td><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
+            <td><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
+            <td>
+              <%= link_to 'Export', create_and_download_zip_assignment_path(assignment), class: "btn btn-success" %>
+              <%= link_to 'Edit', assignment_path(assignment), class: "btn btn-primary" %>
+              <%= link_to 'Manage Permissions', assignments_path(assignment), class: "btn btn-secondary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= link_to 'Create Assignment', new_assignment_path, class: 'btn btn-primary create-assignment-btn' %>
 </div>
 
-<%= link_to "Create Assignment", new_assignment_path %>
+<script>
+  // Function to sort the table when clicking on headers
+  let sortDirections = ["asc", "asc", "asc"]; // Store sorting direction for each column
+  function sortTable(n) {
+    const table = document.getElementById("assignments-table");
+    let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    switching = true;
+    dir = sortDirections[n]; // Use stored sorting direction for the clicked column
+
+    // Clear all arrows
+    for (let j = 0; j < 3; j++) {
+      document.getElementById(`arrow-${j}`).innerHTML = dir === "asc" ? "&#x25B2;" : "&#x25BC;";
+    }
+
+    // Set correct arrow for the clicked column
+    document.getElementById(`arrow-${n}`).innerHTML = dir === "asc" ? "&#x25B2;" : "&#x25BC;";
+
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("TD")[n];
+        y = rows[i + 1].getElementsByTagName("TD")[n];
+
+        // Compare values based on column content
+        if (n === 1 || n === 2) { // If sorting by date (Created On or Last Updated)
+          if (dir === "asc" && new Date(x.innerHTML) > new Date(y.innerHTML)) {
+            shouldSwitch = true;
+            break;
+          } else if (dir === "desc" && new Date(x.innerHTML) < new Date(y.innerHTML)) {
+            shouldSwitch = true;
+            break;
+          }
+        } else { // Sorting by name or other text-based columns
+          if (dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          } else if (dir === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        switchcount++;
+      } else {
+        if (switchcount === 0 && dir === "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+
+    // Toggle the direction for the next click on this column
+    sortDirections[n] = dir === "asc" ? "desc" : "asc";
+  }
+</script>
