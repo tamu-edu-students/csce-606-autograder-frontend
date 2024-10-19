@@ -65,7 +65,7 @@
 
 
       <!-- Link to add a new test -->
-      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
+      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
 
     </div>
@@ -74,13 +74,9 @@
       <!-- Form to create or edit a test -->
       <div id="test-form" class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
-
-        
-        
-      <%= link_to 'Back to Assignment', assignments_path, class: 'btn btn-primary back-btn' %>
+        <%= link_to 'Back to Assignment', assignments_path, class: 'btn btn-primary back-btn' %>
         <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
     </div>
   </div>
 </div>
-</body>
