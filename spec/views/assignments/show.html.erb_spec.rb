@@ -47,7 +47,7 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "renders the delete button when test is persisted" do
     render
-    expect(rendered).to have_button('Destroy this test')
+    expect(rendered).to have_button('Delete Test')
   end
 
   it "has a link to create and download ZIP" do
