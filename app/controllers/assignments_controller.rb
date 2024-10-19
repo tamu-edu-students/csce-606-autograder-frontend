@@ -1,6 +1,19 @@
 class AssignmentsController < ApplicationController
   before_action :set_assignment, only: %i[ show edit update destroy ]
 
+  def test_block_partial
+    partial_name = params[:partial]
+  
+    if partial_name.present?
+      render partial: "assignments/test_blocks/#{partial_name}"
+    else
+      render plain: "No test block found", status: :not_found
+    end
+  end
+  
+  
+  
+
   # GET /assignments or /assignments.json
   def index
     @assignments = Assignment.all

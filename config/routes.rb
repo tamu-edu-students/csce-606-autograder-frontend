@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :assignments do
     resources :tests
     member do
+      get 'test_block_partial'
       get "create_and_download_zip"
     end
   end
@@ -24,6 +25,9 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+
+  # Route for dynamically loading the test block
+  get '/assignments/test_blocks/:partial', to: 'assignments#test_block'
   # Defines the root path route ("/")
   # root "posts#index"
 end

@@ -1,12 +1,11 @@
 <%= stylesheet_link_tag 'assignment_show', media: 'all' %>
 
-
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
-<!-- Display tests for the assignment -->
 <div class="container">
   <div class="row">
-    <div id = 'test' class="col-md-4">
+    <!-- Left column: Tests List -->
+    <div class="col-md-4">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
       <ul>
         <% @tests.each do |test| %>
@@ -16,82 +15,91 @@
           </li>
         <% end %>
       </ul>
-
       <!-- Link to add a new test -->
       <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
-
     </div>
 
-    <div id = 'details' class="col-md-4" data-controller="test_block">
-      <!-- Form to create or edit a test -->
+    <!-- Middle column: Test Form -->
+    <div class="col-md-4" data-controller="test-block">
       <div class="test-form">
         <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
-        
+
         <%= form_with model: [@assignment, @test], local: true do |form| %>
           <div class="form-grid">
-            <div class = "form-group">
+            <div class="form-group">
               <%= form.label :name %>
-              <%= form.text_field :name, class:"form-control" %>
+              <%= form.text_field :name, class: "form-control" %>
             </div>
-            <div class = "form-group">
-              <%= form.label :points %>
-              <%= form.number_field :points, class:"form-control" %>
-            </div>
-            <div class="form-group" data-action="change->test_block#loadTestBlockPartial">
-              <%= form.label :test_type %>
-              <%= form.select :test_type,
-                options_for_select([
-                  ['coverage', 'coverage'], 
-                  ['compile', 'compile'], 
-                  ['approved_includes', 'approved_includes'], 
-                  ['memory_errors', 'memory_errors'], 
-                  ['unit', 'unit'], 
-                  ['i/o', 'i/o'], 
-                  ['performance', 'performance'], 
-                  ['script', 'script']
-                ], @test.test_type), { class: "form-control", data: { test_block_target: "select" } }%>
-            </div>
-          
-            <div class = "form-group">
-            <%= form.label :target %>
-            <%= form.text_field :target, class:"form-control" %>
-          </div>
-            <div class = "form-group">
-            <%= form.label :include %>
-            <%= form.text_area :include , class:"form-control"%>
-            </div>
-            <div class = "form-group">
-            <%= form.label :number %>
-            <%= form.text_field :number , class:"form-control"%>
-          </div>
 
-            <div class = "form-group">
-              <%= form.label :show_output %>
-              <%= form.check_box :show_output%>
+            <div class="form-group">
+              <%= form.label :points %>
+              <%= form.number_field :points, class: "form-control" %>
             </div>
-            <div class = "form-group">
+
+            <!-- Dropdown for Test Type with Stimulus action and target -->
+            <div class="form-group" data-action="change->test-block#updateTestBlock">
+              <%= form.label :test_type, "Test type" %>
+              <%= form.select :test_type, 
+                options_for_select([
+                  ['Coverage', 'coverage'], 
+                  ['Compile', 'compile'], 
+                  ['Approved Includes', 'approved_includes']
+                ], @test.test_type), 
+                {}, 
+                class: 'form-control', data: { test_block_target: "testTypeSelect" } %>
+            </div>
+
+            <!-- Other form fields -->
+            <div class="form-group">
+              <%= form.label :target %>
+              <%= form.text_field :target, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :include %>
+              <%= form.text_area :include, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :number %>
+              <%= form.text_field :number, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :show_output %>
+              <%= form.check_box :show_output %>
+            </div>
+
+            <div class="form-group">
               <%= form.label :skip %>
               <%= form.check_box :skip %>
             </div>
-            <div class = "form-group">
+
+            <div class="form-group">
               <%= form.label :timeout %>
-              <%= form.number_field :timeout, class:"form-control" %>
+              <%= form.number_field :timeout, class: "form-control" %>
             </div>
-            <div class="field">
+
+            <div class="form-group">
               <%= form.label :visibility %>
-              <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
-                                                                ['After Due Date', 'after_due_date'], 
-                                                                ['After Published', 'after_published'], 
-                                                                ['Visible', 'visible']], @test.visibility || 'visible'), class:"form-control" %>
+              <%= form.select :visibility, 
+                options_for_select([
+                  ['Hidden', 'hidden'],
+                  ['After Due Date', 'after_due_date'],
+                  ['After Published', 'after_published'],
+                  ['Visible', 'visible']
+                ], @test.visibility || 'visible'), class: "form-control" %>
             </div>
-            <div class = "form-group">
+
+            <div class="form-group">
               <%= form.label :actual_test %>
-              <%= form.text_area :actual_test, class:"form-control" %>
+              <%= form.text_area :actual_test, class: "form-control" %>
             </div>
-          </div class = "form-group">
-          <div class="form-actions">
-            <%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
+
+            <div class="form-actions">
+              <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class: "btn btn-primary" %>
+            </div>
           </div>
         <% end %>
 
@@ -100,21 +108,15 @@
             <%= button_to "Destroy this test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
           </div>
         <% end %>
-        
-      <%= link_to 'Back to Assignment', assignments_path %>
+
+        <%= link_to 'Back to Assignment', assignments_path %>
       </div>
     </div>
 
-    <div id='dynamic-test-block' class="col-md-4">
+    <!-- Right column: Test Block (this will change dynamically) -->
+    <div class="col-md-4">
       <h2>Test Block</h2>
-      <div data-test-block-target="testBlockPartial" data-test-type="coverage" class="hidden">
-        <%= render 'assignments/coverage_test_block' %>
-      </div>
-      <div data-test-block-target="testBlockPartial" data-test-type="io" class="hidden">
-        <%= render 'assignments/io_test_block' %>
-      </div>
-      <div data-test-block-target="testBlockPartial" data-test-type="performance" class="hidden">
-        <%= render 'assignments/code_block' %>
-      </div>
+      <textarea id="test-block-text" class="form-control" rows="5"><%= @test.test_type == "coverage" ? @test.actual_test : @test.test_type == "compile" ? @test.actual_test : @test.test_type == "approved_includes" ? @test.actual_test : "" %></textarea>
+    </div>
   </div>
 </div>

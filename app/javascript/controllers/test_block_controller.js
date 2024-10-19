@@ -1,32 +1,26 @@
+// app/javascript/controllers/test_block_controller.js
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["select", "testBlockPartial"];
+  static targets = ["testTypeSelect"];
 
   connect() {
-    console.log("TestTypeController connected");
-    this.loadTestBlockPartial();
-    this.selectTarget.addEventListener("change", this.loadTestBlockPartial.bind(this));
+    console.log("Test block controller connected");
   }
 
-  loadTestBlockPartial() {
-    console.log("Load Test Block Partial"); 
-    const selectedTestType = this.selectTarget.value;
+  updateTestBlock() {
+    const testType = this.testTypeSelectTarget.value;
+    const textBlock = document.getElementById('test-block-text');
 
-    console.log("Selected Test Type: ", selectedTestType);
-
-    this.testBlockPartialTargets.forEach((partial) => {
-      console.log("Partial: ", partial);
-      if (partial.dataset.testType === selectedTestType) {
-        partial.classList.remove("hidden");
-      } 
-      else {
-        partial.classList.add("hidden");
-      }
-    });
-  }
-
-  disconnect() {
-    this.selectTarget.removeEventListener("change", this.loadTestBlockPartial.bind(this));
+    // Update text based on selected test type (this does not persist but updates the field)
+    if (testType === 'coverage') {
+      textBlock.value = "Enter details for coverage test...";
+    } else if (testType === 'compile') {
+      textBlock.value = "Enter details for compile test...";
+    } else if (testType === 'approved_includes') {
+      textBlock.value = "Enter details for approved includes test...";
+    } else {
+      textBlock.value = "Enter test details...";
+    }
   }
 }
