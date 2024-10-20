@@ -1,6 +1,11 @@
 class RenameNumberToPositionInTestsAndTestGroupingsTest < ActiveRecord::Migration[7.2]
-  def change
-    change_column :tests, :position, :integer
-    change_column :test_groupings, :position, :integer
+  def up
+    change_column :tests, :position, 'integer USING CASE WHEN position ~ E\'^\\d+$\' THEN position::integer ELSE 0 END'
+    change_column :test_groupings, :position, 'integer USING CASE WHEN position ~ E\'^\\d+$\' THEN position::integer ELSE 0 END'
+  end
+
+  def down
+    change_column :tests, :position, :string
+    change_column :test_groupings, :position, :string
   end
 end
