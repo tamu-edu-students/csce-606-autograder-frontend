@@ -26,7 +26,7 @@
             <td>
               <%= link_to 'Export', create_and_download_zip_assignment_path(assignment), class: "btn btn-success" %>
               <%= link_to 'Edit', assignment_path(assignment), class: "btn btn-primary" %>
-              <%= link_to 'Manage Permissions', assignments_path(assignment), class: "btn btn-secondary" %>
+              <%= link_to 'Manage Permissions', users_assignment_path(assignment), class: "btn btn-secondary" %>
             </td>
           </tr>
         <% end %>

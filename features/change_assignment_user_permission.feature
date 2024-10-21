@@ -26,52 +26,52 @@ Feature: Manage assignment access for each user
     And I am on the "Manage Assignments" page for user permissions
 
   Scenario: Grant a single user read access to an assignment 
-    When I click on "assignment1"
+    When I click on "Manage Permissions" for "assignment-1-repo"
     And I "select" "read" for the user "alice"
     And I click "Save Changes"
     Then I should see that "alice" has "read" access to the remote "assignment-1-repo" repository
 
   Scenario: Grant a single user write access to an assignment 
-    When I click on "assignment2"
+    When I click on "Manage Permissions" for "assignment-2-repo"
     And I "select" "write" for the user "alice"
     And I click "Save Changes"
     Then I should see that "alice" has "read-write" access to the remote "assignment-2-repo" repository
 
   Scenario: Grant all users read access to an assignment 
-    When I click on "assignment1"
+    When I click on "Manage Permissions" for "assignment-1-repo"
     And I select "Select All" for the "read" permission
     And I click "Save Changes"
     Then I should see that "alice" has "read" access to the remote "assignment-1-repo" repository
     And I should see that "bob" has "read" access to the remote "assignment-1-repo" repository
 
   Scenario: Remove all users read access to an assignment
-    When I click on "assignment1"
+    When I click on "Manage Permissions" for "assignment-1-repo"
     And I select "Revoke All" for the "read" permission
     And I click "Save Changes"
     Then I should see that "alice" has "no-permission" access to the remote "assignment-1-repo" repository
     And I should see that "bob" has "no-permission" access to the remote "assignment-1-repo" repository
    
   Scenario: Remove a single user's read access to an assignment
-    When I click on "assignment3"
+    When I click on "Manage Permissions" for "assignment-3-repo"
     And I "deselect" "read" for the user "bob"
     And I click "Save Changes"
     Then I should see that "bob" has "no-permission" access to the remote "assignment-3-repo" repository
 
   Scenario: Remove a single user's write access to an assignment
-    When I click on "assignment3"
+    When I click on "Manage Permissions" for "assignment-3-repo"
     And I "deselect" "write" for the user "alice"
     And I click "Save Changes"
     Then I should see that "alice" has "read" access to the remote "assignment-3-repo" repository
 
   Scenario: Remove all user's write access to an assignment
-    When I click on "assignment3"
+    When I click on "Manage Permissions" for "assignment-3-repo"
     And I select "Revoke All" for the "write" permission
     And I click "Save Changes"
     Then I should see that "alice" has "read" access to the remote "assignment-3-repo" repository
     And I should see that "bob" has "read" access to the remote "assignment-3-repo" repository
 
   Scenario: Grant all users write access to an assignments
-    When I click on "assignment1"
+    When I click on "Manage Permissions" for "assignment-1-repo"
     And I select "Select All" for the "write" permission
     And I click "Save Changes"
     Then I should see that "alice" has "read-write" access to the remote "assignment-1-repo" repository
