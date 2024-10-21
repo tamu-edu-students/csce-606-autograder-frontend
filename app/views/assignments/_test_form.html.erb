@@ -61,8 +61,7 @@
 
 <% if @test.persisted? %>
     <div class="delete-actions">
-    <%= button_to "Destroy this test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
+    <%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
     </div>
 <% end %>
 
-<%= link_to 'Back to Assignment', assignments_path %>

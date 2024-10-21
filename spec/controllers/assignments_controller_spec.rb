@@ -31,6 +31,8 @@ RSpec.describe AssignmentsController, type: :controller do
     allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: mock_github_token })  # Mock the session
     @mock_client = instance_double(Octokit::Client)
     allow(Octokit::Client).to receive(:new).and_return(@mock_client)
+    @mock_client = instance_double(Octokit::Client)
+    allow(Octokit::Client).to receive(:new).and_return(@mock_client)
   end
 
   describe 'GET #index' do
@@ -169,6 +171,7 @@ RSpec.describe AssignmentsController, type: :controller do
         expect(response).to render_template(:index)
       end
       it 'shows all the assignments in the rendered view' do
+        allow(Assignment).to receive(:all).and_return(Assignment.where(id: [ assignment1.id, assignment2.id ]))
         get :search, params: { query: 'Nonexistent' }
         expect(assigns(:assignments)).to eq([ assignment1, assignment2 ])  # Redirects to show all assignments
       end
@@ -187,14 +190,13 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'GET #users' do
-    
     before do
       User.delete_all
       allow(controller).to receive(:params).and_return({ id: assignment.id })
     end
 
-    let!(:users) { create_list(:user, 3) } 
-    let!(:assignment) { create(:assignment) } 
+    let!(:users) { create_list(:user, 3) }
+    let!(:assignment) { create(:assignment) }
 
     it 'retrieves all users and assigns them to @users' do
       get :users, params: { id: assignment.id }
@@ -204,7 +206,7 @@ RSpec.describe AssignmentsController, type: :controller do
     it 'finds the assignment by id and assigns it to @assignment' do
       get :users, params: { id: assignment.id }
 
-      expect(assigns(:assignment)).to eq(assignment)  
+      expect(assigns(:assignment)).to eq(assignment)
     end
   end
 
@@ -212,8 +214,8 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:valid_params) do
       {
         id: assignment.id,
-        read_user_ids: [user1.id.to_s],
-        write_user_ids: [user2.id.to_s]
+        read_user_ids: [ user1.id.to_s ],
+        write_user_ids: [ user2.id.to_s ]
       }
     end
 
@@ -226,13 +228,14 @@ RSpec.describe AssignmentsController, type: :controller do
     end
 
     it 'updates Github permissions' do
+      allow(User).to receive(:all).and_return(User.where(id: [ user1.id, user2.id, user3.id ]))
       expect(@mock_client).to receive(:add_collaborator)
       .with('AutograderFrontend/test-assignment', user1.name, permission: 'pull')
-    expect(@mock_client).to receive(:add_collaborator)
-      .with('AutograderFrontend/test-assignment', user2.name, permission: 'push')
-    expect(@mock_client).to receive(:remove_collaborator)
-      .with('AutograderFrontend/test-assignment', user3.name)
-    post :update_users, params: valid_params
+      expect(@mock_client).to receive(:add_collaborator)
+        .with('AutograderFrontend/test-assignment', user2.name, permission: 'push')
+      expect(@mock_client).to receive(:remove_collaborator)
+        .with('AutograderFrontend/test-assignment', user3.name)
+      post :update_users, params: valid_params
     end
   end
 
@@ -271,12 +274,11 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:valid_params) do
       {
         id: assignment.id,
-        read_user_ids: [user1.id.to_s],
-        write_user_ids: [user2.id.to_s]
+        read_user_ids: [ user1.id.to_s ],
+        write_user_ids: [ user2.id.to_s ]
       }
     end
     it 'handles the error and sets a flash alert' do
-
       allow(@mock_client).to receive(:add_collaborator).and_raise(Octokit::Error.new)
 
       post :update_users, params: valid_params
@@ -289,8 +291,8 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:valid_params) do
       {
         id: assignment.id,
-        read_user_ids: [user1.id.to_s],
-        write_user_ids: [user2.id.to_s]
+        read_user_ids: [ user1.id.to_s ],
+        write_user_ids: [ user2.id.to_s ]
       }
     end
     it 'handles the error and sets a flash alert' do
@@ -310,6 +312,7 @@ RSpec.describe AssignmentsController, type: :controller do
       allow(@mock_client).to receive(:add_collaborator).and_return(true)
       allow(@mock_client).to receive(:remove_collaborator).and_return(true)
       allow(Rails.logger).to receive(:error)
+      allow(User).to receive(:all).and_return(User.where(id: [ user1.id, user2.id, user3.id ]))
 
       Permission.create!(user: user1, assignment: assignment, role: 'unknown_role')
       Permission.create!(user: user2, assignment: assignment, role: 'read')

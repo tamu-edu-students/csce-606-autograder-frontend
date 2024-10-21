@@ -14,3 +14,316 @@
  *= require_self
  */
  
+ .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.assignment-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    text-align: center;
+  }
+  
+  .assignment-container h1 {
+    margin-bottom: 20px;
+  }
+  
+  .assignment-container form {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .assignment-container .btn {
+    margin-top: 20px;
+  }
+  
+/* Styles for the form and submit button */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  input.form-control {
+    border-radius: 50px;
+    padding: 10px;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  
+  input::placeholder {
+    color: #999;
+    text-align: center;
+  }
+  
+  .btn-block {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 50px;
+    padding: 10px;
+    font-size: 1.1rem;
+  }
+  
+  /* New CSS for back button positioning */
+  .back-button-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+  }
+  .back-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+  }
+  .container {
+    position: relative;
+  }
+  
+  .assignments-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 20px auto;
+  }
+  
+  .assignments-wrapper h1 {
+    margin-bottom: 20px;
+  }
+  
+  .assignment-item {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .assignment-item p {
+    margin-bottom: 10px;
+  }
+  
+  .assignment-item .btn {
+    margin-top: 10px;
+  }
+  
+  .create-assignment-btn {
+    margin-top: 30px;
+    align-items: center;
+  }
+  
+  /* General form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  /* Style for input fields */
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+  }
+  
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  /* Style for dropdown */
+  select {
+    border: 2px solid #3498db;
+    background-color: #ffffff;
+    padding-right: 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+}
+
+  
+  /* Style for checkbox */
+  input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 10px;
+  }
+  
+  /* Style for labels */
+  label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Custom button style */
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover,
+  button:focus {
+    background-color: #2980b9;
+    outline: none;
+  }
+
+  body {
+    padding-top: 20px;
+  }
+  
+
+  /* Edit button styling */
+.edit-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #3498db; 
+  border: none;
+  border-radius: 20px; 
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9; 
+  transform: scale(1.05); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pencil Icon for Edit Button */
+.edit-btn::before {
+  content: "\270E"; /* Pencil icon */
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.assignment-page {
+  padding-top: 20px;
+}
+
+.assignment-page h1 {
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  padding-top: 180px
+}
+
+body.assignment-show-page {
+  padding-top: 500px;
+}
+
+
+.assignments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.assignments-table th, .assignments-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.assignments-table th {
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+}
+
+.assignments-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.assignments-table tr:hover {
+  background-color: #ddd;
+}
+
+.assignments-table th:hover {
+  background-color: #2980b9;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.assignments-table-container {
+  width: 80%; /* Adjust as necessary */
+  margin-bottom: 20px;
+}
+
+.create-assignment-btn {
+  margin-top: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 10px; /* Add space between the buttons */
+  margin-top: 20px; /* Add some space above the buttons */
+}
+
+.btn {
+  margin-right: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the form elements */
+  margin-bottom: 20px;
+}
+
+h1 {
+  text-align: center;
+}
