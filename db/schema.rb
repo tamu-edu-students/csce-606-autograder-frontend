@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_16_160845) do
 
   create_table "test_groupings", force: :cascade do |t|
     t.string "name"
-    t.integer "number"
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "assignment_id", null: false
@@ -72,7 +72,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_16_160845) do
     t.string "test_type"
     t.string "target"
     t.text "include"
-    t.string "number"
+    t.integer "position"
     t.boolean "show_output"
     t.boolean "skip"
     t.float "timeout"

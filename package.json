@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "jquery": "^3.7.1",
+    "rails-ujs": "^5.2.8-1",
+    "sortablejs": "^1.15.3",
+    "turbolinks": "^5.2.0"
+  }
+}

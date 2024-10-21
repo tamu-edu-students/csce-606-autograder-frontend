@@ -2,12 +2,14 @@ require 'rails_helper'
 
 RSpec.describe "assignments/show.html.erb", type: :view do
   let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: "assignment-1") }
-  let(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', actual_test: 'Test body') }
+  let(:test_grouping) { assignment.test_groupings.create!(name: 'Test Grouping 1') }
+  let(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', actual_test: 'Test body', test_grouping_id: test_grouping.id) }
+
 
   before do
     assign(:assignment, assignment)
-    assign(:tests, [ test_case ])
-    assign(:test, test_case)  # To simulate form editing a test
+    assign(:test, test_case)
+    assign(:test_groupings, [ test_grouping ])
   end
 
   it "displays the assignment name" do
@@ -24,7 +26,7 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "has a link to edit the test" do
     render
-    expect(rendered).to have_link('Edit', href: assignment_path(assignment, test_id: test_case.id))
+    expect(rendered).to have_link(href: assignment_path(assignment, test_id: test_case.id))
   end
 
   it "has a link to add a new test" do
@@ -45,7 +47,7 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "renders the delete button when test is persisted" do
     render
-    expect(rendered).to have_button('Destroy this test')
+    expect(rendered).to have_button('Delete Test')
   end
 
   it "has a link to create and download ZIP" do

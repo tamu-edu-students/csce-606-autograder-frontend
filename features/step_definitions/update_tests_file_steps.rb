@@ -4,7 +4,12 @@ Before do
   RSpec::Mocks.setup
   allow_any_instance_of(Assignment).to receive(:push_changes_to_github)
   allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return(
-  [ User.create!(id: 1, name: 'Test User', email: 'test@example.com'), 'fake_github_token' ])
+    [ User.create!(name: 'Test User', email: 'test@example.com'), 'fake_github_token' ]
+  )
+
+  # Simulate login by setting session and current_user
+  @current_user = User.create!(name: 'sam', email: 'sam@example.com', role: 'instructor')
+  page.set_rack_session(user_id: @current_user.id)
 end
 
 After do
@@ -20,6 +25,7 @@ Then('the .tests file should contain the properly formatted test') do |table|
     "@points: #{test_params['points'].to_f}\n" +
     "@test_type: #{test_params['type']}\n" +
     "@target: #{test_params['target']}\n" +
+    "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
     "#{test_params['test_code']}\n" +
@@ -40,20 +46,20 @@ end
 
 When('I add a new unit test called {string}') do |string|
   steps %(
-        When I create a new test with type "unit"
-        And with the name "#{string}"
+    When I create a new test with type "unit"
+    And with the name "#{string}"
   )
 end
 
 When('I set it to {string} points') do |string|
   steps %(
-        When with the points "#{string}"
+    When with the points "#{string}"
   )
 end
 
 When('I set the target to {string}') do |string|
   steps %(
-        When with the target "#{string}"
+    When with the target "#{string}"
   )
 end
 
@@ -78,6 +84,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@points: 10.0\n" +
     "@test_type: unit\n" +
     "@target: target.cpp\n" +
+    "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
     "actual test\n" +
@@ -87,6 +94,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@points: #{test['points'].to_f}\n" +
     "@test_type: #{test['type']}\n" +
     "@target: #{test['target']}\n" +
+    "@number: 2\n" +
     "*/\n" +
     "<test>\n" +
     "#{test['test_code']}\n" +
@@ -114,5 +122,5 @@ end
 When('I delete the {string} test') do |string|
   test = @assignment.tests.find_by(name: "test#{string.to_i+1}")
   visit assignment_path(@assignment, test_id: test.id)
-  click_button 'Destroy this test'
+  click_button 'Delete Test'
 end
