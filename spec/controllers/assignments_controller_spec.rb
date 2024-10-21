@@ -323,5 +323,4 @@ RSpec.describe AssignmentsController, type: :controller do
       expect(Rails.logger).to have_received(:error).with(expected_error_message)
     end
   end
-
 end
