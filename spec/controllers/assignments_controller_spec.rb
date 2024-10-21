@@ -169,6 +169,7 @@ RSpec.describe AssignmentsController, type: :controller do
         expect(response).to render_template(:index)
       end
       it 'shows all the assignments in the rendered view' do
+        allow(Assignment).to receive(:all).and_return(Assignment.where(id: [assignment1.id, assignment2.id]))
         get :search, params: { query: 'Nonexistent' }
         expect(assigns(:assignments)).to eq([ assignment1, assignment2 ])  # Redirects to show all assignments
       end
@@ -187,7 +188,6 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'GET #users' do
-    
     before do
       User.delete_all
       allow(controller).to receive(:params).and_return({ id: assignment.id })
@@ -226,13 +226,14 @@ RSpec.describe AssignmentsController, type: :controller do
     end
 
     it 'updates Github permissions' do
+      allow(User).to receive(:all).and_return(User.where(id: [user1.id, user2.id, user3.id]))
       expect(@mock_client).to receive(:add_collaborator)
       .with('AutograderFrontend/test-assignment', user1.name, permission: 'pull')
-    expect(@mock_client).to receive(:add_collaborator)
-      .with('AutograderFrontend/test-assignment', user2.name, permission: 'push')
-    expect(@mock_client).to receive(:remove_collaborator)
-      .with('AutograderFrontend/test-assignment', user3.name)
-    post :update_users, params: valid_params
+      expect(@mock_client).to receive(:add_collaborator)
+        .with('AutograderFrontend/test-assignment', user2.name, permission: 'push')
+      expect(@mock_client).to receive(:remove_collaborator)
+        .with('AutograderFrontend/test-assignment', user3.name)
+      post :update_users, params: valid_params
     end
   end
 
@@ -310,6 +311,7 @@ RSpec.describe AssignmentsController, type: :controller do
       allow(@mock_client).to receive(:add_collaborator).and_return(true)
       allow(@mock_client).to receive(:remove_collaborator).and_return(true)
       allow(Rails.logger).to receive(:error)
+      allow(User).to receive(:all).and_return(User.where(id: [user1.id, user2.id, user3.id]))
 
       Permission.create!(user: user1, assignment: assignment, role: 'unknown_role')
       Permission.create!(user: user2, assignment: assignment, role: 'read')
