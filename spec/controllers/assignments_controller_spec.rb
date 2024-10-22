@@ -18,11 +18,21 @@ RSpec.describe AssignmentsController, type: :controller do
   let(:mock_github_token) { 'mock_github_token' }
   let(:user) { User.create!(name: 'Test User', email: 'test@example.com') }
 
+  let!(:assignment) { create(:assignment) }
+  let!(:user1) { create(:user) }
+  let!(:user2) { create(:user) }
+  let!(:user3) { create(:user) }
+  let(:client) { instance_double(Octokit::Client) }
+
   before do
     allow(controller).to receive(:require_login).and_return(true)
     # allow(controller).to receive(:session).and_return({ github_token: mock_github_token })
     allow(controller).to receive(:current_user).and_return(user)  # Mock current_user to return a user
     allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: mock_github_token })  # Mock the session
+    @mock_client = instance_double(Octokit::Client)
+    allow(Octokit::Client).to receive(:new).and_return(@mock_client)
+    @mock_client = instance_double(Octokit::Client)
+    allow(Octokit::Client).to receive(:new).and_return(@mock_client)
   end
 
   describe 'GET #index' do
@@ -161,6 +171,7 @@ RSpec.describe AssignmentsController, type: :controller do
         expect(response).to render_template(:index)
       end
       it 'shows all the assignments in the rendered view' do
+        allow(Assignment).to receive(:all).and_return(Assignment.where(id: [ assignment1.id, assignment2.id ]))
         get :search, params: { query: 'Nonexistent' }
         expect(assigns(:assignments)).to eq([ assignment1, assignment2 ])  # Redirects to show all assignments
       end
@@ -175,6 +186,141 @@ RSpec.describe AssignmentsController, type: :controller do
         get :search
         expect(response).to redirect_to(assignments_path)
       end
+    end
+  end
+
+  describe 'GET #users' do
+    before do
+      User.delete_all
+      allow(controller).to receive(:params).and_return({ id: assignment.id })
+    end
+
+    let!(:users) { create_list(:user, 3) }
+    let!(:assignment) { create(:assignment) }
+
+    it 'retrieves all users and assigns them to @users' do
+      get :users, params: { id: assignment.id }
+      expect(assigns(:users).pluck(:id)).to match_array(users.pluck(:id))
+    end
+
+    it 'finds the assignment by id and assigns it to @assignment' do
+      get :users, params: { id: assignment.id }
+
+      expect(assigns(:assignment)).to eq(assignment)
+    end
+  end
+
+  describe 'update assignment permission with valid arguments' do
+    let(:valid_params) do
+      {
+        id: assignment.id,
+        read_user_ids: [ user1.id.to_s ],
+        write_user_ids: [ user2.id.to_s ]
+      }
+    end
+
+    it 'updates user permissions' do
+      allow(controller).to receive(:update_github_permissions).and_return(true)
+      post :update_users, params: valid_params
+      expect(Permission.find_by(user: user1, assignment: assignment).role).to eq('read')
+      expect(Permission.find_by(user: user2, assignment: assignment).role).to eq('read_write')
+      expect(Permission.find_by(user: user3, assignment: assignment).role).to eq('no_permission')
+    end
+
+    it 'updates Github permissions' do
+      allow(User).to receive(:all).and_return(User.where(id: [ user1.id, user2.id, user3.id ]))
+      expect(@mock_client).to receive(:add_collaborator)
+      .with('AutograderFrontend/test-assignment', user1.name, permission: 'pull')
+      expect(@mock_client).to receive(:add_collaborator)
+        .with('AutograderFrontend/test-assignment', user2.name, permission: 'push')
+      expect(@mock_client).to receive(:remove_collaborator)
+        .with('AutograderFrontend/test-assignment', user3.name)
+      post :update_users, params: valid_params
+    end
+  end
+
+  describe 'when assignment save fails' do
+      before do
+        allow_any_instance_of(Assignment).to receive(:save).and_return(false)
+      end
+
+      it 'renders show template with error message' do
+        post :update_users, params: { id: assignment.id }
+
+        expect(response).to render_template(:show)
+        expect(flash[:alert]).to include('Failed to update assignments')
+      end
+  end
+
+  describe 'when GitHub update fails' do
+    before do
+      allow(controller).to receive(:update_github_permissions).and_raise(Octokit::Error)
+    end
+
+    it 'renders show template with error message' do
+      post :update_users, params: { id: assignment.id }
+
+      expect(response).to render_template(:show)
+      expect(flash[:alert]).to include('Failed to update assignments')
+    end
+
+    it 'logs the error' do
+      expect(Rails.logger).to receive(:error).with(/Failed to update GitHub permissions/)
+      post :update_users, params: { id: assignment.id }
+    end
+  end
+
+  describe 'GitHub API raises an error for add_collaborator' do
+    let(:valid_params) do
+      {
+        id: assignment.id,
+        read_user_ids: [ user1.id.to_s ],
+        write_user_ids: [ user2.id.to_s ]
+      }
+    end
+    it 'handles the error and sets a flash alert' do
+      allow(@mock_client).to receive(:add_collaborator).and_raise(Octokit::Error.new)
+
+      post :update_users, params: valid_params
+      expect(flash[:alert]).to eq('Failed to update assignments. Please try again.')
+      expect(response).to render_template(:show)
+    end
+  end
+
+  describe 'GitHub API raises an error for remove_collaborator' do
+    let(:valid_params) do
+      {
+        id: assignment.id,
+        read_user_ids: [ user1.id.to_s ],
+        write_user_ids: [ user2.id.to_s ]
+      }
+    end
+    it 'handles the error and sets a flash alert' do
+      allow(@mock_client).to receive(:add_collaborator).and_return(true)
+      allow(@mock_client).to receive(:remove_collaborator).and_raise(Octokit::Error.new)
+
+      post :update_users, params: valid_params
+
+      expect(flash[:alert]).to eq('Failed to update assignments. Please try again.')
+      expect(response).to render_template(:show)
+    end
+  end
+
+  describe 'GitHub API raises an error for unknown permission role' do
+    it 'logs an error' do
+      allow(controller).to receive(:session).and_return({ github_token: 'fake_token' })
+      allow(@mock_client).to receive(:add_collaborator).and_return(true)
+      allow(@mock_client).to receive(:remove_collaborator).and_return(true)
+      allow(Rails.logger).to receive(:error)
+      allow(User).to receive(:all).and_return(User.where(id: [ user1.id, user2.id, user3.id ]))
+
+      Permission.create!(user: user1, assignment: assignment, role: 'unknown_role')
+      Permission.create!(user: user2, assignment: assignment, role: 'read')
+      Permission.create!(user: user3, assignment: assignment, role: 'read_write')
+
+      controller.send(:update_github_permissions, assignment)
+      expected_error_message = "Unknown permission role: unknown_role for user #{user1.name} on assignment 1"
+      expect(Rails.logger).to have_received(:error).with(expected_error_message)
     end
   end
 end
