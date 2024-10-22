@@ -22,7 +22,6 @@ Rails.application.configure do
 
   # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
   # config.public_file_server.enabled = false
-  config.public_file_server.enabled = ENV["RAILS_SERVER_STATIC_FILES"].present?
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
 
@@ -31,7 +30,6 @@ Rails.application.configure do
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
-  config.asset_host = "https://csce-606-autograder-frontend-9219bed98016.herokuapp.com"
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
