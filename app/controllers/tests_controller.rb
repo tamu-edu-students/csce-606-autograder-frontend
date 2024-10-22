@@ -111,7 +111,7 @@ class TestsController < ApplicationController
 
   def set_test_grouping_id
     position = params[:test][:test_grouping_position]
-    test_grouping = TestGrouping.find_by(position: position)
+    test_grouping = TestGrouping.find_by(assignment_id: @assignment.id, position: position)
     @test.test_grouping_id = test_grouping.id if test_grouping
   end
 
