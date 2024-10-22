@@ -263,11 +263,11 @@ RSpec.describe Assignment, type: :model do
       assignment.push_changes_to_github(user, auth_token)
     end
 
-    it 'logs an error if the local repository does not exist' do
+    it 're-clones if repository does not exist' do
       # Simulate the repo not existing
       allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
 
-      expect(Rails.logger).to receive(:error).with("Local repository not found for #{assignment.repository_name}")
+      expect(assignment).to receive(:clone_repo_to_local).with(auth_token)
 
       # Call the method
       assignment.push_changes_to_github(user, auth_token)
