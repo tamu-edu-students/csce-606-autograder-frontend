@@ -213,7 +213,7 @@ form {
   }
 
   body {
-    padding-top: 20px;
+    padding-top: 0;
   }
   
 
@@ -254,11 +254,6 @@ form {
   margin-bottom: 20px;
   padding-top: 180px
 }
-
-body.assignment-show-page {
-  padding-top: 500px;
-}
-
 
 .assignments-table {
   width: 100%;

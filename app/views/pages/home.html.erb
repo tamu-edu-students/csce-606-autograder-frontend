@@ -16,7 +16,7 @@
 
     <% else %>
       <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
-        <button type="submit">Login With GitHub</button> 
+        <button type="submit", class='btn btn-primary'>Login With GitHub</button> 
       <% end %>
     <% end %>
   </div>
