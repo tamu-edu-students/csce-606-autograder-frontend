@@ -7,4 +7,3 @@ Rails.start();
 // Turbo and other modules
 import "@hotwired/turbo-rails";
 import "controllers";
-
