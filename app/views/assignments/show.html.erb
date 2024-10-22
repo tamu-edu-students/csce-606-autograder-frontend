@@ -1,6 +1,4 @@
 <%= stylesheet_link_tag 'assignment_show', media: 'all' %>
-<body class="assignment-show-page">
-
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
 <!-- Display tests for the assignment -->
@@ -65,7 +63,7 @@
 
 
       <!-- Link to add a new test -->
-      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
+      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
 
     </div>
