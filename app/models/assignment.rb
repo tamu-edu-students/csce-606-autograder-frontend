@@ -49,7 +49,7 @@ class Assignment < ActiveRecord::Base
 
       # Set the remote URL for the repository
       # system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
-      
+
       # Clones remote repository to local
       clone_repo_to_local(auth_token)
 
