@@ -181,17 +181,17 @@ class AssignmentsController < ApplicationController
       client = Octokit::Client.new(access_token: access_token)
       org_name = "AutograderFrontend"
       @users = User.all
-    
+
       @users.each do |user|
         repo_identifier = "#{org_name}/#{assignment.repository_name}"
         permission = Permission.find_by(user: user, assignment: assignment)
-    
+
         update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
       end
     end
-    
+
     private
-    
+
     def update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
       case permission.role
       when "no_permission", nil
@@ -202,7 +202,7 @@ class AssignmentsController < ApplicationController
         Rails.logger.error "Unknown permission role: #{permission.role} for user #{user.name} on assignment #{assignment.id}"
       end
     end
-    
+
     def remove_collaborator(client, repo_identifier, user)
       client.remove_collaborator(repo_identifier, user.name)
       Rails.logger.info "Removed collaborator #{user.name} from #{repo_identifier} due to 'none' permission"
@@ -210,7 +210,7 @@ class AssignmentsController < ApplicationController
       Rails.logger.error "Failed to remove collaborator #{user.name} from #{repo_identifier}: #{e.message}"
       raise
     end
-    
+
     def add_collaborator(client, repo_identifier, user, role)
       github_permission = (role == "read_write") ? "push" : "pull"
       client.add_collaborator(repo_identifier, user.name, permission: github_permission)

@@ -62,15 +62,15 @@ class UsersController < ApplicationController
         client = Octokit::Client.new(access_token: access_token)
         org_name = "AutograderFrontend"
         @assignments = Assignment.all
-      
+
         @assignments.each do |assignment|
           repo_identifier = "#{org_name}/#{assignment.repository_name}"
           permission = Permission.find_by(user: user, assignment: assignment)
-      
+
           update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
         end
       end
-      
+
       private
 
       def update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
