@@ -67,13 +67,13 @@ class UsersController < ApplicationController
           repo_identifier = "#{org_name}/#{assignment.repository_name}"
           permission = Permission.find_by(user: user, assignment: assignment)
       
-          update_collaborator_permissions(client, repo_identifier, user, permission)
+          update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
         end
       end
       
       private
 
-      def update_collaborator_permissions(client, repo_identifier, user, permission)
+      def update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
         case permission.role
         when "no_permission", nil
           remove_collaborator(client, repo_identifier, user)
