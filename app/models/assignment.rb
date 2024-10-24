@@ -50,8 +50,7 @@ class Assignment < ActiveRecord::Base
       # Set the remote URL for the repository
       # system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
 
-      # re-clone the repo if it doesn't exist
-
+      # Clones remote repository to local
       clone_repo_to_local(auth_token)
 
       set_remote_origin(local_repo_path, authenticated_url(auth_token))
