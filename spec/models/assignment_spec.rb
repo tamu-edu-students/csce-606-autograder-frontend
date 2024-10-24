@@ -133,14 +133,24 @@ RSpec.describe Assignment, type: :model do
 
     before do
       allow(Git).to receive(:clone)
+      allow(FileUtils).to receive(:rm_rf)
+    end
+
+    it 'removes a local clone if it already exists' do
+      allow(Dir).to receive(:exist?).with(local_repo_path).and_return(true)
+      allow(Dir).to receive(:exist?).with("#{local_repo_path}/.git").and_return(false)
+      assignment.send(:clone_repo_to_local, auth_token)
+      expect(FileUtils).to have_received(:rm_rf).with(local_repo_path)
     end
 
     it 'clones the repository successfully' do
+      allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
       expect(Git).to receive(:clone).with(authenticated_url, assignment.local_repository_path).and_return(true)
       assignment.send(:clone_repo_to_local, auth_token)
     end
 
     it 'rescues the error when Git clone fails' do
+      allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
       allow(Git).to receive(:clone).and_raise(Git::Error.new("Failed to clone"))
       expect { assignment.send(:clone_repo_to_local, auth_token) }.to output(/An error occurred: Failed to clone/).to_stdout
     end
@@ -255,21 +265,22 @@ RSpec.describe Assignment, type: :model do
   end
 
   describe '#push_changes_to_github' do
-    it 'commits local changes and pushes to the remote repository if the local repository exists' do
+    before do
+      allow(assignment).to receive(:clone_repo_to_local).with(auth_token)
+    end
+
+    it 'reclones the remote repository, commits local changes and pushes to the remote repository' do
+      expect(assignment).to receive(:clone_repo_to_local).with(auth_token)
       expect(assignment).to receive(:commit_local_changes).with(local_repo_path, user)
       expect(assignment).to receive(:sync_to_github).with(local_repo_path)
 
-      # Call the method
       assignment.push_changes_to_github(user, auth_token)
     end
 
-    it 'logs an error if the local repository does not exist' do
-      # Simulate the repo not existing
+    it 'logs an error if local repository is not found after cloning step' do
       allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
-
       expect(Rails.logger).to receive(:error).with("Local repository not found for #{assignment.repository_name}")
 
-      # Call the method
       assignment.push_changes_to_github(user, auth_token)
     end
   end
