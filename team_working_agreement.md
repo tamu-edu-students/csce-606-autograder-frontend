@@ -21,6 +21,7 @@ Our working agreement is built upon the following Scrum values:
   - Weekly Client Meeting: Every Friday from 11:00am-12:00pm
   - Sprint Planning: Held at the start of each sprint.
   - Sprint Retrospective and Review: Held at the end of each sprint.
+- **All members will make an effort to contribute during team meetings**
   
 ---
 
@@ -100,6 +101,7 @@ Our working agreement is built upon the following Scrum values:
 - **Approach**: 
   - We will use pair-programming for complex tasks and debugging sessions.
   - Each team member is responsible for updating the sprint backlog and marking tasks as complete.
+  - If a team member is struggling to complete a task, they are expected to promptly contact the Scrum master
   
 ---
 
