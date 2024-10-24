@@ -186,20 +186,20 @@ class AssignmentsController < ApplicationController
         repo_identifier = "#{org_name}/#{assignment.repository_name}"
         permission = Permission.find_by(user: user, assignment: assignment)
 
-        update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
+        update_collaborator_permissions(client, repo_identifier, user, permission)
       end
     end
 
     private
 
-    def update_collaborator_permissions(client, repo_identifier, user, permission, assignment)
+    def update_collaborator_permissions(client, repo_identifier, user, permission)
       case permission.role
       when "no_permission", nil
         remove_collaborator(client, repo_identifier, user)
       when "read_write", "read"
         add_collaborator(client, repo_identifier, user, permission.role)
       else
-        Rails.logger.error "Unknown permission role: #{permission.role} for user #{user.name} on assignment #{assignment.id}"
+        Rails.logger.error "Unknown permission role: #{permission.role} for user #{user.name}"
       end
     end
 

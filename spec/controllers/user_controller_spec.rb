@@ -109,7 +109,7 @@ RSpec.describe UsersController, type: :controller do
       Permission.create!(user: user, assignment: assignment3, role: 'read')
 
       controller.send(:update_github_permissions, user)
-      expected_error_message = "Unknown permission role: unknown_role for user Test User on assignment 1"
+      expected_error_message = "Unknown permission role: unknown_role for user Test User"
       expect(Rails.logger).to have_received(:error).with(expected_error_message)
     end
   end
