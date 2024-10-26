@@ -323,4 +323,59 @@ RSpec.describe AssignmentsController, type: :controller do
       expect(Rails.logger).to have_received(:error).with(expected_error_message)
     end
   end
+
+  describe 'GET #create_and_download_zip' do
+    let(:assignment) { create(:assignment, repository_name: 'test-repository') }
+    let(:base_path) { '/fake/base/path' }
+    let(:local_repository_path) { File.join(base_path, assignment.repository_name) }
+    let(:original_zip_file) { File.join(local_repository_path, "autograder.zip") }
+    let(:new_zip_filename) { "#{assignment.assignment_name}.zip" }
+    let(:renamed_zip_path) { File.join(local_repository_path, new_zip_filename) }
+
+    before do
+      allow(Assignment).to receive(:find).and_return(assignment)
+      allow(assignment).to receive(:local_repository_path).and_return(local_repository_path)
+      allow(Dir).to receive(:chdir).with(local_repository_path).and_yield
+
+      # Mock the file existence and rename operations
+      allow(File).to receive(:exist?).with(original_zip_file).and_return(true)
+      allow(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
+      allow(File).to receive(:exist?).with(renamed_zip_path).and_return(true)
+
+      # Mock send_file to avoid ActionController::MissingFile error
+      allow(controller).to receive(:send_file).with(renamed_zip_path, type: 'application/zip', disposition: 'attachment', filename: new_zip_filename).and_return(true)
+    end
+    it 'calls the make command in the assignment local repository path' do
+      allow_any_instance_of(AssignmentsController).to receive(:system).with("make").and_return(true)
+      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+    end
+
+
+    it 'renames the autograder.zip file to the assignment name zip' do
+      expect(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
+      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+    end
+
+    it 'sends the renamed zip file as a download' do
+      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+      expect(controller).to have_received(:send_file).with(renamed_zip_path, type: 'application/zip', disposition: 'attachment', filename: new_zip_filename)
+    end
+
+    it 'sets a flash notice indicating the download was successful' do
+      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+      expect(flash[:notice]).to eq("#{new_zip_filename} downloaded successfully")
+    end
+
+    context 'when the ZIP file does not exist' do
+      before do
+        allow(File).to receive(:exist?).with(renamed_zip_path).and_return(false)
+      end
+
+      it 'sets a flash alert indicating that the ZIP file could not be exported' do
+        get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+        expect(flash[:alert]).to eq('Could not export assignment')
+        expect(response).to redirect_to(assignment_path(assignment))
+      end
+    end
+  end
 end
