@@ -341,7 +341,7 @@ RSpec.describe AssignmentsController, type: :controller do
       allow(File).to receive(:exist?).with(original_zip_file).and_return(true)
       allow(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
       allow(File).to receive(:exist?).with(renamed_zip_path).and_return(true)
-      
+
       # Mock send_file to avoid ActionController::MissingFile error
       allow(controller).to receive(:send_file).with(renamed_zip_path, type: 'application/zip', disposition: 'attachment', filename: new_zip_filename).and_return(true)
     end
@@ -349,7 +349,7 @@ RSpec.describe AssignmentsController, type: :controller do
       allow_any_instance_of(AssignmentsController).to receive(:system).with("make").and_return(true)
       get :create_and_download_zip, params: { id: assignment.id }, format: :zip
     end
-    
+
 
     it 'renames the autograder.zip file to the assignment name zip' do
       expect(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
