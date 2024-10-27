@@ -1,4 +1,4 @@
-Feature: File Upload 
+Feature: File browser 
   As a CSCE 120 GitHub organization member
   So that I can see the File Directory of selected assignment
   I want to be able to see the file browser

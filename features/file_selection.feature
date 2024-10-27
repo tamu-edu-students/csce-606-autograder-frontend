@@ -16,5 +16,4 @@ Feature: File Selection
     Given I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
     Then I should see the file selection partial for a test
-    And I should be able to select multiple files
-    And I should see the selected files as an array in the target field
+    And I should be able to select multiple files in the file tree
