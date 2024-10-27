@@ -26,3 +26,4 @@ Feature: Improving Test Groups UI for better usability.
     Then I should not be able to update grouping name in the test group
     And I should see a point editor next to each test
     And I should see a point total field at top
+    
