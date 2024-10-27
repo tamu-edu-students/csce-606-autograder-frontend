@@ -3,8 +3,10 @@ Rails.application.routes.draw do
   get "pages/home"
 
   resources :users, only: [ :index, :show ]
-  resources :assignments, only: [ :index ]
+  resources :assignments, only: [ :index, :users ]
+
   post "users/:id/update_assignments", to: "users#update_assignments", as: "update_user_assignments"
+  post "assignments/:id/update_users", to: "assignments#update_users", as: "update_assignment_users"
 
   resources :assignments do
     resources :tests
@@ -16,6 +18,7 @@ Rails.application.routes.draw do
     end
     member do
       get 'test_block_partial'
+      get "users"
       get "create_and_download_zip"
     end
   end

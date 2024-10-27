@@ -1,4 +1,5 @@
 class AssignmentsController < ApplicationController
+  include CollaboratorPermissions
   before_action :require_login
   before_action :set_assignment, only: %i[ show edit update destroy ]
 
@@ -124,8 +125,59 @@ class AssignmentsController < ApplicationController
 
     render :index
   end
+  def users
+    @users = User.all
+    @assignment = Assignment.find(params[:id])
+  end
+
+  def update_users
+    @assignment = Assignment.find(params[:id])
+    @users = User.all
+
+    all_user_ids = User.pluck(:id)
+
+    read_user_ids = (params[:read_user_ids] || []).map(&:to_i)
+    write_user_ids = (params[:write_user_ids] || []).map(&:to_i)
+
+    # Get assignment ids not in read or write
+    none_user_ids = all_user_ids - (read_user_ids + write_user_ids)
+
+    # Update or create permissions for read access
+    update_permissions(read_user_ids, "read")
+    update_permissions(write_user_ids, "read_write")
+    update_permissions(none_user_ids, "no_permission")
+
+    handle_assignment_save
+  end
 
   private
+
+  def handle_assignment_save
+    if @assignment.save
+      # Update GitHub permissions
+      begin
+          update_github_permissions(@assignment)
+          flash[:notice] = "Assignment #{@assignment.repository_name} permission updated successfully."
+          redirect_to assignments_path
+      rescue Octokit::Error => e
+          Rails.logger.error "Failed to update GitHub permissions: #{e.message}"
+          flash[:alert] = "Failed to update assignments. Please try again."
+          @users = User.all
+          render :show
+      end
+    else
+        @users ||= []
+        flash.now[:alert] = "Failed to update assignments. Please try again."
+        render :show
+    end
+  end
+
+  def update_permissions(user_ids, role)
+    user_ids.each do |user_id|
+      permission = Permission.find_or_initialize_by(user_id: user_id, assignment: @assignment)
+      permission.update(role: role)
+    end
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_assignment
@@ -136,4 +188,18 @@ class AssignmentsController < ApplicationController
   def assignment_params
     params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
   end
+
+    def update_github_permissions(assignment)
+      access_token = session[:github_token]
+      client = Octokit::Client.new(access_token: access_token)
+      org_name = "AutograderFrontend"
+      @users = User.all
+
+      @users.each do |user|
+        repo_identifier = "#{org_name}/#{assignment.repository_name}"
+        permission = Permission.find_by(user: user, assignment: assignment)
+
+        update_collaborator_permissions(client, repo_identifier, user, permission)
+      end
+    end
 end

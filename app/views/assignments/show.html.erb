@@ -1,51 +1,50 @@
 <%= stylesheet_link_tag 'assignment_show', media: 'all' %>
-
 <h1>Assignment: <%= @assignment.assignment_name %></h1>
 
 <!-- Display tests for the assignment -->
 <div class="container" data-assignment-id="<%= @assignment.id %>">
-   <div class="row">
-      <div id='test' class="col-md-6">
-         <h2>Tests for <%= @assignment.assignment_name %></h2>
-         <div class="scrollable-container">
-            <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment),
-               local: true, html: { class: "d-flex align-items-center new-test-grouping-form" } do |form| %>
-            <div class="form-group mb-0" style="margin-right: 10px;">
-               <%= form.text_field :name, class: "form-control", placeholder: "New Test Grouping" %>
-            </div>
-            <button type="submit" class="btn btn-primary align-items-center">
-               <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
-            </button>
-            <% end %>
-            <div class="test-grouping-list" data-controller="test_grouping_card">
-               <% if @test_groupings.present? %>
-               <% @test_groupings.sort_by(&:position).each do |test_grouping| %>
-               <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card">
-                  <div class="test-grouping-title"
-                     data-action="click->test-grouping-#toggleTestGrouping"
-                     data-test-grouping-id="<%= test_grouping.id %>">
-                     <% if @editing_test_grouping_id == test_grouping.id %>
-                     <!-- If we are editing the current test grouping, show the form -->
-                     <%= form_with model: test_grouping, url: assignment_test_grouping_path(@assignment, test_grouping), method: :patch, local: true, remote: true do |form| %>
-                     <div class="d-inline-block">
-                        <%= form.text_field :name, class: "form-control d-inline", value: test_grouping.name %>
-                     </div>
-
-                     <!-- Save and Cancel buttons -->
-                     <%= form.submit "Save", class: "save-button" %>
-                     <button class="btn btn-sm btn-secondary" onclick="window.location.reload()">Cancel</button>
-                     <% end %>
-                     <% else %>
-                     <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
-                     <%= "#{test_grouping.position}) #{test_grouping.name}" %>
-
-                     <!-- Edit Button - triggers the edit action via AJAX -->
-                     <%= button_to "✎", edit_assignment_test_grouping_path(@assignment, test_grouping), method: :get, remote: true, format: :js, class: "edit-button" %>
-
-                     <!-- Delete Button -->
-                     <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
-                     <% end %>
-                  </div>
+2  <div class="row">
+    <div id = 'test' class="col-md-6">
+      <h2>Tests for <%= @assignment.assignment_name %></h2>
+      <div class="scrollable-container">
+      <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment),
+      local: true, html: { class: "d-flex align-items-center new-test-grouping-form" } do |form| %>
+      <div class="form-group mb-0" style="margin-right: 10px;">
+        <%= form.text_field :name, class: "form-control", placeholder: "New Test Grouping" %>
+      </div>
+      <button type="submit" class="btn btn-primary align-items-center">
+        <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
+      </button>
+    <% end %>
+        <div class="test-grouping-list" data-controller="test_grouping_card">
+          <% if @test_groupings.present? %>
+            <% @test_groupings.sort_by(&:position).each do | test_grouping | %>
+              <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card">
+              <div class="test-grouping-title"
+              data-action="click->test-grouping-#toggleTestGrouping"
+              data-test-grouping-id="<%= test_grouping.id %>">
+                <% if @editing_test_grouping_id == test_grouping.id %>
+                  <!-- If we are editing the current test grouping, show the form -->
+                  <%= form_with model: test_grouping, url: assignment_test_grouping_path(@assignment, test_grouping), method: :patch, local: true, remote: true do |form| %>
+                    <div class="d-inline-block">
+                      <%= form.text_field :name, class: "form-control d-inline", value: test_grouping.name %>
+                    </div>
+              
+                    <!-- Save and Cancel buttons -->
+                    <%= form.submit "Save", class: "save-button" %>
+                    <button class="btn btn-sm btn-secondary" onclick="window.location.reload()">Cancel</button>
+                  <% end %>
+                <% else %>
+                  <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
+                  <%= "#{test_grouping.position}) #{test_grouping.name}" %>
+                  
+                  <!-- Edit Button - triggers the edit action via AJAX -->
+                  <%= button_to "✎", edit_assignment_test_grouping_path(@assignment, test_grouping), method: :get, remote: true, format: :js, class: "edit-button" %>
+                  
+                  <!-- Delete Button -->
+                  <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
+                <% end %>
+              </div>
 
                   <% if test_grouping.tests.present? %>
                   <div class="test-list" id="test-list-<%= test_grouping.id %>">
@@ -67,102 +66,18 @@
             </div>
          </div>
 
-         <!-- Link to add a new test -->
-         <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
-         <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
-      </div>
+      <!-- Link to add a new test -->
+      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil) %>
+      <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
 
-      <!-- Middle column: Test Form -->
-      <div id='test-details' class="col-md-4" data-controller="test-block">
-         <div class="test-form">
-            <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
+    </div>
 
-            <%= form_with model: [@assignment, @test], local: true do |form| %>
-            <div class="form-grid">
-               <div class="form-group">
-                  <%= form.label :name %>
-                  <%= form.text_field :name, class: "form-control" %>
-               </div>
+    <div id = 'test-details' class="col-md-6">
+      <!-- Form to create or edit a test -->
+      <div id="test-form" class="test-form">
+        <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
 
-               <div class="form-group">
-                  <%= form.label :points %>
-                  <%= form.number_field :points, class: "form-control" %>
-               </div>
-
-               <!-- Dropdown for Test Type with Stimulus action and target -->
-               <div class="form-group" data-action="change->test-block#updateTestBlock">
-                  <%= form.label :test_type, "Test type" %>
-                  <%= form.select :test_type, 
-                     options_for_select([
-                        ['Coverage', 'coverage'], 
-                        ['Compile', 'compile'], 
-                        ['Approved Includes', 'approved_includes']
-                     ], @test.test_type), 
-                     {}, 
-                     class: 'form-control', data: { test_block_target: "testTypeSelect" } %>
-               </div>
-
-               <!-- Other form fields -->
-               <div class="form-group">
-                  <%= form.label :target %>
-                  <%= form.text_field :target, class: "form-control" %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :include %>
-                  <%= form.text_area :include, class: "form-control" %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :number %>
-                  <%= form.text_field :number, class: "form-control" %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :show_output %>
-                  <%= form.check_box :show_output %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :skip %>
-                  <%= form.check_box :skip %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :timeout %>
-                  <%= form.number_field :timeout, class: "form-control" %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :visibility %>
-                  <%= form.select :visibility, 
-                     options_for_select([
-                        ['Hidden', 'hidden'],
-                        ['After Due Date', 'after_due_date'],
-                        ['After Published', 'after_published'],
-                        ['Visible', 'visible']
-                     ], @test.visibility || 'visible'), class: "form-control" %>
-               </div>
-
-               <div class="form-group">
-                  <%= form.label :actual_test %>
-                  <%= form.text_area :actual_test, class: "form-control" %>
-               </div>
-
-               <div class="form-actions">
-                  <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class: "btn btn-primary" %>
-               </div>
-            </div>
-            <% end %>
-
-            <% if @test.persisted? %>
-            <div class="delete-actions">
-               <%= button_to "Destroy this test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
-            </div>
-            <% end %>
-
-            <%= link_to 'Back to Assignment', assignments_path %>
-         </div>
+        <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
 
       <!-- Right column: Test Block (this will change dynamically) -->
