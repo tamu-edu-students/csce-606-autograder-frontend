@@ -4,7 +4,7 @@ class Test < ApplicationRecord
 
   acts_as_list scope: :test_grouping
 
-  validates :actual_test, presence: true
+  validates :test_block, presence: true
 
   # Validations for required fields
   validates :name, presence: { message: "Missing attribute: name" },  uniqueness: { scope: :assignment_id, message: "Test name must be unique" }

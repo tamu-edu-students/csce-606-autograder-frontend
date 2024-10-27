@@ -86,7 +86,7 @@ Given('the assignment contains the following test:') do |table|
       test_type: test['test_type'],
       points: test['test_points'],
       target: test['test_target'],
-      actual_test: test['actual_test']
+      test_block: test['test_block']
     )
   end
 end

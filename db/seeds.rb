@@ -24,7 +24,7 @@ Test.create!(
   skip: false,
   timeout: 30,
   visibility: "visible",
-  actual_test: "assert_equal(...)"
+  test_block: "assert_equal(...)"
 )
 
 Test.create!(
@@ -40,5 +40,5 @@ Test.create!(
   skip: false,
   timeout: 30,
   visibility: "visible",
-  actual_test: "assert_equal(...)"
+  test_block: "assert_equal(...)"
 )

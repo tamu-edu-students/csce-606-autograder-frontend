@@ -49,7 +49,7 @@ Feature: Test Case Groupings CRUD
 
   # Scenario: View an existing test case grouping and test cases
   #   Given the following test cases exist in the "Basic Functionality" group:
-  #     | name   | points | test_type        | target         | actual_test |
+  #     | name   | points | test_type        | target         | test_block |
   #     | test1  | 10     | unit             | code.cpp       | assert(...)|
   #     | test2  | 15     | compile          | code_tests.cpp | test(...)  |
 

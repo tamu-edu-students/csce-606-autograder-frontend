@@ -10,7 +10,7 @@ RSpec.describe Test, type: :model do
       points: 10,
       test_type: 'unit',
       target: 'test_target',
-      actual_test: 'some test code',
+      test_block: 'some test code',
       assignment: assignment
     )
   end
@@ -72,10 +72,10 @@ RSpec.describe Test, type: :model do
       end
     end
 
-    it 'is invalid without actual_test' do
-      valid_test.actual_test = nil
+    it 'is invalid without test_block' do
+      valid_test.test_block = nil
       expect(valid_test).to_not be_valid
-      expect(valid_test.errors[:actual_test]).to include("can't be blank")
+      expect(valid_test.errors[:test_block]).to include("can't be blank")
     end
   end
 
