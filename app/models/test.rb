@@ -27,6 +27,33 @@ class Test < ApplicationRecord
     assignment.generate_tests_file
   end
 
+  def get_test_block_string
+    case test_type
+    when "approved_includes"
+      # newline-delimited list of approved includes with prepended tabs
+      test_block["approved_includes"].map { |approved_include| "\t#{approved_include}" }.join("\n")
+    when "compile", "memory_errors"
+      # newline-delimited list of file paths with prepended tabs
+      test_block["file_paths"].map { |file_path| "\t#{file_path}" }.join("\n")
+    when "coverage"
+      # space-delimited list of source paths followed by main path with prepended tabs
+      "\tsource: #{test_block["source_paths"].join(' ')}\n" \
+      "\tmain: #{test_block["main_path"]}"
+    when "unit", "performance"
+      # code block with prepended tabs on each line
+      test_block["code"].split("\n").map { |line| "\t#{line}" }.join("\n")
+    when "i/o"
+      # input and output paths with prepended tabs
+      "\tinput: #{test_block["input_path"]}\n" \
+      "\toutput: #{test_block["output_path"]}"
+    when "script"
+      # script path with prepended tab
+      "\t#{test_block["script_path"]}"
+    else
+      raise "Unknown test type: #{test_type}"
+    end
+  end
+
   private
 
   def set_default_test_grouping
