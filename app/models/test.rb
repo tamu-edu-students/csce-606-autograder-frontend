@@ -3,9 +3,9 @@ class Test < ApplicationRecord
   belongs_to :test_grouping
 
   acts_as_list scope: :test_grouping
-  
+
   VALID_TEST_TYPES = [ "approved_includes", "compile", "coverage", "i/o", "memory_errors", "performance", "script", "style", "unit"  ]
-  
+
   # Validations for required fields
   validates :test_block, presence: true
   validate :validate_test_block_keys
@@ -26,6 +26,9 @@ class Test < ApplicationRecord
   def regenerate_tests_file
     assignment.generate_tests_file
   end
+
+  # TODO: move test string construction
+  # from `Assignment` to `Test`. Define in to_s method.
 
   def get_test_block_string
     case test_type

@@ -124,7 +124,7 @@ RSpec.describe Test, type: :model do
 
     it 'correct format for unit' do
       valid_test.test_type = 'unit'
-      valid_test.test_block = { code: 
+      valid_test.test_block = { code:
         "EXPECT_FALSE(is_prime(867));\n" \
         "EXPECT_TRUE(is_prime(5309));\n" \
         "EXPECT_TRUE(is_prime(8675309));"
@@ -138,7 +138,7 @@ RSpec.describe Test, type: :model do
 
     it 'correct format for performance' do
       valid_test.test_type = 'performance'
-      valid_test.test_block = { code: 
+      valid_test.test_block = { code:
         "size_t cnt = 1;\n" \
         "for (unsigned n = 3; n < 2000000; n++) {\n" \
         "  if (is_prime(n)) cnt++;\n" \
