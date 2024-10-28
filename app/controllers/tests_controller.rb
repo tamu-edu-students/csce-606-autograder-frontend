@@ -40,8 +40,8 @@ class TestsController < ApplicationController
 
     respond_to do |format|
       if @test.save
-        current_user, auth_token = current_user_and_token
-        update_remote(current_user, auth_token)
+        # current_user, auth_token = current_user_and_token
+        # update_remote(current_user, auth_token)
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully created." }
         format.json { render :show, status: :created, location: @test }
       else
