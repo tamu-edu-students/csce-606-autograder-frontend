@@ -97,7 +97,7 @@ RSpec.describe Test, type: :model do
     end
   end
 
-  describe 'get_test_block_string' do
+  describe '#get_test_block_string' do
     it 'correct format for approved_includes' do
       valid_test.test_type = 'approved_includes'
       valid_test.test_block = { approved_includes: [ 'include1', 'include2' ] }
