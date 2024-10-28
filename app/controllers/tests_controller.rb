@@ -148,6 +148,29 @@ private
 
   # Only allow a list of trusted parameters through.
   def test_params
-    params.require(:test).permit(:name, :points, :test_type, :target, :include, :position, :show_output, :skip, :timeout, :visibility, :assignment_id, :test_block, :test_grouping_id)
+    params.require(:test).permit(
+      :name,
+      :points,
+      :test_type,
+      :target,
+      :include,
+      :position,
+      :show_output,
+      :skip,
+      :timeout,
+      :visibility,
+      :assignment_id,
+      :test_grouping_id,
+      test_block: [
+      :main_path,
+      :code,
+      :input_path,
+      :output_path,
+      :script_path,
+      approved_includes: [],
+      file_paths: [],
+      source_paths: []
+    ]
+    )
   end
 end
