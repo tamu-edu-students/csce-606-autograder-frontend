@@ -1,0 +1,9 @@
+<div>
+  <% if defined?(form) && form %>
+    <%= form.label :actual_test, "Compiler Flags" %>
+    <%= form.text_field :actual_test, name: "test[actual_test][compiler_flags]", value: @test.actual_test['compiler_flags'], placeholder: "Flags for compiler", class: "form-control" %>
+  <% else %>
+    <label for="test_actual_test_compiler_flags">Compiler Flags</label>
+    <input type="text" name="test[actual_test][compiler_flags]" id="test_actual_test_compiler_flags" placeholder="Flags for compiler" class="form-control" />
+  <% end %>
+</div>

@@ -39,3 +39,13 @@ function updateURL(element) {
     }
   });
   
+  function loadTestPartial(testType) {
+    fetch(`/test_blocks/${testType}`)
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("actual-test-content").innerHTML = html;
+      })
+      .catch(error => console.error('Error loading test partial:', error));
+  }
+  
+  window.loadTestPartial = loadTestPartial;
