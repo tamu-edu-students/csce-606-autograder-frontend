@@ -53,6 +53,12 @@
         <%= form.label :actual_test %>
         <%= form.text_area :actual_test, class:"form-control" %>
     </div>
+
+    <!-- Adding Hidden Fields for test_block -->
+    <%#= form.hidden_field :actual_test, name: "test[actual_test]", id: "hidden_code_block" %>
+    <%= form.hidden_field :test_block, name: "test[test_block][input_path]", id: "hidden_input_path" %>
+    <%= form.hidden_field :test_block, name: "test[test_block][output_path]", id: "hidden_output_path" %>
+
     </div class = "form-group">
     <div class="form-actions">
     <%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
