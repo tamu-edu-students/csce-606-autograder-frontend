@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "assignments/show.html.erb", type: :view do
   let(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: "assignment-1") }
   let(:test_grouping) { assignment.test_groupings.create!(name: 'Test Grouping 1') }
-  let(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', test_block: 'Test body', test_grouping_id: test_grouping.id) }
+  let(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', test_block: { code: 'Test body' }, test_grouping_id: test_grouping.id) }
 
 
   before do
