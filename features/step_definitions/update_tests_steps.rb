@@ -3,10 +3,10 @@ Given(/^I am logged in as an instructor$/) do
     login_as(user)
   end
 
-  Given('I have created a test case of type {string}') do |string|
+  Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
     click_link('Add new test')
-    select string, from: 'Test type'
+    select test_type, from: 'Test type'
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
