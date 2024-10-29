@@ -1,5 +1,6 @@
 module AssignmentsHelper
     def render_file_tree(tree_data)
+      return '' unless tree_data.is_a?(Array)
       content_tag(:ul, class: 'file-tree') do
         tree_data.map do |node|
           if node[:type] == 'directory'
