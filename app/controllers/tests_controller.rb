@@ -162,15 +162,15 @@ private
       :assignment_id,
       :test_grouping_id,
       test_block: [
-      :main_path,
-      :code,
-      :input_path,
-      :output_path,
-      :script_path,
-      approved_includes: [],
-      file_paths: [],
-      source_paths: []
-    ]
+        :main_path,
+        :code,
+        :input_path,
+        :output_path,
+        :script_path,
+        approved_includes: [],
+        file_paths: [],
+        source_paths: []
+      ]
     )
   end
 end
