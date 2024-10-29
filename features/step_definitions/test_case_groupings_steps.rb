@@ -85,7 +85,7 @@
         points: row['points'],               # Validate presence and numericality
         test_type: row['test_type'],         # Validate inclusion in VALID_TEST_TYPES
         target: row['target'],               # Validate presence unless test_type is exempt
-        actual_test: row['actual_test'],     # Validate presence
+        test_block: row['test_block'],     # Validate presence
         test_grouping: test_grouping,        # Associate the test with the test group
         assignment: test_grouping.assignment # Associate with the assignment
       )
