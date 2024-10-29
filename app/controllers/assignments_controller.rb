@@ -15,6 +15,11 @@ class AssignmentsController < ApplicationController
     @test_groupings = @assignment.test_groupings.includes(:tests)
     @test = Test.find(params[:test_id]) if params[:test_id]  # If a specific test is selected
     @test ||= Test.new(assignment: @assignment)  # Default to a new test if no test is selected
+    # Assign @files using the fetch_file_tree method
+    @file_tree = build_complete_tree(@assignment)
+  rescue Octokit::Error => e
+    flash[:alert] = "Could not retrieve file tree: #{e.message}"
+    @file_tree = []
   end
 
   # GET /assignments/new
@@ -113,6 +118,7 @@ class AssignmentsController < ApplicationController
 
     render :index
   end
+
   def users
     @users = User.all
     @assignment = Assignment.find(params[:id])
@@ -138,7 +144,39 @@ class AssignmentsController < ApplicationController
     handle_assignment_save
   end
 
-  private
+private
+
+  def build_complete_tree(assignment)
+    github_token = session[:github_token]
+    client = Octokit::Client.new(access_token: github_token)    
+    repo = "AutograderFrontend/#{assignment.repository_name}"
+    
+    begin
+      fetch_directory_contents(client, repo, "tests/c++")
+    rescue Octokit::Error => e
+      Rails.logger.error "GitHub API Error: #{e.message}"
+      []
+    end
+  end
+  
+  def fetch_directory_contents(client, repo, path)
+    contents = client.contents(repo, path: path)
+    
+    contents.map do |item|
+      node = {
+        name: item.name,
+        path: item.path,
+        type: item.type
+      }
+      
+      if item.type == "dir"
+        clean_path = item.path.gsub(/\s+/, '++')
+        node[:children] = fetch_directory_contents(client, repo, clean_path)
+      end
+      
+      node
+    end
+  end
 
   def handle_assignment_save
     if @assignment.save
