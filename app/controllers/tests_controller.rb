@@ -33,15 +33,21 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
+
+    Rails.logger.debug "Parameters received: #{params[:test].inspect}"
+
+
+    
     # To remain compatible with the existing test_block,
     # treat it as JSON string. This can be removed once
     # dynamic test block partials are complete.
 
-    test_block_param = params[:test][:test_block]
-    parsed_test_block = parse_test_block(test_block_param)
+    test_block_param = params[:test][:test_block] || {}
+    # parsed_test_block = parse_test_block(test_block_param)
 
     # Now that test_block is validated and parsed, create the Test instance
-    @test = Test.new(test_params.merge(test_block: parsed_test_block))
+    # @test = Test.new(test_params.merge(test_block: parsed_test_block))
+    @test = Test.new(test_params.merge(test_block: test_block_param))
     set_test_grouping_id
     @assignment = Assignment.find(params[:assignment_id])
     @test.assignment = @assignment
@@ -175,7 +181,9 @@ private
       :timeout,
       :visibility,
       :assignment_id,
+
       :test_grouping_id,
+
       test_block: [
         :main_path,
         :code,

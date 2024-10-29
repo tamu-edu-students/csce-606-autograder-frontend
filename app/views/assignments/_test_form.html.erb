@@ -61,11 +61,11 @@
                                                     ['After Published', 'after_published'],
                                                     ['Visible', 'visible']], @test.visibility || 'visible'), class:"form-control" %>
 </div>
-  <div id="actual-test-content">
-    <% if @test.test_type.present? %>
-      <%= render "assignments/test_blocks/#{@test.test_type}", form: form %>
-    <% end %>
-  </div>
+<div id="actual-test-content">
+  <% if @test.test_type.present? %>
+    <%= render "assignments/test_blocks/#{@test.test_type}", form: form %>
+  <% end %>
+</div>
 
   <div class="form-actions">
   <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class: "btn btn-primary" %>
