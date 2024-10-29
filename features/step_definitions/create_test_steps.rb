@@ -135,10 +135,5 @@ Then('I should not see the test added to the list of tests in assignment1') do
 end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
-  expect(page).to have_content('Actual test')
-end
-
-When('I fill in the field {string} with {string}') do |field, value|
-  fill_in 'Actual test', with: 'actual test'
-  fill_in 'Target', with: 'target'
+  expect(page).to have_content('Test block')
 end

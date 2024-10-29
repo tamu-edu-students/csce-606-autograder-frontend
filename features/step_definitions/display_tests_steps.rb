@@ -17,13 +17,6 @@ end
     select type, from: 'Test type'
   end
 
-  Given("the test case has name {string}") do |name|
-    fill_in 'Name', with: name
-    fill_in 'Points', with: '10'
-    fill_in 'Target', with: 'target.cpp'
-    fill_in 'Actual test', with: 'actual test'
-  end
-
   When("I click on that test case") do
     click_on "Create Test"
   end
