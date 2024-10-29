@@ -104,7 +104,7 @@ class Assignment < ActiveRecord::Base
     organization = ENV["GITHUB_COURSE_ORGANIZATION"]
     repo_path = "#{organization}/#{repository_name}"
     begin
-      contents = client.contents(repo_path)
+      contents = client.contents(repo_path, path: "tests")
       build_file_tree(contents, client, repo_path)
     rescue Octokit::Error => e
       Rails.logger.error "GitHub API Error: #{e.message}"
