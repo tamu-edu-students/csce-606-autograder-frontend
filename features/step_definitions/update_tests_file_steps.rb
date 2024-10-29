@@ -28,12 +28,12 @@ Then('the .tests file should contain the properly formatted test') do |table|
     "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
-    "#{test_params['test_code']}\n" +
+    test_params['test_code'].split("\n").map { |line| "\t#{line}" }.join("\n") + "\n" +
     "</test>\n\n"
 
     file_path = File.join(ENV["ASSIGNMENTS_BASE_PATH"], @assignment.repository_name, "tests", "c++", "code.tests")
     actual_content = File.read(file_path)
-    # expect the strings to be equAL
+    # expect the strings to be equal
     expect(actual_content).to include(expected)
   end
 end
@@ -63,8 +63,18 @@ When('I set the target to {string}') do |string|
   )
 end
 
-When('I fill in the test block with {string}') do |string|
-  fill_in 'Actual test', with: string
+When('I fill in the {string} test block with {string}') do |test_type, test|
+  test_block = case test_type
+  when 'unit'
+    { code: test }
+  when 'approved_includes', 'compile', 'memory_errors', 'i/o',
+    'script', 'coverage', 'performance'
+    raise "Step not implemented for test type: #{test_type}"
+  else
+    raise "Unknown test type: #{test_type}"
+  end
+
+  fill_in 'Test block', with: test_block.to_json
 end
 
 Then('I should see a success message') do
@@ -87,7 +97,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
-    "actual test\n" +
+    "\tEXPECT_EQ(1, 1);\n" +
     "</test>\n\n" +
     "/*\n" +
     "@name: #{test['name']}\n" +
@@ -97,7 +107,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@number: 2\n" +
     "*/\n" +
     "<test>\n" +
-    "#{test['test_code']}\n" +
+    test['test_code'].split("\n").map { |line| "\t#{line}" }.join("\n") + "\n" +
     "</test>\n\n"
 
     file_path = File.join(@assignment.local_repository_path, "tests", "c++", "code.tests")
@@ -114,7 +124,7 @@ Given('the assignment contains {string} tests') do |string|
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Actual test', with: "test block #{i}"
+    fill_in 'Test block', with: { code: 'EXPECT_EQ(1, 1);' }.to_json
     click_button "Create Test"
   end
 end

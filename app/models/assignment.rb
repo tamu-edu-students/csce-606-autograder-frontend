@@ -220,7 +220,7 @@ class Assignment < ActiveRecord::Base
     "#{format_optional_attributes(test)}" +
     "*/\n" +
     "<test>\n" +
-    "#{test.actual_test}\n" +
+    "#{test.get_test_block_string}\n" +
     "</test>\n\n"
     test.gsub("\r\n", "\n")
   end

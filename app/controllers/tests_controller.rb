@@ -33,7 +33,15 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @test = Test.new(test_params)
+    # To remain compatible with the existing test_block,
+    # treat it as JSON string. This can be removed once
+    # dynamic test block partials are complete.
+
+    test_block_param = params[:test][:test_block]
+    parsed_test_block = parse_test_block(test_block_param)
+
+    # Now that test_block is validated and parsed, create the Test instance
+    @test = Test.new(test_params.merge(test_block: parsed_test_block))
     set_test_grouping_id
     @assignment = Assignment.find(params[:assignment_id])
     @test.assignment = @assignment
@@ -58,12 +66,19 @@ class TestsController < ApplicationController
 
   # PATCH/PUT /tests/1 or /tests/1.json
   def update
+    # To remain compatible with the existing test_block,
+    # treat it as JSON string. This can be removed once
+    # dynamic test block partials are complete.
+
+    test_block_param = params[:test][:test_block]
+    parsed_test_block = parse_test_block(test_block_param)
+
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
     set_test_grouping_id
 
     respond_to do |format|
-      if @test.update(test_params)
+      if @test.update(test_params.merge(test_block: parsed_test_block))
         current_user, auth_token = current_user_and_token
         update_remote(current_user, auth_token)
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully updated." }
@@ -148,6 +163,29 @@ private
 
   # Only allow a list of trusted parameters through.
   def test_params
-    params.require(:test).permit(:name, :points, :test_type, :target, :include, :position, :show_output, :skip, :timeout, :visibility, :assignment_id, :test_grouping_id, actual_test: {})
-  end  
+    params.require(:test).permit(
+      :name,
+      :points,
+      :test_type,
+      :target,
+      :include,
+      :position,
+      :show_output,
+      :skip,
+      :timeout,
+      :visibility,
+      :assignment_id,
+      :test_grouping_id,
+      test_block: [
+        :main_path,
+        :code,
+        :input_path,
+        :output_path,
+        :script_path,
+        approved_includes: [],
+        file_paths: [],
+        source_paths: []
+      ]
+    )
+  end
 end
