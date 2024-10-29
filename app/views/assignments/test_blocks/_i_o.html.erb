@@ -1,6 +1,21 @@
-<!-- app/views/assignments/test_blocks/_approved_includes.html.erb -->
-<div>
-  <!-- HTML or input fields specific to the 'i_o' test type -->
-  <h3>I/O Test Block</h3>
-  <textarea>Enter details for I/O test...</textarea>
+<div class="form-group mb-3">
+  <label for="input_path">Input Path</label>
+  <input type="text" 
+         id="test_block_input_path" 
+         name="test[test_block][input_path]" 
+         class="form-control" 
+         placeholder="Enter Input Path" 
+         value="<%= @test.test_block["input_path"] %>">
 </div>
+
+<div class="form-group mt-5">
+  <label for="output_path">Output Path</label>
+  <input type="text" 
+         id="test_block_output_path" 
+         name="test[test_block][output_path]" 
+         class="form-control" 
+         placeholder="Enter Output Path" 
+         value="<%= @test.test_block["output_path"] %>">
+</div>
+
+
