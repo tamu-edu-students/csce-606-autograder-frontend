@@ -79,7 +79,6 @@ class TestsController < ApplicationController
     end
   end
 
-
   # DELETE /assignments/:assignment_id/tests/:id
   def destroy
     @assignment = Assignment.find(params[:assignment_id])
@@ -93,6 +92,40 @@ class TestsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # GET 
+  def edit_points
+    @assignment = Assignment.find(params[:assignment_id])
+    Rails.logger.debug "Assignment: #{@assignment.inspect}"
+    raise ActiveRecord::RecordNotFound if @assignment.nil?
+    @test_grouping = TestGrouping.find(params[:test_grouping_id])
+    @test = Test.find(params[:id])
+    puts "Edit points action called with #{@assignment}, #{@test_grouping}, #{@test}"
+    respond_to do |format|
+      format.js 
+    end
+  end
+
+  def update_points
+    @assignment = Assignment.find(params[:assignment_id])
+    @test_grouping = TestGrouping.find(params[:test_grouping_id])
+    @test = Test.find(params[:id])
+    puts "Update points action called with #{@assignment}, #{@test_grouping}, #{@test}"
+    respond_to do |format|
+      if @test.update(test_params)
+        format.js # This will render update_points.js.erb
+      else
+        format.js { render :edit_points }
+      end
+    end
+  end
+
+  private
+
+  def test_params
+    params.require(:test).permit(:points)
+  end
+
 
   private
 

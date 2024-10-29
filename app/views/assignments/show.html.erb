@@ -23,33 +23,20 @@
               <div class="test-grouping-title"
               data-action="click->test-grouping-#toggleTestGrouping"
               data-test-grouping-id="<%= test_grouping.id %>">
-                <% if @editing_test_grouping_id == test_grouping.id %>
-                  <!-- If we are editing the current test grouping, show the form -->
-                  <%= form_with model: test_grouping, url: assignment_test_grouping_path(@assignment, test_grouping), method: :patch, local: true, remote: true do |form| %>
-                    <div class="d-inline-block">
-                      <%= form.text_field :name, class: "form-control d-inline", value: test_grouping.name %>
-                    </div>
-              
-                    <!-- Save and Cancel buttons -->
-                    <%= form.submit "Save", class: "save-button" %>
-                    <button class="btn btn-sm btn-secondary" onclick="window.location.reload()">Cancel</button>
-                  <% end %>
-                <% else %>
                   <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
                   <%= "#{test_grouping.position}) #{test_grouping.name}" %>
-                  
-                  <!-- Edit Button - triggers the edit action via AJAX -->
-                  <%= button_to "✎", edit_assignment_test_grouping_path(@assignment, test_grouping), method: :get, remote: true, format: :js, class: "edit-button" %>
-                  
+                
                   <!-- Delete Button -->
                   <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
-                <% end %>
               </div>
 
                 <div class="test-list" id="test-list-<%= test_grouping.id %>">
                   <% test_grouping.tests.sort_by(&:position).each do | test | %>
                     <div class="test-card" data-test-id="<%= test.id %>">
-                      <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
+                      <div class="test-info">
+                        <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
+                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button" %>
+                      </div>
                     </div>
                   <% end %>
                 </div>

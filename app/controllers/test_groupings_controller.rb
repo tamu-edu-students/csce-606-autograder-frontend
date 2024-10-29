@@ -16,18 +16,6 @@ class TestGroupingsController < ApplicationController
     @test_grouping = TestGrouping.new
   end
 
-  # Comment this edit function to reach the coverage
-
-  # GET /test_groupings/1/edit
-  # def edit
-  #   #puts 'Edit action triggered'
-  #   respond_to do |format|
-  #     format.html { redirect_to assignment_path(@assignment), notice: "You are now editing the test grouping." }
-  #     format.json { render json: @test_grouping, status: :ok }
-  #     format.js # This will render app/views/test_groupings/edit.js.erb
-  #   end
-  # end
-
   # POST /test_groupings or /test_groupings.json
   def create
     @test_grouping = TestGrouping.new(test_grouping_params)
@@ -44,22 +32,6 @@ class TestGroupingsController < ApplicationController
       end
     end
   end
-
-
-  # Comment this update function to reach the coverage
-
-  # # # PATCH/PUT /test_groupings/1 or /test_groupings/1.json
-  # def update
-  #   respond_to do |format|
-  #     if @test_grouping.update(test_grouping_params)
-  #       format.js   # This will render update.js.erb for the AJAX response
-  #       format.html { redirect_to assignment_path(@assignment), notice: 'Test grouping was successfully updated.' }
-  #     else
-  #       format.html { render :edit }
-  #       format.json { render json: @test_grouping.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
 
 
   # DELETE /test_groupings/1 or /test_groupings/1.json
