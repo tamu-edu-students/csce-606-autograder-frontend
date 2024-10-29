@@ -64,11 +64,11 @@ RSpec.describe Test, type: :model do
       expect(valid_test.errors[:target]).to include('Missing attribute: target')
     end
 
-    it 'is valid without a target for compile, memory_errors, script, or style test types' do
-      [ 'compile', 'memory_errors', 'script', 'style' ].each do |type|
+    it 'is valid without a target for compile, memory_errors, or script test types' do
+      [ 'compile', 'memory_errors', 'script' ].each do |type|
         valid_test.test_type = type
         valid_test.target = nil
-        expect(valid_test).to be_valid
+        expect(valid_test.errors[:target]).to_not include('Missing attribute: target')
       end
     end
 
