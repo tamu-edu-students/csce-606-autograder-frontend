@@ -28,12 +28,12 @@ Then('the .tests file should contain the properly formatted test') do |table|
     "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
-    "#{test_params['test_code']}\n" +
+    test_params['test_code'].split("\n").map { |line| "\t#{line}" }.join("\n") + "\n" +
     "</test>\n\n"
 
     file_path = File.join(ENV["ASSIGNMENTS_BASE_PATH"], @assignment.repository_name, "tests", "c++", "code.tests")
     actual_content = File.read(file_path)
-    # expect the strings to be equAL
+    # expect the strings to be equal
     expect(actual_content).to include(expected)
   end
 end
@@ -97,7 +97,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
-    "actual test\n" +
+    "\tEXPECT_EQ(1, 1);\n" +
     "</test>\n\n" +
     "/*\n" +
     "@name: #{test['name']}\n" +
@@ -107,7 +107,7 @@ Then('the .tests file should contain both properly formatted tests') do |table|
     "@number: 2\n" +
     "*/\n" +
     "<test>\n" +
-    "#{test['test_code']}\n" +
+    test['test_code'].split("\n").map { |line| "\t#{line}" }.join("\n") + "\n" +
     "</test>\n\n"
 
     file_path = File.join(@assignment.local_repository_path, "tests", "c++", "code.tests")
