@@ -1,0 +1,25 @@
+<div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="file-checkbox-list" style="display: block;">
+  <ul>
+    <% @files.each do |item| %>
+      <% if item[:type] == "dir" %>
+        <li class="directory">
+          <span class="directory-name" 
+                data-path="<%= item[:path] %>"
+                data-action="click->file_selection#toggleDirectory">
+            <%= item[:name] %>
+          </span>
+        </li>
+      <% else %>
+        <li class="file">
+          <label>
+            <input type="checkbox" 
+                  class="file-checkbox" 
+                  data-file-path="<%= item[:path] %>"
+                  data-action="change->file_selection#updateField">
+            <%= item[:name] %>
+          </label>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
