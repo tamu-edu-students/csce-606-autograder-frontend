@@ -1,38 +1,40 @@
 <div class="assignments-wrapper">
 
-<h1>Assignments</h1>
+  <h1>Assignments</h1>
 
-<div class="flex justify-center">
-  <%= render partial: "search/form", locals: { results: [] } %>
-</div>
-  <div class="assignments-table-container">
-    <table id="assignments-table" class="assignments-table">
-      <thead>
-        <tr>
-          <th onclick="sortTable(0)">Repository Name <span id="arrow-0">&#x25B2;</span></th>
-          <th onclick="sortTable(1)">Created On <span id="arrow-1">&#x25B2;</span></th>
-          <th onclick="sortTable(2)">Last Updated <span id="arrow-2">&#x25B2;</span></th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @assignments.each do |assignment| %>
-          <tr>
-            <td>
-              <%= link_to assignment.repository_name, assignment.github_repository_url, target: "_blank", class: "btn-link" %>
-            </td>
-            <td><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
-            <td><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
-            <td>
-              <%= link_to 'Export', create_and_download_zip_assignment_path(assignment), class: "btn btn-success" %>
-              <%= link_to 'Edit', assignment_path(assignment), class: "btn btn-primary" %>
-              <%= link_to 'Manage Permissions', users_assignment_path(assignment), class: "btn btn-secondary" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+  <div class="flex justify-center">
+    <%= render partial: "search/form", locals: { results: [] } %>
   </div>
+  
+  <div class="assignments-table-container">
+  <table id="assignments-table" class="assignments-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Repository Name <span id="arrow-0">&#x25B2;</span></th>
+        <th onclick="sortTable(1)">Created On <span id="arrow-1">&#x25B2;</span></th>
+        <th onclick="sortTable(2)">Last Updated <span id="arrow-2">&#x25B2;</span></th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @assignments.each do |assignment| %>
+        <tr>
+          <td>
+            <%= link_to assignment.repository_name, assignment_path(assignment), class: "btn-link" %>
+          </td>
+          <td><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
+          <td><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
+          <td>
+            <%= link_to 'Export to GradeScope', create_and_download_zip_assignment_path(assignment), class: "btn btn-success" %>
+            <%= link_to 'Manage Access', users_assignment_path(assignment), class: "btn btn-secondary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  </div>
+  
   <%= link_to 'Create Assignment', new_assignment_path, class: 'btn btn-primary create-assignment-btn' %>
 </div>
 
@@ -45,13 +47,15 @@
     switching = true;
     dir = sortDirections[n]; // Use stored sorting direction for the clicked column
 
-    // Clear all arrows
+    // Clear all arrows and remove highlight from all columns
     for (let j = 0; j < 3; j++) {
       document.getElementById(`arrow-${j}`).innerHTML = dir === "asc" ? "&#x25B2;" : "&#x25BC;";
+      Array.from(table.rows).forEach(row => row.cells[j].classList.remove("highlight-column"));
     }
 
-    // Set correct arrow for the clicked column
+    // Set correct arrow for the clicked column and highlight it
     document.getElementById(`arrow-${n}`).innerHTML = dir === "asc" ? "&#x25B2;" : "&#x25BC;";
+    Array.from(table.rows).forEach(row => row.cells[n].classList.add("highlight-column"));
 
     while (switching) {
       switching = false;
@@ -98,3 +102,15 @@
     sortDirections[n] = dir === "asc" ? "desc" : "asc";
   }
 </script>
+
+<style>
+  /* Highlight sorted column */
+  .highlight-column {
+    background-color: #f0f8ff; /* Light background for sorted column */
+  }
+  
+  /* Left align text */
+  .text-left {
+    text-align: left;
+  }
+</style>

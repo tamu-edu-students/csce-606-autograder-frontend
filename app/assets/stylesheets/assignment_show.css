@@ -158,3 +158,9 @@
     padding: 0;
     margin: 0;
   }
+
+  /* Force left alignment for the entire Repository Name column */
+  #assignments-table th:first-child,
+  #assignments-table td:first-child {
+    text-align: left !important;
+  }
