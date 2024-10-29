@@ -63,8 +63,18 @@ When('I set the target to {string}') do |string|
   )
 end
 
-When('I fill in the test block with {string}') do |string|
-  fill_in 'Actual test', with: string
+When('I fill in the {string} test block with {string}') do |test_type, test|
+  test_block = case test_type
+  when 'unit'
+    { code: test }
+  when 'approved_includes', 'compile', 'memory_errors', 'i/o',
+    'script', 'coverage', 'performance'
+    raise "Step not implemented for test type: #{test_type}"
+  else
+    raise "Unknown test type: #{test_type}"
+  end
+
+  fill_in 'Test block', with: test_block.to_json
 end
 
 Then('I should see a success message') do
@@ -114,7 +124,7 @@ Given('the assignment contains {string} tests') do |string|
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Actual test', with: "test block #{i}"
+    fill_in 'Test block', with: { code: 'EXPECT_EQ(1, 1);' }.to_json
     click_button "Create Test"
   end
 end

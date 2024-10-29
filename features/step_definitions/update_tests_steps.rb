@@ -10,7 +10,7 @@ Given(/^I am logged in as an instructor$/) do
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Actual test', with: 'actual test'
+    steps %(And I add the "#{test_type}" test block)
     click_button "Create Test"
 
     @test_case = @assignment.tests.last
