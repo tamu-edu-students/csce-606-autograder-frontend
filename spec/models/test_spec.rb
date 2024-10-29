@@ -77,6 +77,13 @@ RSpec.describe Test, type: :model do
       expect(valid_test).to_not be_valid
       expect(valid_test.errors[:test_block]).to include("can't be blank")
     end
+
+    it 'is invalid with an unknown test_block key' do
+      valid_test.test_type = 'unit'
+      valid_test.test_block = { invalid_key: 'some value' }
+      expect(valid_test).to_not be_valid
+      expect(valid_test.errors[:test_block]).to include("unit test must have attribute(s): code")
+    end
   end
 
   describe 'default values' do

@@ -83,7 +83,7 @@ class Test < ApplicationRecord
       actual_keys = test_block.keys.map(&:to_s)
 
       unless actual_keys.sort == required_keys.sort
-        errors.add(:test_block, "#{test_type} test must have attributes: #{required_keys.join(', ')}")
+        errors.add(:test_block, "#{test_type} test must have attribute(s): #{required_keys.join(', ')}")
       end
     end
   end
