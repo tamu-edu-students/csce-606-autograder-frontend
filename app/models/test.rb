@@ -4,7 +4,7 @@ class Test < ApplicationRecord
 
   acts_as_list scope: :test_grouping
 
-  VALID_TEST_TYPES = [ "approved_includes", "compile", "coverage", "i/o", "memory_errors", "performance", "script", "unit"  ]
+  VALID_TEST_TYPES = [ "approved_includes", "compile", "coverage", "i_o", "memory_errors", "performance", "script", "unit"  ]
 
   # Validations for required fields
   validates :test_block, presence: true

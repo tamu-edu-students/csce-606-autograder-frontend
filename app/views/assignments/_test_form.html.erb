@@ -63,7 +63,7 @@
 </div>
 <div id="actual-test-content">
   <% if @test.test_type.present? %>
-    <%= render "assignments/test_blocks/#{@test.test_type}", form: form %>
+    <%= render "assignments/test_blocks/#{@test.test_type}", form: form , test: @test %>
   <% end %>
 </div>
 
