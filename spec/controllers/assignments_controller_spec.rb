@@ -497,12 +497,12 @@ RSpec.describe AssignmentsController, type: :controller do
     end
 
     it 'encodes spaces in directory paths with ++' do
-      allow(dir_item).to receive(:path).and_return('root/dir 1') # Path with space
-      allow(client).to receive(:contents).with(repo, path: 'root/dir++1').and_return([])
+      allow(dir_item).to receive(:path).and_return('tests/c++/dir 1') # Path with space
+      allow(client).to receive(:contents).with(repo, path: 'tests/c++/dir++1').and_return([])
 
       result = controller.send(:fetch_directory_contents, client, repo, path)
       dir_node = result.find { |node| node[:type] == 'dir' }
-      expect(dir_node[:path]).to eq('root/dir 1')
+      expect(dir_node[:path]).to eq('tests/c++/dir 1')
       expect(dir_node[:children]).to eq([])
     end
   end
