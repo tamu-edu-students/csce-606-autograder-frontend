@@ -148,9 +148,9 @@ private
 
   def build_complete_tree(assignment)
     github_token = session[:github_token]
-    client = Octokit::Client.new(access_token: github_token)    
+    client = Octokit::Client.new(access_token: github_token)
     repo = "AutograderFrontend/#{assignment.repository_name}"
-    
+
     begin
       fetch_directory_contents(client, repo, "tests/c++")
     rescue Octokit::Error => e
@@ -158,22 +158,22 @@ private
       []
     end
   end
-  
+
   def fetch_directory_contents(client, repo, path)
     contents = client.contents(repo, path: path)
-    
+
     contents.map do |item|
       node = {
         name: item.name,
         path: item.path,
         type: item.type
       }
-      
+
       if item.type == "dir"
-        clean_path = item.path.gsub(/\s+/, '++')
+        clean_path = item.path.gsub(/\s+/, "++")
         node[:children] = fetch_directory_contents(client, repo, clean_path)
       end
-      
+
       node
     end
   end
