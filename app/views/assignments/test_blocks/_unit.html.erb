@@ -1,6 +1,9 @@
-<!-- app/views/assignments/test_blocks/_unit.html.erb -->
-<div>
-  <!-- HTML or input fields specific to the '_unit' test type -->
-  <h3>Unit Block</h3>
-  <textarea>Enter details for Unit test...</textarea>
+<div class="form-group mb-3">
+  <label for="code">Unit</label>
+  <input type="text" 
+         id="test_block_code" 
+         name="test[test_block][code]" 
+         class="form-control" 
+         placeholder="Enter Unit" 
+         value="<%= test&.test_block&.dig('code') %>">
 </div>

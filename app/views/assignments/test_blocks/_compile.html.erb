@@ -1,9 +1,23 @@
-<div>
-  <% if defined?(form) && form %>
-    <%= form.label :actual_test, "Compiler Flags" %>
-    <%= form.text_field :actual_test, name: "test[actual_test][compiler_flags]", value: @test.actual_test['compiler_flags'], placeholder: "Flags for compiler", class: "form-control" %>
-  <% else %>
-    <label for="test_actual_test_compiler_flags">Compiler Flags</label>
-    <input type="text" name="test[actual_test][compiler_flags]" id="test_actual_test_compiler_flags" placeholder="Flags for compiler" class="form-control" />
-  <% end %>
+<div class="form-group mb-3">
+  <label>Compile Path</label>
+  <div id="compile-file-container">
+    <% if test&.test_block&.dig("file_paths").present? %>
+      <% test.test_block["file_paths"].each_with_index do |path, index| %>
+        <div class="file-path-field">
+          <input type="text" 
+                 name="test[test_block][file_paths][]" 
+                 class="form-control mb-2" 
+                 placeholder="Enter Compile Path" 
+                 value="<%= path %>">
+        </div>
+      <% end %>
+    <% else %>
+      <!-- Display one empty field if no source paths exist yet -->
+      <input type="text" 
+             name="test[test_block][file_paths][]" 
+             class="form-control mb-2" 
+             placeholder="Enter Compile Path">
+    <% end %>
+  </div>
+  <button type="button" class="btn btn-secondary mt-2" onclick="addCompilePathField()">Add Compile Path</button>
 </div>

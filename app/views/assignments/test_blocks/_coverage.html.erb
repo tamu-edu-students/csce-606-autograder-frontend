@@ -1,6 +1,35 @@
-<!-- app/views/assignments/test_blocks/_coverage.html.erb -->
-<div>
-  <!-- HTML or input fields specific to the 'coverage' test type -->
-  <h3>Coverage Test Block</h3>
-  <textarea>Enter details for coverage test...</textarea>
+<div class="form-group mb-3">
+  <label for="main_path">Main Path</label>
+  <input type="text" 
+         id="test_block_main_path" 
+         name="test[test_block][main_path]" 
+         class="form-control" 
+         placeholder="Enter Main Path" 
+         value="<%= test&.test_block&.dig('main_path') %>">
 </div>
+
+<div class="form-group mb-3">
+  <label>Source Paths</label>
+  <div id="source-paths-container">
+    <% if test&.test_block&.dig("source_paths").present? %>
+      <% test.test_block["source_paths"].each_with_index do |path, index| %>
+        <div class="source-path-field">
+          <input type="text" 
+                 name="test[test_block][source_paths][]" 
+                 class="form-control mb-2" 
+                 placeholder="Enter Source Path" 
+                 value="<%= path %>">
+        </div>
+      <% end %>
+    <% else %>
+      <!-- Display one empty field if no source paths exist yet -->
+      <input type="text" 
+             name="test[test_block][source_paths][]" 
+             class="form-control mb-2" 
+             placeholder="Enter Source Path">
+    <% end %>
+  </div>
+  <button type="button" class="btn btn-secondary mt-2" onclick="addSourcePathField()">Add Source Path</button>
+</div>
+
+

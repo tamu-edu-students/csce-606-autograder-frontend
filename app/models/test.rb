@@ -71,7 +71,7 @@ class Test < ApplicationRecord
       "compile" => %w[file_paths],
       "coverage" => %w[source_paths main_path],
       "unit" => %w[code],
-      "i/o" => %w[input_path output_path],
+      "i_o" => %w[input_path output_path],
       "performance" => %w[code],
       "script" => %w[script_path],
       "memory_errors" => %w[file_paths]

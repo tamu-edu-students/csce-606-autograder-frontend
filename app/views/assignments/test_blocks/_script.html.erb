@@ -1,6 +1,9 @@
-<!-- app/views/assignments/test_blocks/_script.html.erb -->
-<div>
-  <!-- HTML or input fields specific to the '_script' test type -->
-  <h3>Script Test Block</h3>
-  <textarea>Enter details for Script test...</textarea>
+<div class="form-group mb-3">
+  <label for="script_path">Script Path</label>
+  <input type="text" 
+         id="test_block_script_path" 
+         name="test[test_block][script_path]" 
+         class="form-control" 
+         placeholder="Enter Script Path" 
+         value="<%= test&.test_block&.dig('script_path') %>">
 </div>

@@ -1,6 +1,23 @@
-<!-- app/views/assignments/test_blocks/_approved_includes.html.erb -->
-<div>
-  <!-- HTML or input fields specific to the '_approved_includes' test type -->
-  <h3>Approved Includes Test Block</h3>
-  <textarea>Enter details for Approved Includes test...</textarea>
+<div class="form-group mb-3">
+  <label>Memory Errors Path</label>
+  <div id="approved-includes-container">
+    <% if test&.test_block&.dig("approved_includes").present? %>
+      <% test.test_block["approved_includes"].each_with_index do |path, index| %>
+        <div class="approved-includes-field">
+          <input type="text" 
+                 name="test[test_block][approved_includes][]" 
+                 class="form-control mb-2" 
+                 placeholder="Enter Approved Includes" 
+                 value="<%= path %>">
+        </div>
+      <% end %>
+    <% else %>
+      <!-- Display one empty field if no source paths exist yet -->
+      <input type="text" 
+             name="test[test_block][approved_includes][]" 
+             class="form-control mb-2" 
+             placeholder="Enter Approved Includes">
+    <% end %>
+  </div>
+  <button type="button" class="btn btn-secondary mt-2" onclick="addApprovedIncludesField()">Add Compile Path</button>
 </div>
