@@ -14,13 +14,18 @@ Feature: Update Assignments view based on Wireframe
         And I should see "Export to Gradescope" button in each assignment row
         And I should see "Manage Access" button in each assignment row
         And I should not see "Edit" button in each assignment row
-    
+    @javascript
     Scenario Outline: The column used for sorting in the Assignments table should be highlighted.
         Given I am on the "Assignment" page
         When I click on the "Assignment Name" column header
         Then I should see "Assignment Name" column highlighted
+        When I click on the "Created On" column header
+        Then I should see "Created On" column highlighted
+        When I click on the "Last Updated" column header
+        Then I should see "Last Updated" column highlighted
     
     
     Scenario Outline: Assignment name link should redirect to edit assignment view 
-        When I click on "assignment1" link
-        Then I should be redirected to the "Assignment Management" page for "assignment1"
+        Given I am on the "Assignment" page
+        When I click on "assignment-1-repo" link
+        Then I should be redirected to the "Assignment" page for "assignment1"

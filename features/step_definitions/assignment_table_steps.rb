@@ -1,9 +1,9 @@
 When('I click on {string} link') do |assignment_name|
     find('a', text: assignment_name).click
   end
-  
+
 Then('I should be redirected to the {string} page for {string}') do |page_name, assignment_name|
-    expect(page).to have_content("#{page_name} for #{assignment_name}")
+    expect(page).to have_content("#{page_name}: #{assignment_name}")
 end
 
 Then('I should see {string} button in each assignment row') do |button_text|
@@ -12,9 +12,9 @@ Then('I should see {string} button in each assignment row') do |button_text|
     end
 end
 
-  
-  
-  
+
+
+
 
 Then('I should see {string} column left justified') do |column_name|
     column = find('#assignments-table th', text: column_name)
@@ -25,10 +25,10 @@ Then('I should see {string} column highlighted') do |column_name|
     header = find('th', text: column_name)
     expect(header[:class]).to include('highlight-column') # Check directly on the element with a short wait
 end
-  
-  
-  
-  
+
+
+
+
 Then('I should not see {string} button in each assignment row') do |button_text|
     within('#assignments-table tbody') do
       all('tr').each do |row|
