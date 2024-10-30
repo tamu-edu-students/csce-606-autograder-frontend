@@ -21,7 +21,7 @@ Feature: Create a new test case
         And with the name "<name>"
         And with the points "<points>"
         And with the target "<target>"
-        And I add the "<type>" test block
+        And I should see the "<type>" dynamic test block partial
         And I click the "Create Test" button
         Then I should not see any missing attribute error messages
     

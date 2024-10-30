@@ -15,16 +15,16 @@
     <div class = "form-group">
       <%= form.label :test_type %>
       <%= form.select :test_type, 
-                      options_for_select([['Coverage', 'coverage'], 
-                                          ['Compile', 'compile'], 
-                                          ['Approved Includes', 'approved_includes'], 
-                                          ['Memory Errors', 'memory_errors'], 
-                                 ['Unit', 'unit'], 
-                                          ['I/O', 'i_o'], 
-                                          ['Performance', 'performance'], 
-                                          ['Script', 'script']], 
+                      options_for_select([['coverage', 'coverage'], 
+                                          ['compile', 'compile'], 
+                                          ['approved_includes', 'approved_includes'], 
+                                          ['memory_errors', 'memory_errors'], 
+                                 ['unit', 'unit'], 
+                                          ['i_o', 'i_o'], 
+                                          ['performance', 'performance'], 
+                                          ['script', 'script']], 
                                          @test.test_type), 
-                      {}, 
+                        {},
                       onchange: "loadTestPartial(this.value)", 
                       class: "form-control" %>
     </div>

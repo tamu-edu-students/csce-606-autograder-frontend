@@ -23,6 +23,23 @@ When('I create a new test with type {string}') do |type|
   end
 end
 
+Then('I should see the {string} dynamic test block partial') do |type|
+  case type
+  when 'approved_includes'
+    within('#approved-includes-container') do
+    expect(page).to have_selector("input[name='test[test_block][approved_includes][]']", visible: true)
+    expect(page).to have_button("Add Approved Includes")
+  end
+  when 'compile'
+    expect(page).to have_field('Compiler Options')
+  when 'memory_errors'
+    expect(page).to have_field('Memory Check Level')
+  # Add additional cases as needed for other types
+  else
+    raise "Unknown test type: #{type}"
+  end
+end
+
 Given('I add the {string} test block') do |test_type|
   test_block = case test_type
   when 'approved_includes'
