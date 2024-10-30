@@ -2,7 +2,7 @@
 
 # RSpec.describe "Tests", type: :request do
 #   let!(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: "assignment-1") }
-#   let!(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', actual_test: 'Test code') }
+#   let!(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', test_block: 'Test code') }
 
 #   describe "GET /assignments/:assignment_id/tests" do
 #     it "renders the index template" do
@@ -29,7 +29,7 @@
 #   describe "POST /assignments/:assignment_id/tests" do
 #     context "with valid parameters" do
 #       it "creates a new test and redirects" do
-#         post assignment_tests_path(assignment), params: { test: { name: 'New Test', points: 20, test_type: 'compile', actual_test: 'New test code' } }
+#         post assignment_tests_path(assignment), params: { test: { name: 'New Test', points: 20, test_type: 'compile', test_block: 'New test code' } }
 #         expect(response).to redirect_to(assignment_path(assignment))
 #         follow_redirect!
 #         expect(response.body).to include("Test was successfully created.")
@@ -38,7 +38,7 @@
 
 #     context "with invalid parameters" do
 #       it "does not create a test and shows error messages" do
-#         post assignment_tests_path(assignment), params: { test: { name: '', points: 0, test_type: '', actual_test: '' } }
+#         post assignment_tests_path(assignment), params: { test: { name: '', points: 0, test_type: '', test_block: '' } }
 #         expect(response).to redirect_to(assignment_path(assignment))
 #         follow_redirect!
 #         expect(response.body).to include("Missing attributes")
@@ -56,7 +56,7 @@
 #   describe "PATCH /assignments/:assignment_id/tests/:id" do
 #     context "with valid parameters" do
 #       it "updates the test and redirects" do
-#         patch assignment_test_path(assignment, test_case), params: { test: { name: 'Updated Test', points: 15, test_type: 'i/o', actual_test: 'Updated code' } }
+#         patch assignment_test_path(assignment, test_case), params: { test: { name: 'Updated Test', points: 15, test_type: 'i/o', test_block: 'Updated code' } }
 #         expect(response).to redirect_to(assignment_path(assignment, test_case))
 #         follow_redirect!
 #         expect(response.body).to include("Test was successfully updated.")
@@ -66,7 +66,7 @@
 
 #     context "with invalid parameters" do
 #       it "does not update the test and shows error messages" do
-#         patch assignment_test_path(assignment, test_case), params: { test: { name: '', points: 0, test_type: '', actual_test: '' } }
+#         patch assignment_test_path(assignment, test_case), params: { test: { name: '', points: 0, test_type: '', test_block: '' } }
 #         expect(response).to redirect_to(assignment_path(assignment))
 #         follow_redirect!
 #         expect(response.body).to include("Missing attributes")

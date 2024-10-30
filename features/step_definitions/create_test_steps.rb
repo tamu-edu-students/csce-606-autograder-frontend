@@ -23,8 +23,25 @@ When('I create a new test with type {string}') do |type|
   end
 end
 
-Given('I add the Actual Test') do
-  fill_in 'Actual test', with: 'actual test'
+Given('I add the {string} test block') do |test_type|
+  test_block = case test_type
+  when 'approved_includes'
+    '{ "approved_includes": [ "file1", "file2" ] }'
+  when 'compile', 'memory_errors'
+    '{ "file_paths": [ "file1", "file2" ] }'
+  when 'coverage'
+    '{ "source_paths": [ "source1", "source2" ], "main_path": "main" }'
+  when 'unit', 'performance'
+    '{ "code": "EXPECT_EQ(1, 1);" }'
+  when 'i/o'
+    '{ "input_path": "input", "output_path": "output" }'
+  when 'script'
+    '{ "script_path": "script" }'
+  else
+    raise "Unknown test type: #{test_type}"
+  end
+
+  fill_in 'Test block', with: test_block
 end
 
 Then('I should see an error message saying {string}') do |message|
@@ -86,7 +103,7 @@ Given('the assignment contains the following test:') do |table|
       test_type: test['test_type'],
       points: test['test_points'],
       target: test['test_target'],
-      actual_test: test['actual_test']
+      test_block: test['test_block']
     )
   end
 end
@@ -100,17 +117,17 @@ Given('the assignment contains no tests') do
 end
 
 Then('the test block should contain the fields {string}') do |fields|
-  expect(page).to have_content("Actual test")
+  expect(page).to have_content("Test block")
 end
 
 
 
 Given('the test block contains the field {string}') do |field|
-  expect(page).to have_content("Actual test")
+  expect(page).to have_content("Test block")
 end
 
 When('I fill in the field with {string}') do |value|
-  fill_in 'Actual test', with: 'actual test'
+  fill_in 'Test block', with: '{ "script_path": "script" }'
 end
 
 Then('I should see the test added to the list of tests in assignment1') do
@@ -122,12 +139,12 @@ Then('I should see a message saying {string}') do |message|
 end
 
 Given('the test block has the field {string}') do |field|
-  expect(page).to have_content("Actual test")
+  expect(page).to have_content("Test block")
 end
 
 Given('the field is empty') do
   # Ensure the field is empty by either clearing it or checking its initial value
-  fill_in 'Actual test', with: ''
+  fill_in 'Test block', with: ''
 end
 
 Then('I should not see the test added to the list of tests in assignment1') do
@@ -135,10 +152,5 @@ Then('I should not see the test added to the list of tests in assignment1') do
 end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
-  expect(page).to have_content('Actual test')
-end
-
-When('I fill in the field {string} with {string}') do |field, value|
-  fill_in 'Actual test', with: 'actual test'
-  fill_in 'Target', with: 'target'
+  expect(page).to have_content('Test block')
 end

@@ -50,6 +50,9 @@ class Assignment < ActiveRecord::Base
       # Set the remote URL for the repository
       # system("git -C #{local_repo_path} remote set-url origin #{remote_repo_url}")
 
+      # Clones remote repository to local
+      clone_repo_to_local(auth_token)
+
       set_remote_origin(local_repo_path, authenticated_url(auth_token))
 
 
@@ -149,7 +152,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def authenticated_url(github_token)
-    "https://#{github_token}@#{repository_url[8..]}"
+    "https://#{github_token}@#{self.repository_url[8..]}"
   end
 
   def ensure_default_test_grouping
@@ -225,14 +228,21 @@ class Assignment < ActiveRecord::Base
       puts "Failed to clone repo from assignment template: #{e.response_body[:message]}"
       return
     end
+    # wait for remote repo to be initialized
+    sleep(3)
     self.repository_url = new_repo[:html_url]
+    puts "Repo created successfully at #{self.repository_url}"
+    self.save
   end
 
   def clone_repo_to_local(github_token)
-      # wait for remote repo to be initialized
-      sleep(3)
       begin
-        Git.clone(authenticated_url(github_token), self.local_repository_path)
+        if Dir.exist?(self.local_repository_path) && !Dir.exist?("#{self.local_repository_path}/.git")
+          FileUtils.rm_rf(self.local_repository_path)
+        end
+        if !Dir.exist?(self.local_repository_path)
+          Git.clone(authenticated_url(github_token), self.local_repository_path)
+        end
       rescue Git::Error => e
         puts "An error occurred: #{e.message}"
         nil
@@ -257,7 +267,7 @@ class Assignment < ActiveRecord::Base
     "#{format_optional_attributes(test)}" +
     "*/\n" +
     "<test>\n" +
-    "#{test.actual_test}\n" +
+    "#{test.get_test_block_string}\n" +
     "</test>\n\n"
     test.gsub("\r\n", "\n")
   end
