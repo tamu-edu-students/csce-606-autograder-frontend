@@ -8,14 +8,15 @@ Feature: Create a new test case
             | assignment_name | repository_name   |
             | assignment1     | assignment1 |
             | assignment2     | assignment2 |
-            | assignment3     | assignment3 | 
+            | assignment3     | assignment3 |
         Given I am logged in as an "instructor"
         And I am on the "Assignment Management" page for "assignment1"
 
     Scenario: Tests with unknown type
         When I create a new test with type "invalid"
         Then I should see an error message saying "Unknown test type: invalid"
-    
+
+    @javascript
     Scenario: Test has required attributes
         When I create a new test with type "<type>"
         And with the name "<name>"
@@ -24,7 +25,7 @@ Feature: Create a new test case
         And I add the Actual Test
         And I click the "Create Test" button
         Then I should not see any missing attribute error messages
-    
+
         Examples:
         | type              | name  | points | target      |
         | approved_includes | test1 | 10     | target1.cpp |
@@ -200,6 +201,6 @@ Feature: Create a new test case
 
 
 
- 
+
 
 
