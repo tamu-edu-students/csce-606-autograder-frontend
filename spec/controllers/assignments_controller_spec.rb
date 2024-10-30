@@ -445,7 +445,7 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:file_item) do
       double(
         name: 'file1.txt',
-        path: 'root/file1.txt',
+        path: 'tests/c++/file1.txt',
         type: 'file'
       )
     end
@@ -453,7 +453,7 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:dir_item) do
       double(
         name: 'dir1',
-        path: 'root/dir1',
+        path: 'tests/c++/dir1',
         type: 'dir'
       )
     end
@@ -461,31 +461,31 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:nested_file_item) do
       double(
         name: 'file2.txt',
-        path: 'root/dir1/file2.txt',
+        path: 'tests/c++/dir1/file2.txt',
         type: 'file'
       )
     end
 
     before do
       allow(client).to receive(:contents).with(repo, path: path).and_return([ file_item, dir_item ])
-      allow(client).to receive(:contents).with(repo, path: 'root/dir1').and_return([ nested_file_item ])
+      allow(client).to receive(:contents).with(repo, path: 'tests/c++/dir1').and_return([ nested_file_item ])
     end
 
     it 'returns directory contents with nested structure for directories' do
       expected_result = [
         {
           name: 'file1.txt',
-          path: 'root/file1.txt',
+          path: 'tests/c++/file1.txt',
           type: 'file'
         },
         {
           name: 'dir1',
-          path: 'root/dir1',
+          path: 'tests/c++/dir1',
           type: 'dir',
           children: [
             {
               name: 'file2.txt',
-              path: 'root/dir1/file2.txt',
+              path: 'tests/c++/dir1/file2.txt',
               type: 'file'
             }
           ]
