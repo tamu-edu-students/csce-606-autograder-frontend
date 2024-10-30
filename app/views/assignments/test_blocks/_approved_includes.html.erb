@@ -1,5 +1,5 @@
 <div class="form-group mb-3">
-  <label>Memory Errors Path</label>
+  <label>Approved Includes</label>
   <div id="approved-includes-container">
     <% if test&.test_block&.dig("approved_includes").present? %>
       <% test.test_block["approved_includes"].each_with_index do |path, index| %>
@@ -19,5 +19,5 @@
              placeholder="Enter Approved Includes">
     <% end %>
   </div>
-  <button type="button" class="btn btn-secondary mt-2" onclick="addApprovedIncludesField()">Add Compile Path</button>
+  <button type="button" class="btn btn-secondary mt-2" onclick="addApprovedIncludesField()">Add Approved Includes</button>
 </div>
