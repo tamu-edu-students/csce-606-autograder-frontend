@@ -71,18 +71,73 @@
           <%= render_file_tree(@directory_structure) %>
         </div>
       </div>
+      
+
+
       <script>
-        function toggleTree() {
-          document.getElementById('fileTreeContainer').classList.toggle('hidden');
+      const assignmentIdtemp = "<%= @assignment.id %>"; 
+
+      function toggleTree() {
+        document.getElementById('fileTreeContainer').classList.toggle('hidden');
+      }
+
+      function toggleFolder(element) {
+        const childrenContainer = element.parentNode.querySelector('.children-container');
+        if (childrenContainer) {
+          childrenContainer.classList.toggle('hidden');
+          element.classList.toggle('expanded');
         }
-        function toggleFolder(element) {
-          let childContainer = element.nextElementSibling;
-          if (childContainer && childContainer.classList.contains('children-container')) {
-            childContainer.classList.toggle('hidden');
-            element.classList.toggle('expanded');
-          }
-        }
-      </script>
+      }
+
+      function openFileUpload(element, path) {
+        document.getElementById('fileUploadInput').dataset.uploadPath = path;
+        document.getElementById('fileUploadInput').click();
+      }
+
+      function uploadFile(input) {
+              const file = input.files[0];
+              const path = input.dataset.uploadPath;
+
+              if (file) {
+                  const formData = new FormData();
+
+                
+                  const reader = new FileReader();
+                  reader.readAsArrayBuffer(file);
+                  
+                  reader.onload = function () {
+                      const binary = reader.result;
+
+                      formData.append('file', new Blob([binary]), file.name); 
+                      formData.append('path', path);
+
+                      fetch(`/assignments/${assignmentIdtemp}/upload_file`, {
+                          method: 'POST',
+                          body: formData,
+                          headers: {
+                              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                          }
+                      })
+                      .then(response => response.json())
+                      .then(data => {
+                          if (data.success) {
+                              alert('File uploaded successfully!');
+                              location.reload();
+                          } else {
+                              alert(`File upload failed: ${data.error}`);
+                          }
+                      })
+                      .catch(error => {
+                          console.error('Error uploading file:', error);
+                          alert('File upload failed due to a network error.');
+                      });
+                  };
+              }
+      }
+
+    </script>
+
+
     <style>
   .file-tree-container {
     border: 1px solid #ccc;
@@ -145,6 +200,22 @@
   .file-tree-container::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+  .file-tree .upload-icon {
+    margin-left: 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    color: #666; /* Professional grey color */
+  }
+
+  .file-tree .upload-icon:hover {
+    color: #007bff; /* Change to blue on hover for a modern look */
+  }
+
+  .children-container.hidden {
+    display: none;
+  }
+
+
 </style>
     </div>
 
@@ -158,3 +229,5 @@
     </div>
   </div>
 </div>
+
+
