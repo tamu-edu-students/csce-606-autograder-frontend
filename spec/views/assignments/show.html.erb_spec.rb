@@ -40,7 +40,6 @@ RSpec.describe "assignments/show.html.erb", type: :view do
     expect(rendered).to have_selector("form")
     expect(rendered).to have_field('Name', with: 'Test 1')
     expect(rendered).to have_field('Points', with: 10.0)
-    expect(rendered).to have_select('Test type', selected: 'unit')
     expect(rendered).to have_field('Target', with: 'target')
     expect(rendered).to have_button('Update Test')
   end

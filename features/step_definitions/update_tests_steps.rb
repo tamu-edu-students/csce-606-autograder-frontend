@@ -24,6 +24,15 @@ Given(/^I am logged in as an instructor$/) do
     @test_case = TestCase.create!(assignment: @assignment, type: type, name: "#{type}_test")
   end
 
+  When('I view the test') do
+    visit assignment_path(@assignment, test_id: @test_case.id)
+  end
+
+  Then('I should see the test type as a read-only text field') do
+    # Check that the test type is displayed as a read-only text field and not as a dropdown
+    expect(page).to have_field('Test type', readonly: true)
+  end
+
   When(/^I update the test case with valid input$/) do
     # Navigate to the assignment management page (the show page with the form)
     visit  assignment_path(@assignment, test_id: @test_case.id)

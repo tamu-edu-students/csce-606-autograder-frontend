@@ -13,22 +13,25 @@
         <%= form.number_field :points, class:"form-control" %>
     </div>
     <div class = "form-group">
-      <%= form.label :test_type %>
-      <%= form.select :test_type, 
-                      options_for_select([['coverage', 'coverage'], 
-                                          ['compile', 'compile'], 
-                                          ['approved_includes', 'approved_includes'], 
-                                          ['memory_errors', 'memory_errors'], 
-                                 ['unit', 'unit'], 
-                                          ['i_o', 'i_o'], 
-                                          ['performance', 'performance'], 
-                                          ['script', 'script']], 
-                                         @test.test_type), 
-                        { include_blank: 'Please select a test type' },
-                      onchange: "loadTestPartial(this.value)", 
-                      class: "form-control" %>
+    <%= form.label :test_type %>
+        <% if @test.persisted? %>
+        <%= form.text_field :test_type, class: "form-control", readonly: true %>
+        <% else %>
+        <%= form.select :test_type, options_for_select(
+            [['coverage', 'coverage'],
+            ['compile', 'compile'],
+            ['approved_includes', 'approved_includes'],
+            ['memory_errors', 'memory_errors'],
+            ['unit', 'unit'],
+            ['i_o', 'i_o'],
+            ['performance', 'performance'],
+            ['script', 'script']],
+            @test.test_type),
+            { include_blank: 'Please select a test type' },
+            onchange: "loadTestPartial(this.value)",
+            class: "form-control" %>
+        <% end %>
     </div>
-
     <div class = "form-group">
       <%= form.label :target %>
     <%= form.text_field :target, class:"form-control" %>
