@@ -3,11 +3,17 @@ require 'rspec/mocks'
 Before do
   RSpec::Mocks.setup
   allow_any_instance_of(Assignment).to receive(:push_changes_to_github)
-  allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return(
-    [ User.create!(name: 'Test User', email: 'test@example.com'), 'fake_github_token' ]
+
+  allow_any_instance_of(Assignment).to receive(:fetch_directory_structure).and_return(
+    [
+      { name: ".gitignore", type: "file" },
+      { name: "README.md", type: "file" },
+      { name: "tests", type: "directory", children: [
+        { name: "unit_test.cpp", type: "file" }
+      ]}
+    ]
   )
 
-  # Simulate login by setting session and current_user
   @current_user = User.create!(name: 'sam', email: 'sam@example.com', role: 'instructor')
   page.set_rack_session(user_id: @current_user.id)
 end
