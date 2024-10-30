@@ -10,22 +10,22 @@
   <table id="assignments-table" class="assignments-table">
     <thead>
       <tr>
-        <th onclick="sortTable(0)">Repository Name <span id="arrow-0">&#x25B2;</span></th>
-        <th onclick="sortTable(1)">Created On <span id="arrow-1">&#x25B2;</span></th>
-        <th onclick="sortTable(2)">Last Updated <span id="arrow-2">&#x25B2;</span></th>
+        <th class="text-left" onclick="sortTable(0)">Assignment Name<span id="arrow-0">&#x25B2;</span></th>
+        <th class="text-left" onclick="sortTable(1)">Created On<span id="arrow-1">&#x25B2;</span></th>
+        <th class="text-left" onclick="sortTable(2)">Last Updated<span id="arrow-2">&#x25B2;</span></th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% @assignments.each do |assignment| %>
         <tr>
-          <td>
+          <td class="text-left"> 
             <%= link_to assignment.repository_name, assignment_path(assignment), class: "btn-link" %>
           </td>
-          <td><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
-          <td><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
+          <td class="text-left"><%= assignment.created_at.strftime("%m-%d-%Y %H:%M") %></td>
+          <td class="text-left"><%= assignment.updated_at.strftime("%m-%d-%Y %H:%M") %></td>
           <td>
-            <%= link_to 'Export to GradeScope', create_and_download_zip_assignment_path(assignment), class: "btn btn-success" %>
+            <%= link_to 'Export to Gradescope', create_and_download_zip_assignment_path(assignment), class: "btn btn-success" %>
             <%= link_to 'Manage Access', users_assignment_path(assignment), class: "btn btn-secondary" %>
           </td>
         </tr>
@@ -56,7 +56,7 @@
     // Set correct arrow for the clicked column and highlight it
     document.getElementById(`arrow-${n}`).innerHTML = dir === "asc" ? "&#x25B2;" : "&#x25BC;";
     Array.from(table.rows).forEach(row => row.cells[n].classList.add("highlight-column"));
-
+    
     while (switching) {
       switching = false;
       rows = table.rows;
