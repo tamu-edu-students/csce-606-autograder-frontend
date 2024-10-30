@@ -15,7 +15,7 @@ Feature: Create a new test case
     Scenario: Tests with unknown type
         When I create a new test with type "invalid"
         Then I should see an error message saying "Unknown test type: invalid"
-    
+    @javascript
     Scenario: Test has required attributes
         When I create a new test with type "<type>"
         And with the name "<name>"

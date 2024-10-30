@@ -11,12 +11,12 @@ end
 
 When('I create a new test with type {string}') do |type|
   click_link('Add new test')
-
   if type.nil? || type.empty?
     # Simulate error for missing type
     page.find('body').native.inner_html += "<p class='error'>Missing attribute: type</p>"
   elsif page.has_select?('Test type', with_options: [ type ])
     select type, from: 'Test type'
+    puts 'successfully select'
   else
     # Simulate error for invalid test type
     page.find('body').native.inner_html += "<p class='error'>Unknown test type: #{type}</p>"
@@ -24,8 +24,13 @@ When('I create a new test with type {string}') do |type|
 end
 
 Then('I should see the {string} dynamic test block partial') do |type|
+
+  # # can see the right partial rendered in the bottom
+  # save_and_open_page
+
   case type
   when 'approved_includes'
+    puts 'type appinclu'
     within('#approved-includes-container') do
     expect(page).to have_selector("input[name='test[test_block][approved_includes][]']", visible: true)
     expect(page).to have_button("Add Approved Includes")

@@ -25,6 +25,12 @@ require 'selenium-webdriver'
 
 Capybara.javascript_driver = :selenium_chrome
 
+Before('@javascript') do
+  # Set the browser window size to a larger resolution for full-page screenshots
+  page.driver.browser.manage.window.resize_to(5000, 5000) # Adjust width and height as needed
+end
+
+
 WebMock.disable_net_connect!(allow_localhost: true)
 
 # By default, any exception happening in your Rails application will bubble up
