@@ -115,22 +115,6 @@ class Assignment < ActiveRecord::Base
     end
   end
 
-  def upload_file_to_repo(file, path, github_token)
-    client = Octokit::Client.new(access_token: github_token)
-    repo = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
-    file_content = file.read
-
-    testsPath = "tests"
-    full_path = "#{testsPath}/#{path}/#{file.original_filename}"
-
-    begin
-      client.create_contents(repo, full_path, "Upload #{file.original_filename}", file_content)
-      true
-    rescue Octokit::Error => e
-      Rails.logger.error "GitHub API Error: #{e.message}"
-      false
-    end
-  end
 
   private
 
