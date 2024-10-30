@@ -126,13 +126,30 @@ class TestsController < ApplicationController
     @test_grouping = TestGrouping.find(params[:test_grouping_id])
     @test = Test.find(params[:id])
     puts "Update points action called with #{@assignment}, #{@test_grouping}, #{@test}"
-    respond_to do |format|
-      if @test.update(test_params)
-        format.js # This will render update_points.js.erb
-      else
-        format.js { render :edit_points }
+
+    if @test.update(test_params)
+      # Call the update_remote function here
+      current_user, auth_token = current_user_and_token
+      update_remote(current_user, auth_token)
+  
+      respond_to do |format|
+        format.html { redirect_to assignment_path(@assignment), notice: 'Test points updated successfully.' }
+        format.json { render json: { success: true, points: @test.points } }
+      end
+    else
+      respond_to do |format|
+        format.html { render :edit_points }
+        format.json { render json: { success: false, error: @test.errors.full_messages.join(', ') } }
       end
     end
+
+    # respond_to do |format|
+    #   if @test.update(test_params)
+    #     format.js # This will render update_points.js.erb
+    #   else
+    #     format.js { render :edit_points }
+    #   end
+    # end
   end
 
   private

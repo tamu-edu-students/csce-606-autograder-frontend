@@ -67,54 +67,15 @@ if (testCard) {
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
         },
         credentials: 'same-origin'
-      }).then(response => response.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          const scripts = doc.querySelectorAll('script');
-          scripts.forEach(script => {
-            eval(script.innerText);
-          });
+      }).then(response => {
+          if (response.ok) {
+            console.log('Update successful, reloading page');
+            window.location.reload();
+          } else {
+            console.error('Update failed');
+          }
         })
         .catch(error => console.error('Error:', error));
     });
   }
-
-  // Update the test form if it's open
-  var testForm = document.getElementById('test-form');
-  console.log('Test form found:', !!testForm);
-
-  if (testForm) {
-    var nameInput = testForm.querySelector('input[name="test[name]"]');
-    var pointsInput = testForm.querySelector('input[name="test[points]"]');
-
-    console.log('Name input found:', !!nameInput);
-    console.log('Points input found:', !!pointsInput);
-
-
-    if (nameInput && pointsInput) {
-      console.log('Current form test name:', nameInput.value);
-      console.log('Current test name:', '<%= @test.name %>');
-
-    // var testIdInput = testForm.querySelector('input[name="test[id]"]');
-    // console.log(testIdInput)
-    // if (testIdInput && testIdInput.value == '<%= @test.id %>') {
-      
-      if (nameInput.value === '<%= @test.name %>') {
-        pointsInput.value = '<%= @test.points %>';
-        console.log('Test form points updated to:', pointsInput.value);
-        //pointsInput.classList.add('highlight');
-        //console.log('Test form points updated');
-      } else {
-        console.error('Points input not found in test form');
-      }
-    } else {
-      console.log('Test form is not for the current test');
-    }
-  } else {
-    console.log('Test form not found on page');
-  }
-
-} else {
-  console.error('Test card not found for test ID:', <%= @test.id %>);
 }
