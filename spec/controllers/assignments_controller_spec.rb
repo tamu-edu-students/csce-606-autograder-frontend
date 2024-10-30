@@ -43,7 +43,6 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'GET #show' do
-
     it 'assigns @test to the selected test' do
       allow(controller).to receive(:build_complete_tree).and_return([])
       get :show, params: { id: assignment.id, test_id: specific_test.id }
@@ -408,9 +407,8 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'build complete tree' do
-
     describe 'when fetching directory contents is successful' do
-      let(:directory_contents) { ['file1.cpp', 'file2.cpp'] }
+      let(:directory_contents) { [ 'file1.cpp', 'file2.cpp' ] }
 
       before do
         allow(controller).to receive(:fetch_directory_contents).and_return(directory_contents)
@@ -469,8 +467,8 @@ RSpec.describe AssignmentsController, type: :controller do
     end
 
     before do
-      allow(client).to receive(:contents).with(repo, path: path).and_return([file_item, dir_item])
-      allow(client).to receive(:contents).with(repo, path: 'root/dir1').and_return([nested_file_item])
+      allow(client).to receive(:contents).with(repo, path: path).and_return([ file_item, dir_item ])
+      allow(client).to receive(:contents).with(repo, path: 'root/dir1').and_return([ nested_file_item ])
     end
 
     it 'returns directory contents with nested structure for directories' do
