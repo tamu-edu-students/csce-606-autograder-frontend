@@ -5,4 +5,6 @@
     expect(page).to have_selector(".file-tree")
   end
   
-  
+  Then("I should see a directory dropdown displayed") do
+    expect(page).to have_selector(".folder-name[onclick='toggleFolder(this)']")
+  end
