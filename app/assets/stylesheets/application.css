@@ -13,7 +13,7 @@
  *= require_tree .
  *= require_self
  */
- 
+
  .button-container {
     display: flex;
     justify-content: center;
@@ -28,45 +28,39 @@
     min-height: 80vh;
     text-align: center;
   }
-  
+
   .assignment-container h1 {
     margin-bottom: 20px;
   }
-  
+
   .assignment-container form {
     width: 100%;
     max-width: 400px;
   }
-  
+
   .assignment-container .btn {
     margin-top: 20px;
   }
-  
+
 /* Styles for the form and submit button */
 form {
     display: flex;
-    flex-direction: column;
     align-items: center;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
     width: 100%;
-    max-width: 400px;
   }
-  
+
   input.form-control {
     border-radius: 50px;
     padding: 10px;
     font-size: 1.1rem;
     text-align: center;
   }
-  
+
   input::placeholder {
     color: #999;
     text-align: center;
   }
-  
+
   .btn-block {
     width: 100%;
     max-width: 200px;
@@ -74,7 +68,7 @@ form {
     padding: 10px;
     font-size: 1.1rem;
   }
-  
+
   /* New CSS for back button positioning */
   .back-button-container {
     position: absolute;
@@ -89,7 +83,7 @@ form {
   .container {
     position: relative;
   }
-  
+
   .assignments-wrapper {
     display: flex;
     flex-direction: column;
@@ -98,11 +92,11 @@ form {
     text-align: center;
     margin: 20px auto;
   }
-  
+
   .assignments-wrapper h1 {
     margin-bottom: 20px;
   }
-  
+
   .assignment-item {
     background-color: #f9f9f9;
     border-radius: 10px;
@@ -112,35 +106,39 @@ form {
     width: 100%;
     max-width: 600px;
   }
-  
+
   .assignment-item p {
     margin-bottom: 10px;
   }
-  
+
   .assignment-item .btn {
     margin-top: 10px;
   }
-  
+
   .create-assignment-btn {
     margin-top: 30px;
     align-items: center;
   }
-  
-  /* General form styles */
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+
+  .static-test-info {
+    height: 50%;
   }
-  
+
+  .includes {
+    height: 75%;
+    flex-grow: 1;
+  }
+
+  /* General form styles */
+
   .form-group {
+    padding: 0 15px;
     margin-bottom: 15px;
     width: 100%;
+    align-items: center;
+    justify-content: center;
   }
-  
+
   /* Style for input fields */
   input[type="text"],
   input[type="number"],
@@ -156,7 +154,7 @@ form {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     transition: border-color 0.3s ease;
   }
-  
+
   input[type="text"]:focus,
   input[type="number"]:focus,
   textarea:focus,
@@ -164,7 +162,7 @@ form {
     outline: none;
     border-color: #3498db;
   }
-  
+
   /* Style for dropdown */
   select {
     border: 2px solid #3498db;
@@ -177,13 +175,13 @@ form {
     background-size: 15px;
 }
 
-  
+
   /* Style for checkbox */
   input[type="checkbox"] {
     transform: scale(1.2);
     margin-right: 10px;
   }
-  
+
   /* Style for labels */
   label {
     font-weight: bold;
@@ -193,7 +191,7 @@ form {
     width: 100%;
     max-width: 400px;
   }
-  
+
   /* Custom button style */
   button {
     background-color: #3498db;
@@ -205,7 +203,7 @@ form {
     border-radius: 25px;
     transition: background-color 0.3s ease;
   }
-  
+
   button:hover,
   button:focus {
     background-color: #2980b9;
@@ -215,7 +213,7 @@ form {
   body {
     padding-top: 0;
   }
-  
+
 
   /* Edit button styling */
 .edit-btn {
@@ -223,17 +221,17 @@ form {
   padding: 5px 10px;
   font-size: 14px;
   color: #fff;
-  background-color: #3498db; 
+  background-color: #3498db;
   border: none;
-  border-radius: 20px; 
+  border-radius: 20px;
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
 }
 
 .edit-btn:hover {
-  background-color: #2980b9; 
-  transform: scale(1.05); 
+  background-color: #2980b9;
+  transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -310,13 +308,6 @@ form {
 
 .btn {
   margin-right: 10px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center the form elements */
-  margin-bottom: 20px;
 }
 
 h1 {
