@@ -43,7 +43,7 @@ Then('I should see the {string} dynamic test block partial') do |type|
     within('#memory-errors-container') do
       expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
     end
-    expect(page).to have_button("Add Compile Path")
+    expect(page).to have_button("Add Memory Errors Path")
   when 'i_o'
     expect(page).to have_selector("input[name='test[test_block][input_path]']", visible: true)
     expect(page).to have_selector("input[name='test[test_block][output_path]']", visible: true)
