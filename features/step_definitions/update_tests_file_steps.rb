@@ -10,7 +10,7 @@ Before do
       { name: "README.md", type: "file" },
       { name: "tests", type: "directory", children: [
         { name: "unit_test.cpp", type: "file" }
-      ]}
+      ] }
     ]
   )
 
