@@ -52,8 +52,11 @@
       <!-- Link to add a new test -->
       <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
       <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
-
-    </div>
+      
+      <%= render 'file_tree' %>
+      
+      
+      </div>
 
     <div id = 'test-details' class="col-md-6">
       <!-- Form to create or edit a test -->
@@ -65,3 +68,5 @@
     </div>
   </div>
 </div>
+
+
