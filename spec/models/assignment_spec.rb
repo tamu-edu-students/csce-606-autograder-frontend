@@ -362,9 +362,62 @@ RSpec.describe Assignment, type: :model do
 
     it 'logs an error and returns an empty array if a GitHub API error occurs' do
       allow(client).to receive(:contents).with(repo_path, path: 'tests').and_raise(Octokit::Error.new({ message: "GitHub API Error" }))
-
+      
       expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
       expect(assignment.fetch_directory_structure(github_token)).to eq([])
     end
   end
+
+
+  describe '#upload_file_to_repo' do
+    let(:file) { fixture_file_upload('spec/fixtures/test_file.txt', 'text/plain') }
+    let(:github_token) { 'test_github_token' }
+    let(:path) { 'folder1' }
+    let(:client) { instance_double(Octokit::Client) }
+    let(:repo_name) { "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{assignment.repository_name}" }
+    let(:file_content) { 'Test file content' }
+
+    before do
+      allow(Octokit::Client).to receive(:new).and_return(client)
+      allow(file).to receive(:read).and_return(file_content)
+    end
+
+    context 'when the file upload is successful' do
+      before do
+        allow(client).to receive(:create_contents).with(
+          repo_name,
+          "tests/#{path}/#{file.original_filename}",
+          "Upload #{file.original_filename}",
+          file_content
+        ).and_return(success: true)
+      end
+
+      it 'uploads the file to the specified path in the GitHub repo' do
+        expect(assignment.upload_file_to_repo(file, path, github_token)).to be true
+      end
+    end
+
+    context 'when file or path parameters are missing' do
+      it 'returns false if file is missing' do
+        expect(assignment.upload_file_to_repo(nil, path, github_token)).to be false
+      end
+
+      it 'returns false if path is missing' do
+        expect(assignment.upload_file_to_repo(file, nil, github_token)).to be false
+      end
+    end
+
+    context 'when a GitHub API error occurs' do
+      before do
+        allow(client).to receive(:create_contents).and_raise(Octokit::Error.new(message: 'GitHub API Error'))
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'logs the error and returns false' do
+        expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
+        expect(assignment.upload_file_to_repo(file, path, github_token)).to be false
+      end
+    end
+  end
+
 end
