@@ -1,6 +1,6 @@
 import { Application } from "@hotwired/stimulus"
 import TestGroupingCardController from "../controllers/test_grouping_card_controller"
-import "../views/assignments/show"
+// import "../views/assignments/show"
 const application = Application.start()
 
 // Register the test_grouping_card controller
