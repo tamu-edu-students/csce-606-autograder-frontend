@@ -91,7 +91,7 @@ Given('I add the {string} dynamic text block field') do |test_type|
     fill_in 'Enter Output Path', with: 'output'
   when 'memory_errors'
     fill_in 'Enter Memory Errors Path', with: 'file1'
-    click_button 'Add Compile Path'
+    click_button 'Add Memory Errors Path'
     fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
   when 'script'
     fill_in 'Enter Script Path', with: 'script'
