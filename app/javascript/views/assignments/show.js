@@ -40,7 +40,7 @@
     }
   }
 
-  function addMemoryerrorsPathField() {
+  function addMemoryErrorsPathField() {
     console.log("Add Memory errors Path button clicked");
     const container = document.getElementById('memory-errors-container');
     if (container) {
@@ -75,5 +75,5 @@
   window.loadTestPartial = loadTestPartial;
   window.addSourcePathField = addSourcePathField;
   window.addCompilePathField = addCompilePathField;
-  window.addMemoryerrorsPathField = addMemoryerrorsPathField;
+  window.addMemoryErrorsPathField = addMemoryErrorsPathField;
   window.addApprovedIncludesField = addApprovedIncludesField;
