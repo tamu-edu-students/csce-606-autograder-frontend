@@ -55,7 +55,7 @@ RSpec.describe AssignmentsController, type: :controller do
     before do
       allow(Octokit::Client).to receive(:new).and_return(client_double)
       allow(client_double).to receive(:contents).with("AutograderFrontend/#{assignment.repository_name}", path: "tests")
-                                              .and_return([{ name: "test_file.txt", type: "file" }])
+                                              .and_return([ { name: "test_file.txt", type: "file" } ])
       allow(assignment).to receive(:fetch_directory_structure).with(mock_github_token).and_return(directory_structure)
     end
 
@@ -446,7 +446,7 @@ RSpec.describe AssignmentsController, type: :controller do
 
     context 'when file or path parameters are missing' do
       let(:invalid_params) { { id: assignment.id, file: nil, path: nil } }  # Ensure `file` is nil
-    
+
       it 'returns an error response with JSON' do
         post :upload_file, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
@@ -454,5 +454,4 @@ RSpec.describe AssignmentsController, type: :controller do
       end
     end
   end
-
 end

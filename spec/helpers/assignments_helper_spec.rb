@@ -8,8 +8,8 @@ RSpec.describe AssignmentsHelper, type: :helper do
           { name: 'file1.txt', type: 'file' },
           { name: 'subfolder1', type: 'directory', children: [
             { name: 'file2.txt', type: 'file' }
-          ]}
-        ]},
+          ] }
+        ] },
         { name: 'file3.txt', type: 'file' }
       ]
     end
@@ -39,7 +39,7 @@ RSpec.describe AssignmentsHelper, type: :helper do
 
     it 'does not render an upload icon for files' do
       result = helper.render_file_tree(file_tree)
-      
+
       expect(result).not_to include('openFileUpload(this, "folder1/file1.txt")')
       expect(result).not_to include('openFileUpload(this, "folder1/subfolder1/file2.txt")')
     end
@@ -55,8 +55,8 @@ RSpec.describe AssignmentsHelper, type: :helper do
         { name: 'outer_folder', type: 'directory', children: [
           { name: 'inner_folder', type: 'directory', children: [
             { name: 'deep_file.txt', type: 'file' }
-          ]}
-        ]}
+          ] }
+        ] }
       ]
       result = helper.render_file_tree(nested_tree)
 

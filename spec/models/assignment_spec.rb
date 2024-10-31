@@ -362,7 +362,7 @@ RSpec.describe Assignment, type: :model do
 
     it 'logs an error and returns an empty array if a GitHub API error occurs' do
       allow(client).to receive(:contents).with(repo_path, path: 'tests').and_raise(Octokit::Error.new({ message: "GitHub API Error" }))
-      
+
       expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
       expect(assignment.fetch_directory_structure(github_token)).to eq([])
     end
@@ -419,5 +419,4 @@ RSpec.describe Assignment, type: :model do
       end
     end
   end
-
 end
