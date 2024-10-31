@@ -22,7 +22,7 @@ Feature: Create a new test case
         And with the name "<name>"
         And with the points "<points>"
         And with the target "<target>"
-        And I should see the "<type>" dynamic test block partial
+        Then I should see the "<type>" dynamic test block partial
         And I add the "<type>" dynamic text block field
         And I click the "Create Test" button
         And I should see a message saying "Test was successfully created"
@@ -44,7 +44,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
-      And I should see the "<type>" dynamic test block partial
+      Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button
       And I should see a message saying "Test was successfully created"
@@ -61,7 +61,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
-      And I should see the "<type>" dynamic test block partial
+      Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: target"
@@ -80,7 +80,7 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And with the target "<target>"
-      And I should see the "<type>" dynamic test block partial
+      Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute>"
@@ -98,7 +98,7 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And with the target "<target>"
-      And I should see the "<type>" dynamic test block partial
+      Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute1>, <attribute2>"
@@ -125,7 +125,7 @@ Feature: Create a new test case
       And with the name "test0"
       And with the points "10"
       And with the target "target1.cpp"
-      And I should see the "unit" dynamic test block partial
+      Then I should see the "unit" dynamic test block partial
       And I add the "unit" dynamic text block field
       And I click the "Create Test" button
       Then I should not see an error message saying "Test name must be unique"
@@ -136,7 +136,7 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
-      And I should see the "unit" dynamic test block partial
+      Then I should see the "unit" dynamic test block partial
       And I add the "unit" dynamic text block field
       And I click the "Create Test" button
 
@@ -144,7 +144,7 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
-      And I should see the "unit" dynamic test block partial
+      Then I should see the "unit" dynamic test block partial
       And I add the "unit" dynamic text block field
       And I click the "Create Test" button
       Then I should see an error message saying "Test name must be unique"
@@ -164,7 +164,7 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
-      And I should see the "<type>" dynamic test block partial
+      Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button
       Then the test block should contain the fields "<fields>"
@@ -195,7 +195,7 @@ Feature: Create a new test case
       And I create a new test with type "script"
       And with the name "test1"
       And with the points "10"
-      And I should see the "script" dynamic test block partial
+      Then I should see the "script" dynamic test block partial
       And I add the dynamic text block field with "<script>"
       And I click the "Create Test" button
       And I should see a message saying "Test was successfully created"
@@ -210,7 +210,7 @@ Feature: Create a new test case
       And I create a new test with type "script"
       And with the name "test1"
       And with the points "10"
-      And I should see the "script" dynamic test block partial
+      Then I should see the "script" dynamic test block partial
       And the field is empty
       When I click the "Create Test" button
       And I should not see the test added to the list of tests in assignment1
