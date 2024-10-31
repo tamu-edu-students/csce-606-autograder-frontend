@@ -19,6 +19,8 @@ class AssignmentsController < ApplicationController
     @test_groupings = @assignment.test_groupings.includes(:tests)
     @test = Test.find(params[:test_id]) if params[:test_id]  # If a specific test is selected
     @test ||= Test.new(assignment: @assignment)  # Default to a new test if no test is selected
+    github_token = session[:github_token]
+    @directory_structure = @assignment.fetch_directory_structure(github_token)
   end
 
   # GET /assignments/new

@@ -20,6 +20,9 @@ Rails.application.routes.draw do
       get "users"
       get "create_and_download_zip"
     end
+    member do
+      get :directory_structure
+    end
   end
 
   get "test_groupings/find_by_position", to: "test_groupings#find_by_position"
