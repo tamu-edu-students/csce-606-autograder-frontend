@@ -13,14 +13,14 @@
 
   <div class="field">
     <%= form.label :test_type %>
-    <%= form.select :test_type, options_for_select([['Approved Includes', 'approved_includes'], 
-                                                    ['Compile', 'compile'], 
-                                                    ['Coverage', 'coverage'], 
-                                                    ['I/O', 'i_o'], 
-                                                    ['Memory Errors', 'memory_errors'], 
-                                                    ['Performance', 'performance'], 
-                                                    ['Script', 'script'],
-                                                    ['Unit', 'unit']], @test.test_type) %>
+    <%= form.select :test_type, options_for_select([['approved_includes', 'approved_includes'], 
+                                                    ['compile', 'compile'], 
+                                                    ['coverage', 'coverage'], 
+                                                    ['i_o', 'i_o'], 
+                                                    ['memory_errors', 'memory_errors'], 
+                                                    ['performance', 'performance'], 
+                                                    ['script', 'script'],
+                                                    ['unit', 'unit']], @test.test_type) %>
   </div>
 
   <div class="field">
