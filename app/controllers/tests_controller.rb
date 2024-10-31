@@ -131,7 +131,7 @@ class TestsController < ApplicationController
     if @test.update(test_params)
       # Call the update_remote function here
       current_user, auth_token = current_user_and_token
-      #update_remote(current_user, auth_token)
+      update_remote(current_user, auth_token)
 
       respond_to do |format|
         format.html { redirect_to assignment_path(@assignment), notice: "Test points updated successfully." }

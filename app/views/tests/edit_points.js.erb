@@ -20,7 +20,7 @@ if (testCard) {
   container.innerHTML = `
     <div class="edit-form">
       <strong><%= @test.name %></strong>
-      <%= form_with model: [@assignment, @test_grouping, @test], url: update_points_assignment_test_grouping_test_path(@assignment, @test_grouping, @test), method: :patch, local: false do |form| %>
+      <%= form_with model: [@assignment, @test_grouping, @test], url: update_points_assignment_test_grouping_test_path(@assignment, @test_grouping, @test), method: :post, local: false do |form| %>
         <div class="form-group">
           <%= form.label :points, "Points:" %>
           <%= form.number_field :points, value: @test.points, class: "form-control d-inline", min: 0, style: "width: 80px;" %>
@@ -60,7 +60,7 @@ if (testCard) {
       e.preventDefault();
       var formData = new FormData(form);
       fetch(form.action, {
-        method: 'PATCH',
+        method: 'POST',
         body: formData,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',

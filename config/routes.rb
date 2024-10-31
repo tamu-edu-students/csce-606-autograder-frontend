@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       resources :tests do
         member do
           get :edit_points
-          patch :update_points
+          post :update_points
         end
       end
     end
