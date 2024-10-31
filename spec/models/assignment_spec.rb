@@ -324,6 +324,48 @@ RSpec.describe Assignment, type: :model do
     end
   end
 
-  
+  describe '#fetch_directory_structure' do
+    let(:github_token) { 'test_github_token' }
+    let(:assignment) { Assignment.new(assignment_name: 'Test Assignment', repository_name: repository_name) }
+    let(:client) { instance_double(Octokit::Client) }
+    let(:organization) { 'AutograderFrontend' }
+    let(:repository_name) { 'test_repo' }
+    let(:repo_path) { "#{organization}/#{repository_name}" }
+    let(:directory_content) do
+      [
+        { type: 'dir', name: 'folder1', path: 'tests/folder1' },
+        { type: 'file', name: 'file1.txt', path: 'tests/file1.txt' }
+      ]
+    end
+    let(:folder1_content) do
+      [
+        { type: 'file', name: 'file2.txt', path: 'tests/folder1/file2.txt' }
+      ]
+    end
+
+    before do
+      allow(Octokit::Client).to receive(:new).and_return(client)
+      # Stub for the root 'tests' directory
+      allow(client).to receive(:contents).with(repo_path, path: 'tests').and_return(directory_content)
+      # Stub for the 'tests/folder1' directory, to handle recursion in build_file_tree
+      allow(client).to receive(:contents).with(repo_path, path: 'tests/folder1').and_return(folder1_content)
+    end
+
+    it 'returns the file tree structure for the tests directory' do
+      result = assignment.fetch_directory_structure(github_token)
+      expect(result).to be_an(Array)
+      expect(result.first[:name]).to eq('folder1')
+      expect(result.first[:type]).to eq('directory')
+      expect(result.first[:children].first[:name]).to eq('file2.txt')
+      expect(result.first[:children].first[:type]).to eq('file')
+    end
+
+    it 'logs an error and returns an empty array if a GitHub API error occurs' do
+      allow(client).to receive(:contents).with(repo_path, path: 'tests').and_raise(Octokit::Error.new({ message: "GitHub API Error" }))
+      
+      expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
+      expect(assignment.fetch_directory_structure(github_token)).to eq([])
+    end
+  end
 
 end
