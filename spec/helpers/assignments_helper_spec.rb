@@ -18,10 +18,9 @@ RSpec.describe AssignmentsHelper, type: :helper do
       expect(helper.render_file_tree(nil)).to eq('')
     end
 
-    it 'renders the file tree structure with directories and files' do
+    it 'renders the main file tree structure with directories and files' do
       result = helper.render_file_tree(file_tree)
 
-      # Basic structure
       expect(result).to include('<ul class="file-tree">')
       expect(result).to include('<li class="folder">')
       expect(result).to include('<span class="folder-name" onclick="toggleFolder(this)">folder1</span>')
@@ -60,8 +59,31 @@ RSpec.describe AssignmentsHelper, type: :helper do
       ]
       result = helper.render_file_tree(nested_tree)
 
-      # Check paths for deeply nested structures, using double quotes
+      expect(result).to include('<span class="folder-name" onclick="toggleFolder(this)">outer_folder</span>')
+      expect(result).to include('<span class="folder-name" onclick="toggleFolder(this)">inner_folder</span>')
       expect(result).to include('<span class="file-name">deep_file.txt</span>')
+    end
+  end
+
+  describe 'individual helper methods' do
+    it 'builds full path correctly' do
+      expect(helper.send(:build_full_path, 'folder', 'file.txt')).to eq('folder/file.txt')
+      expect(helper.send(:build_full_path, '', 'file.txt')).to eq('file.txt')
+    end
+
+    it 'renders folder name with correct structure' do
+      result = helper.send(:render_folder_name, 'TestFolder')
+      expect(result).to eq('<span class="folder-name" onclick="toggleFolder(this)">TestFolder</span>')
+    end
+
+    it 'renders upload icon with correct path' do
+      result = helper.send(:render_upload_icon, 'TestFolder')
+      expect(result).to include('openFileUpload')
+    end
+
+    it 'renders hidden file upload input' do
+      result = helper.send(:hidden_file_upload_input)
+      expect(result).to eq("<input type=\"file\" id=\"fileUploadInput\" style=\"display: none;\" onchange=\"uploadFile(this)\"></input>")
     end
   end
 end

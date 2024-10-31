@@ -7,8 +7,6 @@ Feature: File browser
     Given the following assignments exist:
         | assignment_name | repository_name   |
         | assignment1     | assignment1       |
-        | assignment2     | assignment2       |
-        | assignment3     | assignment3       |
     
     
   Scenario: File tree directory is present for the selected assignment
