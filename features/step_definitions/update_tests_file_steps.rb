@@ -73,7 +73,6 @@ When('I fill in the {string} test block with {string}') do |test_type, test|
   else
     raise "Unknown test type: #{test_type}"
   end
-
 end
 
 Then('I should see a success message') do
@@ -123,7 +122,7 @@ Given('the assignment contains {string} tests') do |string|
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);' 
+    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
     click_button "Create Test"
   end
 end

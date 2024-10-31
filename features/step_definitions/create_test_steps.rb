@@ -24,13 +24,12 @@ When('I create a new test with type {string}') do |type|
 end
 
 Then('I should see the {string} dynamic test block partial') do |type|
-
   # # can see the right partial rendered in the bottom
   # save_and_open_page
 
   case type
   when 'approved_includes'
-    #puts 'type appinclu'
+    # puts 'type appinclu'
     within('#approved-includes-container') do
       expect(page).to have_selector("input[name='test[test_block][approved_includes][]']", visible: true)
     end
@@ -66,7 +65,7 @@ Then('I should see the {string} dynamic test block partial') do |type|
   end
 end
 
-#this need to be changed into add dynamic test block field
+# this need to be changed into add dynamic test block field
 Given('I add the {string} dynamic text block field') do |test_type|
   case test_type
   when 'approved_includes'
@@ -79,7 +78,7 @@ Given('I add the {string} dynamic text block field') do |test_type|
     fill_in 'Enter Compile Path', with: 'file2', match: :first
   when 'coverage'
     fill_in 'Enter Main Path', with: 'main'
-    
+
     fill_in 'Enter Source Path', with: 'source1'
     click_button 'Add Source Path'
     fill_in 'Enter Source Path', with: 'source2', match: :first

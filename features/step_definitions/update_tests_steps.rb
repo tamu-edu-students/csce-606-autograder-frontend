@@ -12,14 +12,14 @@ Given(/^I am logged in as an instructor$/) do
     fill_in 'Target', with: 'target.cpp'
     steps %(And I add the "#{test_type}" dynamic text block field)
     click_button "Create Test"
-    
+
     Capybara.default_max_wait_time = 10
     # Wait for the success message to ensure the test case is created
     expect(page).to have_content("Test was successfully created")
 
     @assignment.reload
     @test_case = @assignment.tests.last
-    puts "Test Case ID: #{@test_case&.id}" 
+    puts "Test Case ID: #{@test_case&.id}"
   end
 
   Given(/^I have created an assignment with a test case of type "(.*)"$/) do |type|
@@ -51,12 +51,11 @@ Given(/^I am logged in as an instructor$/) do
 
   Then(/^I should see the updated test case in the assignment$/) do
     visit  assignment_path(@assignment, test_id: @test_case.id)
-    #save_and_open_page
-    
+    # save_and_open_page
+
     expect(page).to have_field('Name', with: @test_case.name)
     expect(page).to have_select('Test type', selected: 'i_o')
     expect(page).to have_field('Points', with: '10.0')
-    
   end
 
   Then('I should not see the test case in the assignment') do
