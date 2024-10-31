@@ -1,93 +1,93 @@
-<%= form_with(model: test) do |form| %>
-  <% if flash[:alert] %>
-    <div class="alert alert-danger">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
+# <%= form_with(model: test) do |form| %>
+#   <% if flash[:alert] %>
+#     <div class="alert alert-danger">
+#       <%= flash[:alert] %>
+#     </div>
+#   <% end %>
 
-  <% if test.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(test.errors.count, "error") %> prohibited this test from being saved:</h2>
+#   <% if test.errors.any? %>
+#     <div style="color: red">
+#       <h2><%= pluralize(test.errors.count, "error") %> prohibited this test from being saved:</h2>
 
-      <ul>
-        <% test.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+#       <ul>
+#         <% test.errors.each do |error| %>
+#           <li><%= error.full_message %></li>
+#         <% end %>
+#       </ul>
+#     </div>
+#   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
+#   <div>
+#     <%= form.label :name, style: "display: block" %>
+#     <%= form.text_field :name %>
+#   </div>
 
-  <div>
-    <%= form.label :points, style: "display: block" %>
-    <%= form.text_field :points %>
-  </div>
+#   <div>
+#     <%= form.label :points, style: "display: block" %>
+#     <%= form.text_field :points %>
+#   </div>
 
-  <div class="field">
-    <%= form.label :test_type %>
-    <%= form.select :test_type, options_for_select([['approved_includes', 'approved_includes'], 
-                                                    ['compile', 'compile'], 
-                                                    ['coverage', 'coverage'], 
-                                                    ['i_o', 'i_o'], 
-                                                    ['memory_errors', 'memory_errors'], 
-                                                    ['performance', 'performance'], 
-                                                    ['script', 'script'],
-                                                    ['unit', 'unit']], @test.test_type) %>
-  </div>
+#   <div class="field">
+#     <%= form.label :test_type %>
+#     <%= form.select :test_type, options_for_select([['approved_includes', 'approved_includes'], 
+#                                                     ['compile', 'compile'], 
+#                                                     ['coverage', 'coverage'], 
+#                                                     ['i_o', 'i_o'], 
+#                                                     ['memory_errors', 'memory_errors'], 
+#                                                     ['performance', 'performance'], 
+#                                                     ['script', 'script'],
+#                                                     ['unit', 'unit']], @test.test_type) %>
+#   </div>
 
-  <div class="field">
-    <%= form.label :target, "Upload File" %>
-    <%= form.file_field :target %>
-  </div>
+#   <div class="field">
+#     <%= form.label :target, "Upload File" %>
+#     <%= form.file_field :target %>
+#   </div>
 
-  <div>
-    <%= form.label :include, style: "display: block" %>
-    <%= form.text_area :include %>
-  </div>
+#   <div>
+#     <%= form.label :include, style: "display: block" %>
+#     <%= form.text_area :include %>
+#   </div>
 
-  <div>
-    <%= form.label :position, style: "display: block" %>
-    <%= form.text_field :position %>
-  </div>
+#   <div>
+#     <%= form.label :position, style: "display: block" %>
+#     <%= form.text_field :position %>
+#   </div>
 
-  <div class="field">
-    <%= form.label :show_output %>
-    <%= form.check_box :show_output, {}, true, false %> 
-  </div>
+#   <div class="field">
+#     <%= form.label :show_output %>
+#     <%= form.check_box :show_output, {}, true, false %> 
+#   </div>
 
-  <div>
-    <%= form.label :skip, style: "display: block" %>
-    <%= form.check_box :skip %>
-  </div>
+#   <div>
+#     <%= form.label :skip, style: "display: block" %>
+#     <%= form.check_box :skip %>
+#   </div>
 
-  <div>
-    <%= form.label :timeout, style: "display: block" %>
-    <%= form.text_field :timeout %>
-  </div>
+#   <div>
+#     <%= form.label :timeout, style: "display: block" %>
+#     <%= form.text_field :timeout %>
+#   </div>
 
-  <div class="field">
-    <%= form.label :visibility %>
-    <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
-                                                      ['After Due Date', 'after_due_date'], 
-                                                      ['After Published', 'after_published'], 
-                                                      ['Visible', 'visible']], @test.visibility || 'visible') %>
-  </div>
+#   <div class="field">
+#     <%= form.label :visibility %>
+#     <%= form.select :visibility, options_for_select([['Hidden', 'hidden'], 
+#                                                       ['After Due Date', 'after_due_date'], 
+#                                                       ['After Published', 'after_published'], 
+#                                                       ['Visible', 'visible']], @test.visibility || 'visible') %>
+#   </div>
 
-  <div class="field">
-    <%= form.label :test_block %>
-    <%= form.text_area :test_block, required: true %>
-  </div>
+#   <div class="field">
+#     <%= form.label :test_block %>
+#     <%= form.text_area :test_block, required: true %>
+#   </div>
 
-  <div>
-    <%= form.label :assignment_id, style: "display: block" %>
-    <%= form.text_field :assignment_id %>
-  </div>
+#   <div>
+#     <%= form.label :assignment_id, style: "display: block" %>
+#     <%= form.text_field :assignment_id %>
+#   </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+#   <div>
+#     <%= form.submit %>
+#   </div>
+# <% end %>
