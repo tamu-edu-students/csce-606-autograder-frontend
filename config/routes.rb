@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       get :directory_structure
     end
     member do
-      get :upload_file
+      post :upload_file
     end
   end
 
