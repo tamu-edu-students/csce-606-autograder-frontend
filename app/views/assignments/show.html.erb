@@ -38,8 +38,7 @@
                     <div class="test-card" data-test-id="<%= test.id %>" data-points-target="testInfo">
                       <div class="test-info">
                         <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
-                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button",
-                        data: { action: "ajax:success->points#updatePoints" } %>
+                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button" %>
                       </div>
                     </div>
                   <% end %>

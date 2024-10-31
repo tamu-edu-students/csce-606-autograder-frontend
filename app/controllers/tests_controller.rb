@@ -72,7 +72,7 @@ class TestsController < ApplicationController
 
     test_block_param = params[:test][:test_block]
     parsed_test_block = parse_test_block(test_block_param)
-
+    
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
     set_test_grouping_id
@@ -125,12 +125,13 @@ class TestsController < ApplicationController
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping = TestGrouping.find(params[:test_grouping_id])
     @test = Test.find(params[:id])
+    puts "Assignment details are #{@assignment.assignment_name}, #{@assignment.repository_name}, #{@assignment.repository_url}"
     puts "Update points action called with #{@assignment}, #{@test_grouping}, #{@test}"
 
     if @test.update(test_params)
       # Call the update_remote function here
       current_user, auth_token = current_user_and_token
-      update_remote(current_user, auth_token)
+      #update_remote(current_user, auth_token)
 
       respond_to do |format|
         format.html { redirect_to assignment_path(@assignment), notice: "Test points updated successfully." }
