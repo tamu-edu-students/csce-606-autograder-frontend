@@ -3,7 +3,7 @@
     fetch(`/test_blocks/${testType}`)
       .then(response => response.text())
       .then(html => {
-        document.getElementById("actual-test-content").innerHTML = html;
+        document.getElementById("dynamic-test-block-container").innerHTML = html;
       })
       .catch(error => console.error('Error loading test partial:', error));
   }

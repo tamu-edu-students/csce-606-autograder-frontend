@@ -61,7 +61,7 @@
                                                     ['After Published', 'after_published'],
                                                     ['Visible', 'visible']], @test.visibility || 'visible'), class:"form-control" %>
 </div>
-  <div id="actual-test-content">
+  <div id="dynamic-test-block-container">
     <% if @test.test_type.present? %>
       <%= render "assignments/test_blocks/#{@test.test_type}", form: form , test: @test %>
     <% end %>
