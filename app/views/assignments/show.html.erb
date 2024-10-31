@@ -6,7 +6,7 @@
   <div class="row">
     <div id = 'test' class="col-md-6">
       <h2>Tests for <%= @assignment.assignment_name %></h2>
-      <div class="scrollable-container">
+      <div class="scrollable-container" data-controller="points">
       <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment),
       local: true, html: { class: "d-flex align-items-center new-test-grouping-form" } do |form| %>
       <div class="form-group mb-0" style="margin-right: 10px;">
@@ -16,6 +16,9 @@
         <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
       </button>
     <% end %>
+
+          <div data-points-target="totalPoints">Total Points: <span>0</span></div>
+
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% if @test_groupings.present? %>
             <% @test_groupings.sort_by(&:position).each do | test_grouping | %>
@@ -32,10 +35,11 @@
 
                 <div class="test-list" id="test-list-<%= test_grouping.id %>">
                   <% test_grouping.tests.sort_by(&:position).each do | test | %>
-                    <div class="test-card" data-test-id="<%= test.id %>">
+                    <div class="test-card" data-test-id="<%= test.id %>" data-points-target="testInfo">
                       <div class="test-info">
                         <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
-                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button" %>
+                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button",
+                        data: { action: "ajax:success->points#updatePoints" } %>
                       </div>
                     </div>
                   <% end %>

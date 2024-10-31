@@ -108,7 +108,7 @@ class TestsController < ApplicationController
     end
   end
 
-  # GET 
+  # GET
   def edit_points
     @assignment = Assignment.find(params[:assignment_id])
     Rails.logger.debug "Assignment: #{@assignment.inspect}"
@@ -117,7 +117,7 @@ class TestsController < ApplicationController
     @test = Test.find(params[:id])
     puts "Edit points action called with #{@assignment}, #{@test_grouping}, #{@test}"
     respond_to do |format|
-      format.js 
+      format.js
     end
   end
 
@@ -131,15 +131,15 @@ class TestsController < ApplicationController
       # Call the update_remote function here
       current_user, auth_token = current_user_and_token
       update_remote(current_user, auth_token)
-  
+
       respond_to do |format|
-        format.html { redirect_to assignment_path(@assignment), notice: 'Test points updated successfully.' }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test points updated successfully." }
         format.json { render json: { success: true, points: @test.points } }
       end
     else
       respond_to do |format|
         format.html { render :edit_points }
-        format.json { render json: { success: false, error: @test.errors.full_messages.join(', ') } }
+        format.json { render json: { success: false, error: @test.errors.full_messages.join(", ") } }
       end
     end
 
