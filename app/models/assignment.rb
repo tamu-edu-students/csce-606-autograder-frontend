@@ -102,7 +102,38 @@ class Assignment < ActiveRecord::Base
     "https://github.com/#{organization}/#{repository_name}"
   end
 
+  def fetch_directory_structure(github_token)
+    client = Octokit::Client.new(access_token: github_token)
+    organization = ENV["GITHUB_COURSE_ORGANIZATION"]
+    repo_path = "#{organization}/#{repository_name}"
+    begin
+      contents = client.contents(repo_path, path: "tests")
+      build_file_tree(contents, client, repo_path)
+    rescue Octokit::Error => e
+      Rails.logger.error "GitHub API Error: #{e.message}"
+      []
+    end
+  end
+
+
   private
+
+  def build_file_tree(contents, client, repo_path)
+    contents.map do |item|
+      if item[:type] == "dir"
+        {
+          name: item[:name],
+          type: "directory",
+          children: build_file_tree(client.contents(repo_path, path: item[:path]), client, repo_path)
+        }
+      else
+        {
+          name: item[:name],
+          type: "file"
+        }
+      end
+    end
+  end
 
   def authenticated_url(github_token)
     "https://#{github_token}@#{self.repository_url[8..]}"
@@ -220,7 +251,7 @@ class Assignment < ActiveRecord::Base
     "#{format_optional_attributes(test)}" +
     "*/\n" +
     "<test>\n" +
-    "#{test.actual_test}\n" +
+    "#{test.get_test_block_string}\n" +
     "</test>\n\n"
     test.gsub("\r\n", "\n")
   end

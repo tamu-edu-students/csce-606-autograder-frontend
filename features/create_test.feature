@@ -8,23 +8,24 @@ Feature: Create a new test case
             | assignment_name | repository_name   |
             | assignment1     | assignment1 |
             | assignment2     | assignment2 |
-            | assignment3     | assignment3 | 
+            | assignment3     | assignment3 |
         Given I am logged in as an "instructor"
         And I am on the "Assignment Management" page for "assignment1"
 
     Scenario: Tests with unknown type
         When I create a new test with type "invalid"
         Then I should see an error message saying "Unknown test type: invalid"
+
     
     Scenario: Test has required attributes
         When I create a new test with type "<type>"
         And with the name "<name>"
         And with the points "<points>"
         And with the target "<target>"
-        And I add the Actual Test
+        And I add the "<type>" test block
         And I click the "Create Test" button
         Then I should not see any missing attribute error messages
-    
+
         Examples:
         | type              | name  | points | target      |
         | approved_includes | test1 | 10     | target1.cpp |
@@ -40,7 +41,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
-      And I add the Actual Test
+      And I add the "<type>" test block
       And I click the "Create Test" button
       Then I should not see any missing attribute error messages
 
@@ -54,7 +55,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
-      And I add the Actual Test
+      And I add the "<type>" test block
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: target"
 
@@ -71,7 +72,7 @@ Feature: Create a new test case
       And with the name "<name>"
       And with the points "<points>"
       And with the target "<target>"
-      And I add the Actual Test
+      And I add the "<type>" test block
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute>"
 
@@ -86,7 +87,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "<name>"
       And with the points "<points>"
-      And I add the Actual Test
+      And I add the "<type>" test block
       And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: <attribute1>, <attribute2>"
 
@@ -111,7 +112,7 @@ Feature: Create a new test case
       And with the name "test0"
       And with the points "10"
       And with the target "target1.cpp"
-      And I add the Actual Test
+      And I add the "unit" test block
       And I click the "Create Test" button
       Then I should not see an error message saying "Test name must be unique"
 
@@ -120,13 +121,13 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
-      And I add the Actual Test
+      And I add the "unit" test block
       And I click the "Create Test" button
       When I create a new test with type "unit"
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
-      And I add the Actual Test
+      And I add the "unit" test block
       And I click the "Create Test" button
       Then I should see an error message saying "Test name must be unique"
 
@@ -144,7 +145,7 @@ Feature: Create a new test case
       And with the name "test1"
       And with the points "10"
       And with the target "target1.cpp"
-      And I add the Actual Test
+      And I add the "<type>" test block
       And I click the "Create Test" button
       Then the test block should contain the fields "<fields>"
 
@@ -190,7 +191,7 @@ Feature: Create a new test case
       Given the test block has the field "Script Path"
       And the field is empty
       When I click the "Create Test" button
-      Then I should see an error message saying "Actual test can't be blank"
+      Then I should see an error message saying "Test block can't be blank"
       And I should not see the test added to the list of tests in assignment1
 
 
@@ -200,6 +201,6 @@ Feature: Create a new test case
 
 
 
- 
+
 
 
