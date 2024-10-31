@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Route for dynamically loading the test block
-  get "test_blocks/:test_type", to: "assignments#test_block_partial", as: "test_block_partial"
+  get "test_blocks/:test_type", to: "assignments#render_test_block_partial", as: "render_test_block_partial"
   # Defines the root path route ("/")
   # root "posts#index"
 

@@ -3,7 +3,7 @@ class AssignmentsController < ApplicationController
   before_action :require_login
   before_action :set_assignment, only: %i[ show edit update destroy ]
 
-  def test_block_partial
+  def render_test_block_partial
     test_type = params[:test_type]
     render partial: "assignments/test_blocks/#{test_type}", locals: { test: @test }
   end
