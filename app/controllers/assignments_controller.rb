@@ -140,6 +140,24 @@ class AssignmentsController < ApplicationController
     handle_assignment_save
   end
 
+  def upload_file
+    file = params[:file]
+    path = params[:path]
+    assignment = Assignment.find(params[:id])
+    github_token = session[:github_token]
+    if file && path && assignment
+      # Use your existing GitHub integration logic to upload the file to the specified path
+      success = assignment.upload_file_to_repo(file, path,github_token)
+      if success
+        render json: { success: true }
+      else
+        render json: { success: false, error: 'Failed to upload to GitHub' }, status: :unprocessable_entity
+      end
+    else
+      render json: { success: false, error: 'Invalid file or path'}, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def handle_assignment_save
