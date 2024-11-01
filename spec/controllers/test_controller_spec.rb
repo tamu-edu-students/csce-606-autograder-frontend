@@ -2,7 +2,15 @@ require 'rails_helper'
 RSpec.describe TestsController, type: :controller do
   let!(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: 'assignment-1') }
 
-  let!(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', test_block: { code: 'Test code' }) }
+  let!(:test_case) do
+    assignment.tests.create!(
+      name: 'Test 1',
+      points: 10,
+      test_type: 'unit',
+      target: 'target',
+      test_block: { code: 'Test code' }
+    )
+  end
 
   let(:user) { User.create!(name: 'User', email: 'test@example.com') }
 
@@ -158,11 +166,14 @@ RSpec.describe TestsController, type: :controller do
 
     describe 'when test_grouping is not found' do
       it 'raises ActiveRecord::RecordNotFound' do
+        test = create(:test, test_grouping: create(:test_grouping, assignment: assignment))
+
         expect {
           get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: 'non_existent', id: test.id }, format: :js
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
+
 
     describe 'when test is not found' do
       it 'raises ActiveRecord::RecordNotFound' do
@@ -214,13 +225,6 @@ RSpec.describe TestsController, type: :controller do
     end
 
     describe "with invalid parameters" do
-      # it "does not update the test points and re-renders the edit page for HTML request" do
-      #   patch :update_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id, test: invalid_params }, format: :html
-      #   test_case.reload
-
-      #   expect(test_case.points).to eq(5)
-      #   expect(response).to render_template(:edit_points)
-      # end
       it "does not update the test points and returns an error in JSON format" do
         patch :update_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id, test: invalid_params }, format: :json
         test_case.reload
