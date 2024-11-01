@@ -8,68 +8,37 @@
       .catch(error => console.error('Error loading test partial:', error));
   }
 
+  function addNewField(containerId, placeholder, className = 'form-control mb-2') {
+    console.log(`Add button clicked for container: ${containerId}`);
+    const container = document.getElementById(containerId);
+    if (container) {
+      const newField = document.createElement('div');
+      newField.className = `${containerId}-field`; // Dynamic class based on container ID
+      newField.innerHTML = `<input type="text" 
+                            name="test[test_block][${containerId}][]" 
+                            class="${className}" 
+                            placeholder="${placeholder}">`;
+      container.appendChild(newField);
+    } else {
+      console.error(`${containerId} not found`);
+    }
+  }
+  
+  // Specific functions that call the generic addNewField function
   function addSourcePathField() {
-    console.log("Add Source Path button clicked");
-    const container = document.getElementById('source-paths-container');
-    if (container) {
-      const newField = document.createElement('div');
-      newField.className = 'source-path-field';
-      newField.innerHTML = `<input type="text" 
-                            name="test[test_block][source_paths][]" 
-                            class="form-control mb-2" 
-                            placeholder="Enter Source Path">`;
-      container.appendChild(newField);
-    } else {
-      console.error("source-paths-container not found");
-    }
+    addNewField('source-paths-container', 'Enter Source Path');
   }
-
+  
   function addCompilePathField() {
-    console.log("Add Compile Path button clicked");
-    const container = document.getElementById('compile-file-container');
-    if (container) {
-      const newField = document.createElement('div');
-      newField.className = 'file-path-field';
-      newField.innerHTML = `<input type="text" 
-                            name="test[test_block][file_paths][]" 
-                            class="form-control mb-2" 
-                            placeholder="Enter Compile Path">`;
-      container.appendChild(newField);
-    } else {
-      console.error("compile-file-container not found");
-    }
+    addNewField('compile-file-container', 'Enter Compile Path');
   }
-
+  
   function addMemoryErrorsPathField() {
-    console.log("Add Memory errors Path button clicked");
-    const container = document.getElementById('memory-errors-container');
-    if (container) {
-      const newField = document.createElement('div');
-      newField.className = 'file-path-field';
-      newField.innerHTML = `<input type="text" 
-                            name="test[test_block][file_paths][]" 
-                            class="form-control mb-2" 
-                            placeholder="Enter Memory Errors Path">`;
-      container.appendChild(newField);
-    } else {
-      console.error("memory-errors-container not found");
-    }
+    addNewField('memory-errors-container', 'Enter Memory Errors Path');
   }
-
+  
   function addApprovedIncludesField() {
-    console.log("Add Approved Includes button clicked");
-    const container = document.getElementById('approved-includes-container');
-    if (container) {
-      const newField = document.createElement('div');
-      newField.className = 'approved-includes-field';
-      newField.innerHTML = `<input type="text" 
-                            name="test[test_block][approved_includes][]" 
-                            class="form-control mb-2" 
-                            placeholder="Enter Approved Includes">`;
-      container.appendChild(newField);
-    } else {
-      console.error("approved-includes-container not found");
-    }
+    addNewField('approved-includes-container', 'Enter Approved Includes');
   }
   
   window.loadTestPartial = loadTestPartial;
