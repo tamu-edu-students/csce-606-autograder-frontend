@@ -6,6 +6,28 @@
                 <%= form.text_field :name, class:"form-control" %>
             </div>
         </div>
+
+		<hr>
+
+		<div class="test-metadata d-flex">
+			<div class="form-group w-33">
+				<%= form.label :test_grouping_position, "Group Number" %>
+				<%= form.text_field :test_grouping_position, class: "form-control" %>
+			</div>
+
+			<div class="form-group w-33">
+				<%= form.label :points %>
+				<%= form.number_field :points, class:"form-control" %>
+			</div>
+
+			<div class="form-group w-33">
+				<%= form.label :position %>
+				<%= form.text_field :position , class:"form-control"%>
+			</div>
+		</div>
+
+		<hr>
+
         <div class="static-test-info align-items-center d-flex justify-content-space-evenly">
             <div class="form-group align-items-center justify-content-space-evenly">
                 <div class="form-group">
@@ -64,28 +86,13 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <%= form.label :test_grouping_position, "Group Number" %>
-            <%= form.text_field :test_grouping_position, class: "form-control" %>
-        </div>
-        <div class="form-group">
-            <%= form.label :points %>
-            <%= form.number_field :points, class:"form-control" %>
-        </div>
-
-
-
-        <div class="form-group">
-            <%= form.label :position %>
-            <%= form.text_field :position , class:"form-control"%>
-        </div>
+        <hr>
 
         <div id="dynamic-test-block-container">
             <% if @test.test_type.present? %>
             <%= render "assignments/test_blocks/#{@test.test_type}", form: form , test: @test %>
             <% end %>
         </div>
-
 
         <div class="form-actions">
             <%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
