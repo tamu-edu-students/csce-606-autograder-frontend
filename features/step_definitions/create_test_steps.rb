@@ -6,7 +6,7 @@ Before do
 end
 
 After do
-  RSpec::Mocks.teardown
+  # RSpec::Mocks.teardown
 end
 
 When('I create a new test with type {string}') do |type|
