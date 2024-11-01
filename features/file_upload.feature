@@ -12,7 +12,6 @@ Feature: File Upload
   Scenario: Upload a new test file using "Upload file" button
     Given I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
-    When I select the Upload File button next to "target" folder in file tree 
-    And I upload a new file "test_file.txt" under the "target" folder
+    When I upload a new file "test_file.txt" under the "target" folder
     Then I should see the "test_file.txt" file under the "target" folder in file directory
     And I should see a message "File uploaded successfully!"

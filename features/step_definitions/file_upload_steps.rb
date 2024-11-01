@@ -2,26 +2,10 @@ require 'rspec/mocks'
 
 Before do
   RSpec::Mocks.setup
-  allow_any_instance_of(AssignmentsHelper).to receive(:render_file_tree).and_return(
-    "<ul class='file-tree'>
-       <li class='folder'>
-         <span class='folder-name' onclick='toggleFolder(this)'>target</span>
-         <a class='upload-icon' onclick='openFileUpload(this, \"target/text_file.txt\")' title='Upload File'⬆️</a>
-       </li>
-     </ul>".html_safe +
-     "<input type='file' id='fileUploadInput' style='display: none;' data-upload-path='target/text_file.txt' onchange='uploadFile(this)'>".html_safe
-  )
 end
 
 After do
   RSpec::Mocks.teardown
-end
-
-When("I select the Upload File button next to {string} folder in file tree") do |folder_name|
-  upload_icon = find("li.folder", text: folder_name).find(".upload-icon")
-
-  # Click the upload icon to open the file upload dialog
-  upload_icon.click
 end
 
 When("I upload a new file {string} under the {string} folder") do |file_name, folder_name|
