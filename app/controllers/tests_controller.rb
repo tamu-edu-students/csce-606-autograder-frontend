@@ -5,6 +5,7 @@ class TestsController < ApplicationController
   before_action :set_assignment
   # before_action :set_test_grouping
   before_action :set_test, only: [ :show, :edit, :update, :destroy ]
+  skip_before_action :verify_authenticity_token, only: [ :edit_points ]
 
 
   # GET /tests or /tests.json
@@ -72,7 +73,7 @@ class TestsController < ApplicationController
 
     test_block_param = params[:test][:test_block]
     parsed_test_block = parse_test_block(test_block_param)
-    
+
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
     set_test_grouping_id
@@ -111,11 +112,9 @@ class TestsController < ApplicationController
   # GET
   def edit_points
     @assignment = Assignment.find(params[:assignment_id])
-    Rails.logger.debug "Assignment: #{@assignment.inspect}"
     raise ActiveRecord::RecordNotFound if @assignment.nil?
     @test_grouping = TestGrouping.find(params[:test_grouping_id])
     @test = Test.find(params[:id])
-    puts "Edit points action called with #{@assignment}, #{@test_grouping}, #{@test}"
     respond_to do |format|
       format.js
     end
@@ -125,11 +124,8 @@ class TestsController < ApplicationController
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping = TestGrouping.find(params[:test_grouping_id])
     @test = Test.find(params[:id])
-    puts "Assignment details are #{@assignment.assignment_name}, #{@assignment.repository_name}, #{@assignment.repository_url}"
-    puts "Update points action called with #{@assignment}, #{@test_grouping}, #{@test}"
 
     if @test.update(test_params)
-      # Call the update_remote function here
       current_user, auth_token = current_user_and_token
       update_remote(current_user, auth_token)
 
@@ -139,18 +135,9 @@ class TestsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :edit_points }
         format.json { render json: { success: false, error: @test.errors.full_messages.join(", ") } }
       end
     end
-
-    # respond_to do |format|
-    #   if @test.update(test_params)
-    #     format.js # This will render update_points.js.erb
-    #   else
-    #     format.js { render :edit_points }
-    #   end
-    # end
   end
 
   private

@@ -1,6 +1,6 @@
 class TestGroupingsController < ApplicationController
   before_action :set_assignment
-  before_action :set_test_grouping, only: %i[ show edit update destroy ]
+  before_action :set_test_grouping, only: %i[ show destroy ]
 
   # GET /test_groupings or /test_groupings.json
   def index
