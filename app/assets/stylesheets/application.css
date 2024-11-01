@@ -120,9 +120,6 @@ form {
     align-items: center;
   }
 
-  .static-test-info {
-    height: 50%;
-  }
 
   .includes {
     height: 75%;
@@ -136,7 +133,6 @@ form {
     margin-bottom: 15px;
     width: 100%;
     align-items: center;
-    justify-content: center;
   }
 
   /* Style for input fields */
