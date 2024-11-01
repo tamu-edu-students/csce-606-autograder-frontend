@@ -51,7 +51,7 @@
                 data-controller="test_card" 
                 data-grouping-id="<%= test_grouping.id %>">
                 <% test_grouping.tests.sort_by(&:position).each do | test | %>
-                  <div class="test-card" data-test-id="<%= test.id %>">
+                  <div class="test-card" data-id="<%= test.id %>" data-test-id="<%= test.id %>">
                     <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
                   </div>
                 <% end %>

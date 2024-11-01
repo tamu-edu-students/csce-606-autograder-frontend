@@ -7,6 +7,16 @@ class AssignmentsController < ApplicationController
     test_type = params[:test_type]
     render partial: "assignments/test_blocks/#{test_type}", locals: { test: @test }
   end
+  
+  def update_order
+    test_ids = params[:test_ids]
+    test_ids.each_with_index do |id, index|
+      test = Test.find(id)
+      test.update(position: index + 1)
+      Rails.logger.info("Updated Test ID: #{id} to Position: #{index + 1}")
+    end
+    render json: { status: "success" }
+  end  
 
   # GET /assignments or /assignments.json
   def index
