@@ -23,7 +23,7 @@
 
 		<div class="justify-content-between d-flex">
 			<div class="form-group">
-				<%= form.label :test_grouping_position, "Group Number" %>
+				<%= form.label :test_grouping_position, "Grouping Number" %>
 				<%= form.text_field :test_grouping_position, class: "form-control" %>
 			</div>
 
@@ -43,7 +43,7 @@
         <div class="d-flex">
             <div class="form-group align-items-center justify-content-space-evenly">
                 <div>
-                	<%= form.label :test_type %>
+                	<%= form.label :test_type, "Test Type" %>
                     <% if @test.persisted? %>
                     	<%= form.text_field :test_type, class: "form-control", readonly: true %>
                     <% else %>
@@ -80,8 +80,8 @@
 
             <div class="form-group justify-content-space-evenly h-100">
                 <div class="flex-grow-1 h-100">
-                    <%= form.label :include %>
-                    <%= form.text_area :include , class:"form-control includes"%>
+                    <%= form.label :include, 'Includes' %>
+                    <%= form.text_area :include , class:"form-control includes", placeholder: ".cpp or .h files"%>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
 				<%= form.number_field :timeout, class:"form-control" %>
 			</div>
 			<div class="field form-group">
-				<%= form.label :visibility %>
+				<%= form.label :visibility, 'Gradescope Visibility' %>
 				<%= form.select :visibility, options_for_select(
 					[['Hidden', 'hidden'],
 					['After Due Date', 'after_due_date'],

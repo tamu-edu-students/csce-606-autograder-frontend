@@ -5,8 +5,8 @@ Given(/^I am logged in as an instructor$/) do
 
   Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
-    click_link('Add new test')
-    select test_type, from: 'Test type'
+    click_link('Add New Test')
+    select test_type, from: 'Test Type'
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
@@ -30,7 +30,7 @@ Given(/^I am logged in as an instructor$/) do
 
   Then('I should see the test type as a read-only text field') do
     # Check that the test type is displayed as a read-only text field and not as a dropdown
-    expect(page).to have_field('Test type', readonly: true)
+    expect(page).to have_field('Test Type', readonly: true)
   end
 
   When(/^I update the test case with valid input$/) do
@@ -41,7 +41,7 @@ Given(/^I am logged in as an instructor$/) do
     within('#test-details') do
       fill_in 'Name', with: "Updated #{@test_case.name}"
       fill_in 'Points', with: 10.0
-      select 'i_o', from: 'Test type'
+      select 'i_o', from: 'Test Type'
       click_button 'Update Test'  # Update button in the form
     end
     expect(page).to have_content("Test was successfully updated")
@@ -61,7 +61,7 @@ Given(/^I am logged in as an instructor$/) do
     # save_and_open_page
 
     expect(page).to have_field('Name', with: @test_case.name)
-    expect(page).to have_select('Test type', selected: 'i_o')
+    expect(page).to have_select('Test Type', selected: 'i_o')
     expect(page).to have_field('Points', with: '10.0')
   end
 

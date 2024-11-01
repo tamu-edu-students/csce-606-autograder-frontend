@@ -10,12 +10,12 @@ After do
 end
 
 When('I create a new test with type {string}') do |type|
-  click_link('Add new test')
+  click_link('Add New Test')
   if type.nil? || type.empty?
     # Simulate error for missing type
     page.find('body').native.inner_html += "<p class='error'>Missing attribute: type</p>"
-  elsif page.has_select?('Test type', with_options: [ type ])
-    select type, from: 'Test type'
+  elsif page.has_select?('Test Type', with_options: [ type ])
+    select type, from: 'Test Type'
   else
     # Simulate error for invalid test type
     page.find('body').native.inner_html += "<p class='error'>Unknown test type: #{type}</p>"
@@ -123,7 +123,7 @@ Given('there is text in the test block') do
 end
 
 When('I change the test type to {string}') do |new_type|
-  fill_in 'Test type', with: new_type
+  fill_in 'Test Type', with: new_type
 
   click_button 'Update Test'
 end

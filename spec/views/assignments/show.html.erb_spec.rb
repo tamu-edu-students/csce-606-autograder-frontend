@@ -14,14 +14,14 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "displays the assignment name" do
     render
-    expect(rendered).to have_content("Assignment: Assignment 1")
+    expect(rendered).to have_content("Assignment 1")
   end
 
   it "displays all the tests for the assignment" do
     render
     expect(rendered).to have_content("Test 1")
     expect(rendered).to have_content("10")
-    expect(rendered).to have_content("unit")
+    expect(rendered).to have_content("Unit")
   end
 
   it "has a link to edit the test" do
@@ -31,7 +31,7 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "has a link to add a new test" do
     render
-    expect(rendered).to have_link('Add new test', href: assignment_path(assignment, test_id: nil))
+    expect(rendered).to have_link('Add New Test', href: assignment_path(assignment, test_id: nil))
   end
 
   it "renders the form to edit the test" do
@@ -51,11 +51,6 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "has a link to create and download ZIP" do
     render
-    expect(rendered).to have_link('Create and Download ZIP', href: create_and_download_zip_assignment_path(assignment))
-  end
-
-  it "has a link to go back to the assignments index" do
-    render
-    expect(rendered).to have_link('Course Dashboard', href: assignments_path)
+    expect(rendered).to have_link('Export to Gradescope', href: create_and_download_zip_assignment_path(assignment))
   end
 end

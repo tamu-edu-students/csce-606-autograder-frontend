@@ -13,8 +13,8 @@ end
   end
 
   Given("there is a test case of type {string}") do |type|
-    click_link('Add new test')
-    select type, from: 'Test type'
+    click_link('Add New Test')
+    select type, from: 'Test Type'
   end
 
   When("I click on that test case") do
