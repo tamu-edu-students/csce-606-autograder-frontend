@@ -144,14 +144,14 @@ RSpec.describe TestsController, type: :controller do
       end
 
       it 'assigns the correct instance variables' do
-        get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test.id }, format: :js
+        get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
         expect(assigns(:assignment)).to eq(assignment)
         expect(assigns(:test_grouping)).to eq(test_grouping)
-        expect(assigns(:test)).to eq(test)
+        expect(assigns(:test)).to eq(test_case)
       end
 
       it 'responds with JS format' do
-        get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test.id }, format: :js
+        get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
         expect(response.content_type).to include('text/javascript')
       end
     end
@@ -159,17 +159,17 @@ RSpec.describe TestsController, type: :controller do
     describe 'when assignment is not found' do
       it 'raises ActiveRecord::RecordNotFound' do
         expect {
-          get :edit_points, params: { assignment_id: 'non_existent', test_grouping_id: test_grouping.id, id: test.id }, format: :js
+          get :edit_points, params: { assignment_id: 'non_existent', test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
     describe 'when test_grouping is not found' do
       it 'raises ActiveRecord::RecordNotFound' do
-        test = create(:test, test_grouping: create(:test_grouping, assignment: assignment))
+        test_case = create(:test, test_grouping: create(:test_grouping, assignment: assignment))
 
         expect {
-          get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: 'non_existent', id: test.id }, format: :js
+          get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: 'non_existent', id: test_case.id }, format: :js
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
