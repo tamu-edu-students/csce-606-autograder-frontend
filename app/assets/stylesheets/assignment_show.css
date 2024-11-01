@@ -158,3 +158,9 @@
     padding: 0;
     margin: 0;
   }
+
+/* Specific rule to ensure left alignment on the columns */
+#assignments-table th.text-left,
+#assignments-table td.text-left {
+  text-align: left !important;
+}

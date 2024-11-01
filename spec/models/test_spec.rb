@@ -163,8 +163,8 @@ RSpec.describe Test, type: :model do
       )
     end
 
-    it 'correct format for i/o' do
-      valid_test.test_type = 'i/o'
+    it 'correct format for i_o' do
+      valid_test.test_type = 'i_o'
       valid_test.test_block = { input_path: 'input.txt', output_path: 'output.txt' }
       expect(valid_test.get_test_block_string).to eq("\tinput: input.txt\n\toutput: output.txt")
     end

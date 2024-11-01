@@ -8,7 +8,7 @@ Before do
 end
 
 After do
-  RSpec::Mocks.teardown
+  #   RSpec::Mocks.teardown
 end
 
 Given('I am on the {string} page') do |page_name|

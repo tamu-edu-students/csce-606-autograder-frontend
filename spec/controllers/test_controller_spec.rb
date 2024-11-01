@@ -48,7 +48,7 @@ RSpec.describe TestsController, type: :controller do
 
   describe "POST #create" do
     context "with valid parameters" do
-      let(:valid_attributes) { { name: 'New Test', points: 20, test_type: 'unit', test_block: '{ "code": "New test code"}', target: 'target' } }
+      let(:valid_attributes) { { name: 'New Test', points: 20, test_type: 'unit', test_block: { code: 'New test code' }, target: 'target' } }
       it "creates a new test and redirects to the assignment path" do
       expect {
           post :create, params: { assignment_id: assignment.id, test: valid_attributes, format: :html }
@@ -70,14 +70,14 @@ RSpec.describe TestsController, type: :controller do
     end
 
     it "update_remote is called" do
-      post :create, params: { assignment_id: assignment.id, test: { name: 'New Test', points: 20, test_type: 'unit', test_block: '{ "code": "New test code"}', target: 'target' }, format: :html }
+      post :create, params: { assignment_id: assignment.id, test: { name: 'New Test', points: 20, test_type: 'unit', test_block: { code: 'New test code' }, target: 'target' }, format: :html }
       expect(controller).to have_received(:update_remote)
     end
   end
 
   describe "PATCH #update" do
     context "with valid parameters" do
-      let(:new_attributes) { { name: 'Updated Test', points: 15, test_type: 'i/o', test_block: '{ "input_path": "input.txt", "output_path": "output.txt" }' } }
+      let(:new_attributes) { { name: 'Updated Test', points: 15, test_type: 'i_o', test_block: { input_path: 'input.txt', output_path: 'output.txt' } } }
 
       it "updates the test and redirects to the assignment path" do
         patch :update, params: { assignment_id: assignment.id, id: test_case.id, test: new_attributes, format: :html }
@@ -87,7 +87,7 @@ RSpec.describe TestsController, type: :controller do
     end
 
     context "with invalid parameters" do
-      let(:invalid_attributes) { { name: '', points: -5, test_type: 'invalid_type', test_block: '{}' } }
+      let(:invalid_attributes) { { name: '', points: -5, test_type: 'invalid_type', test_block: {} } }
 
       it "does not update the test and redirects with errors" do
         patch :update, params: { assignment_id: assignment.id, id: test_case.id, test: invalid_attributes, format: :html }
@@ -99,7 +99,7 @@ RSpec.describe TestsController, type: :controller do
 
     it "update_remote is called" do
       patch :update, params: { assignment_id: assignment.id, id: test_case.id,
-        test: { name: 'Updated Test', points: 15, test_type: 'i/o', test_block: '{ "input_path": "input.txt", "output_path": "output.txt" }' }, format: :html }
+        test: { name: 'Updated Test', points: 15, test_type: 'i_o', test_block: { input_path: 'input.txt', output_path: 'output.txt' } }, format: :html }
       expect(controller).to have_received(:update_remote)
     end
   end
