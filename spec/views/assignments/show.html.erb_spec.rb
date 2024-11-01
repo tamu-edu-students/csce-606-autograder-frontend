@@ -56,6 +56,6 @@ RSpec.describe "assignments/show.html.erb", type: :view do
 
   it "has a link to go back to the assignments index" do
     render
-    expect(rendered).to have_link('Back to Assignment', href: assignments_path)
+    expect(rendered).to have_link('Course Dashboard', href: assignments_path)
   end
 end
