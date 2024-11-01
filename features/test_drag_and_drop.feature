@@ -14,13 +14,22 @@ Feature: The user should be able to move test cards within and in-between groups
         | grouping_name       |
         | Basic Functionality |
         | Edge Cases          |
-    And "<Test Name>" test exists in "<Grouping Name>" in order
-        |Test Name              | Grouping Name       |
-        |Test_BF_1              | Basic Functionality |
-        |Test_BF_2              | Basic Functionality |
-        # |Test_EC_1              | Edge Cases          |
-        # |Test_EC_2              | Edge Cases          |
+    And some tests exist in "Basic Functionality" group in order:
+        | test_name   |
+        | Test_BF_1   | 
+        | Test_BF_2   | 
+        # | Test_EC_1   | Edge Cases          |
+        # | Test_EC_2   | Edge Cases          |
+    And I am on the "Assignment Management" page for "assignment1"
+
+  @javascript
   Scenario: Move test within the same group
+    When I expand the "Basic Functionality" test group
+    Then I should see the following tests in "Basic Functionality" group:
+        | test_name   |
+        | Test_BF_1   |
+        | Test_BF_2   |
+
     When I move "Test_BF_1" to after "Test_BF_2" in "Basic Functionality" group
     Then I should see "Test_BF_1" after "Test_BF_2" in "Basic Functionality" group
 #   Scenario: Move test in-between groups

@@ -11,6 +11,7 @@
   end
 
   Then("I should see {string} in the list of test case groupings") do |grouping_name|
+    save_and_open_screenshot
     within(".scrollable-container") do
       expect(page).to have_content(grouping_name)
     end
@@ -25,14 +26,58 @@
   end
 
   And("the following test case groupings exist for {string}:") do |assignment_name, table|
-    assignment = Assignment.find_by(assignment_name: assignment_name)
+    @assignment = Assignment.find_by(assignment_name: assignment_name)
 
     table.hashes.each do |row|
         grouping_name = row["grouping_name"]
-        TestGrouping.create!(name: grouping_name, assignment: assignment)
+        TestGrouping.create!(name: grouping_name, assignment: @assignment)
     end
   end
 
+  Given('some tests exist in {string} group in order:') do |grouping_name, table|
+    grouping = TestGrouping.find_by(name: grouping_name)
+
+    if grouping.nil?
+      puts "Test grouping not found."
+    end
+
+    table.hashes.each_with_index do |row, index|
+      Test.create!(
+        name: row["test_name"],
+        points: 10,
+        test_type: "unit",
+        target: "target.cpp",
+        position: index + 1,
+        test_grouping_id: grouping.id,
+        assignment_id: @assignment.id,
+        test_block: { code: "assert_equal(...)" }
+      )
+    end
+  end
+
+  When("I expand the {string} test group") do |group_name|
+    group_title = find(".test-grouping-title", text: group_name)
+    #group_title.click
+    page.execute_script("arguments[0].click();", group_title)
+    save_and_open_screenshot
+  end
+
+  Then("I should see the following tests in {string} group:") do |group_name, table|
+    within(:css, ".test-grouping-card", text: group_name) do
+      table.hashes.each do |row|
+        expect(page).to have_content(row["test_name"])
+      end
+    end
+  end
+
+  When('I move {string} to after {string} in {string} group') do |string, string2, string3|
+    #pending # Write code here that turns the phrase above into concrete actions
+    save_and_open_screenshot
+  end
+
+  Then('I should see {string} after {string} in {string} group') do |string, string2, string3|
+    pending # Write code here that turns the phrase above into concrete actions
+  end
 
   When('I select {string} for the assignment {string}') do |string, string2|
     pending # Write code here that turns the phrase above into concrete actions
