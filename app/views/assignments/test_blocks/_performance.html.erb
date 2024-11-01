@@ -1,0 +1,10 @@
+<div class="form-group mb-3">
+  <label for="code">Performance</label>
+  <textarea 
+         id="test_block_code" 
+         name="test[test_block][code]" 
+         class="form-control" 
+         placeholder="Enter Performance" 
+         rows="10"
+         style="font-family: monospace; text-align: left;"><%= test&.test_block&.dig('code') %></textarea>
+</div>

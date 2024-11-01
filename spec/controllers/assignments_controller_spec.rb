@@ -44,8 +44,27 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'GET #show' do
+    let(:assignment) { Assignment.create!(valid_attributes) }
+    let(:client_double) { instance_double(Octokit::Client) }
+    let(:directory_structure) do
+      [
+        { name: "test_file.txt", type: "file" }
+      ]
+    end
+
+    before do
+      allow(Octokit::Client).to receive(:new).and_return(client_double)
+      allow(client_double).to receive(:contents).with("AutograderFrontend/#{assignment.repository_name}", path: "tests")
+                                              .and_return([ { name: "test_file.txt", type: "file" } ])
+      allow(assignment).to receive(:fetch_directory_structure).with(mock_github_token).and_return(directory_structure)
+    end
+
+    it 'retrieves the directory structure from GitHub and assigns it to @directory_structure' do
+      get :show, params: { id: assignment.to_param }
+      expect(assigns(:directory_structure)).to eq(directory_structure)
+    end
+
     it 'returns a success response' do
-      assignment = Assignment.create! valid_attributes
       get :show, params: { id: assignment.to_param }
       expect(response).to be_successful
     end

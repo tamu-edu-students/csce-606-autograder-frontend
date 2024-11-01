@@ -1,0 +1,26 @@
+<div class="file-tree-container">
+        <h4>File Tree for <strong>/tests</strong> folder <span style="cursor: pointer; color: blue;" onclick="toggleTree()"></span></h4>
+        <div id="fileTreeContainer">
+          <%= render_file_tree(@directory_structure) %>
+        </div>
+      </div>
+      
+
+
+      <script>
+      const assignmentIdtemp = "<%= @assignment.id %>"; 
+
+      function toggleTree() {
+        document.getElementById('fileTreeContainer').classList.toggle('hidden');
+      }
+
+      function toggleFolder(element) {
+        const childrenContainer = element.parentNode.querySelector('.children-container');
+        if (childrenContainer) {
+          childrenContainer.classList.toggle('hidden');
+          element.classList.toggle('expanded');
+        }
+      }
+
+
+    </script>

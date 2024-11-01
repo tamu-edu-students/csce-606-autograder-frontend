@@ -6,12 +6,11 @@ Before do
 end
 
 After do
-  RSpec::Mocks.teardown
+  # RSpec::Mocks.teardown
 end
 
 When('I create a new test with type {string}') do |type|
   click_link('Add new test')
-
   if type.nil? || type.empty?
     # Simulate error for missing type
     page.find('body').native.inner_html += "<p class='error'>Missing attribute: type</p>"
@@ -23,10 +22,85 @@ When('I create a new test with type {string}') do |type|
   end
 end
 
-Given('I add the Actual Test') do
-  fill_in 'Actual test', with: 'actual test'
+Then('I should see the {string} dynamic test block partial') do |type|
+  # # can see the right partial rendered in the bottom
+  # save_and_open_page
+
+  case type
+  when 'approved_includes'
+    # puts 'type appinclu'
+    within('#approved-includes-container') do
+      expect(page).to have_selector("input[name='test[test_block][approved_includes][]']", visible: true)
+    end
+    expect(page).to have_button("Add Approved Includes")
+  when 'compile'
+    within('#compile-file-container') do
+      expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
+    end
+    expect(page).to have_button("Add Compile Path")
+  when 'memory_errors'
+    within('#memory-errors-container') do
+      expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
+    end
+    expect(page).to have_button("Add Memory Errors Path")
+  when 'i_o'
+    expect(page).to have_selector("input[name='test[test_block][input_path]']", visible: true)
+    expect(page).to have_selector("input[name='test[test_block][output_path]']", visible: true)
+  when 'coverage'
+    expect(page).to have_selector("input[name='test[test_block][main_path]']", visible: true)
+    within('#source-paths-container') do
+      expect(page).to have_selector("input[name='test[test_block][source_paths][]']", visible: true)
+    end
+    expect(page).to have_button("Add Source Path")
+  when 'performance'
+    expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true)
+  when 'unit'
+    expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true)
+  when 'script'
+    expect(page).to have_selector("input[name='test[test_block][script_path]']", visible: true)
+  else
+    raise "Unknown test type: #{type}"
+  end
 end
 
+# this need to be changed into add dynamic test block field
+Given('I add the {string} dynamic text block field') do |test_type|
+  case test_type
+  when 'approved_includes'
+    fill_in 'Enter Approved Includes', with: 'file1'
+    click_button "Add Approved Includes"
+    fill_in 'Enter Approved Includes', with: 'file2', match: :first
+  when 'compile'
+    fill_in 'Enter Compile Path', with: 'file1'
+    click_button 'Add Compile Path'
+    fill_in 'Enter Compile Path', with: 'file2', match: :first
+  when 'coverage'
+    fill_in 'Enter Main Path', with: 'main'
+
+    fill_in 'Enter Source Path', with: 'source1'
+    click_button 'Add Source Path'
+    fill_in 'Enter Source Path', with: 'source2', match: :first
+  when 'performance'
+    fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
+  when 'unit'
+    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
+  when 'i_o'
+    fill_in 'Enter Input Path', with: 'input'
+    fill_in 'Enter Output Path', with: 'output'
+  when 'memory_errors'
+    fill_in 'Enter Memory Errors Path', with: 'file1'
+    click_button 'Add Memory Errors Path'
+    fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
+  when 'script'
+    fill_in 'Enter Script Path', with: 'script'
+  else
+    raise "Unknown test type: #{test_type}"
+  end
+end
+
+Given('I add the dynamic text block field with {string}') do |script_path|
+  fill_in 'Enter Script Path', with: 'script_path'
+end
 Then('I should see an error message saying {string}') do |message|
   expect(page).to have_content(message)
 end
@@ -86,7 +160,7 @@ Given('the assignment contains the following test:') do |table|
       test_type: test['test_type'],
       points: test['test_points'],
       target: test['test_target'],
-      actual_test: test['actual_test']
+      test_block: test['test_block']
     )
   end
 end
@@ -100,17 +174,17 @@ Given('the assignment contains no tests') do
 end
 
 Then('the test block should contain the fields {string}') do |fields|
-  expect(page).to have_content("Actual test")
+  expect(page).to have_content(fields)
 end
 
 
 
 Given('the test block contains the field {string}') do |field|
-  expect(page).to have_content("Actual test")
+  expect(page).to have_content("Test block")
 end
 
 When('I fill in the field with {string}') do |value|
-  fill_in 'Actual test', with: 'actual test'
+  fill_in 'Test block', with: '{ "script_path": "script" }'
 end
 
 Then('I should see the test added to the list of tests in assignment1') do
@@ -122,12 +196,12 @@ Then('I should see a message saying {string}') do |message|
 end
 
 Given('the test block has the field {string}') do |field|
-  expect(page).to have_content("Actual test")
+  expect(page).to have_content("Test block")
 end
 
 Given('the field is empty') do
   # Ensure the field is empty by either clearing it or checking its initial value
-  fill_in 'Actual test', with: ''
+  fill_in 'Enter Script Path', with: ''
 end
 
 Then('I should not see the test added to the list of tests in assignment1') do
@@ -135,10 +209,5 @@ Then('I should not see the test added to the list of tests in assignment1') do
 end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
-  expect(page).to have_content('Actual test')
-end
-
-When('I fill in the field {string} with {string}') do |field, value|
-  fill_in 'Actual test', with: 'actual test'
-  fill_in 'Target', with: 'target'
+  expect(page).to have_content('Test block')
 end

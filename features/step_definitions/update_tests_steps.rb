@@ -3,17 +3,21 @@ Given(/^I am logged in as an instructor$/) do
     login_as(user)
   end
 
-  Given('I have created a test case of type {string}') do |string|
+  Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
     click_link('Add new test')
-    select string, from: 'Test type'
+    select test_type, from: 'Test type'
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Actual test', with: 'actual test'
+    steps %(And I add the "#{test_type}" dynamic text block field)
     click_button "Create Test"
+    # Wait for the success message to ensure the test case is created
+    expect(page).to have_content("Test was successfully created")
 
+    @assignment.reload
     @test_case = @assignment.tests.last
+    puts "Test Case ID: #{@test_case&.id}"
   end
 
   Given(/^I have created an assignment with a test case of type "(.*)"$/) do |type|
@@ -28,9 +32,10 @@ Given(/^I am logged in as an instructor$/) do
     within('#test-details') do
       fill_in 'Name', with: "Updated #{@test_case.name}"
       fill_in 'Points', with: 10.0
-      select 'i/o', from: 'Test type'
+      select 'i_o', from: 'Test type'
       click_button 'Update Test'  # Update button in the form
     end
+    expect(page).to have_content("Test was successfully updated")
 
     @test_case.reload  # Reload the test case to reflect the updated values
   end
@@ -38,13 +43,17 @@ Given(/^I am logged in as an instructor$/) do
   When('I delete the test case') do
     visit assignment_path(@assignment, test_id: @test_case.id)
     click_button 'Delete Test'
+    # Switch to the alert and accept it
+    page.driver.browser.switch_to.alert.accept
   end
 
   Then(/^I should see the updated test case in the assignment$/) do
-    visit assignment_path(@assignment)
-    expect(page).to have_content("#{@test_case.name}")
-    expect(page).to have_content('i/o')
-    expect(page).to have_content('10.0')
+    visit  assignment_path(@assignment, test_id: @test_case.id)
+    # save_and_open_page
+
+    expect(page).to have_field('Name', with: @test_case.name)
+    expect(page).to have_select('Test type', selected: 'i_o')
+    expect(page).to have_field('Points', with: '10.0')
   end
 
   Then('I should not see the test case in the assignment') do

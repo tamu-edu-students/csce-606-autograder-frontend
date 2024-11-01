@@ -10,7 +10,7 @@ RSpec.describe Test, type: :model do
       points: 10,
       test_type: 'unit',
       target: 'test_target',
-      actual_test: 'some test code',
+      test_block: { code: 'some test code' },
       assignment: assignment
     )
   end
@@ -64,18 +64,25 @@ RSpec.describe Test, type: :model do
       expect(valid_test.errors[:target]).to include('Missing attribute: target')
     end
 
-    it 'is valid without a target for compile, memory_errors, script, or style test types' do
-      [ 'compile', 'memory_errors', 'script', 'style' ].each do |type|
+    it 'is valid without a target for compile, memory_errors, or script test types' do
+      [ 'compile', 'memory_errors', 'script' ].each do |type|
         valid_test.test_type = type
         valid_test.target = nil
-        expect(valid_test).to be_valid
+        expect(valid_test.errors[:target]).to_not include('Missing attribute: target')
       end
     end
 
-    it 'is invalid without actual_test' do
-      valid_test.actual_test = nil
+    it 'is invalid without test_block' do
+      valid_test.test_block = {}
       expect(valid_test).to_not be_valid
-      expect(valid_test.errors[:actual_test]).to include("can't be blank")
+      expect(valid_test.errors[:test_block]).to include("can't be blank")
+    end
+
+    it 'is invalid with an unknown test_block key' do
+      valid_test.test_type = 'unit'
+      valid_test.test_block = { invalid_key: 'some value' }
+      expect(valid_test).to_not be_valid
+      expect(valid_test.errors[:test_block]).to include("unit test must have attribute(s): code")
     end
   end
 
@@ -94,6 +101,83 @@ RSpec.describe Test, type: :model do
 
     it 'sets visibility to visible by default' do
       expect(valid_test.visibility).to eq('visible')
+    end
+  end
+
+  describe '#get_test_block_string' do
+    it 'correct format for approved_includes' do
+      valid_test.test_type = 'approved_includes'
+      valid_test.test_block = { approved_includes: [ 'include1', 'include2' ] }
+      expect(valid_test.get_test_block_string).to eq("\tinclude1\n\tinclude2")
+    end
+
+    it 'correct format for compile' do
+      valid_test.test_type = 'compile'
+      valid_test.test_block = { file_paths: [ 'file1', 'file2' ] }
+      expect(valid_test.get_test_block_string).to eq("\tfile1\n\tfile2")
+    end
+
+    it 'correct format for memory_errors' do
+      valid_test.test_type = 'memory_errors'
+      valid_test.test_block = { file_paths: [ 'file1', 'file2' ] }
+      expect(valid_test.get_test_block_string).to eq("\tfile1\n\tfile2")
+    end
+
+    it 'correct format for coverage' do
+      valid_test.test_type = 'coverage'
+      valid_test.test_block = { source_paths: [ 'source1', 'source2' ], main_path: 'main' }
+      expect(valid_test.get_test_block_string).to eq("\tsource: source1 source2\n\tmain: main")
+    end
+
+    it 'correct format for unit' do
+      valid_test.test_type = 'unit'
+      valid_test.test_block = { code:
+        "EXPECT_FALSE(is_prime(867));\n" \
+        "EXPECT_TRUE(is_prime(5309));\n" \
+        "EXPECT_TRUE(is_prime(8675309));"
+      }
+      expect(valid_test.get_test_block_string).to eq(
+        "\tEXPECT_FALSE(is_prime(867));\n" \
+        "\tEXPECT_TRUE(is_prime(5309));\n" \
+        "\tEXPECT_TRUE(is_prime(8675309));"
+      )
+    end
+
+    it 'correct format for performance' do
+      valid_test.test_type = 'performance'
+      valid_test.test_block = { code:
+        "size_t cnt = 1;\n" \
+        "for (unsigned n = 3; n < 2000000; n++) {\n" \
+        "  if (is_prime(n)) cnt++;\n" \
+        "}\n" \
+        "std::cout << \"  found \" << cnt << \" primes.\" << std::endl;\n" \
+        "EXPECT_EQ(cnt, 148933);"
+      }
+      expect(valid_test.get_test_block_string).to eq(
+        "\tsize_t cnt = 1;\n" \
+        "\tfor (unsigned n = 3; n < 2000000; n++) {\n" \
+        "\t  if (is_prime(n)) cnt++;\n" \
+        "\t}\n" \
+        "\tstd::cout << \"  found \" << cnt << \" primes.\" << std::endl;\n" \
+        "\tEXPECT_EQ(cnt, 148933);"
+      )
+    end
+
+    it 'correct format for i_o' do
+      valid_test.test_type = 'i_o'
+      valid_test.test_block = { input_path: 'input.txt', output_path: 'output.txt' }
+      expect(valid_test.get_test_block_string).to eq("\tinput: input.txt\n\toutput: output.txt")
+    end
+
+    it 'correct format for script' do
+      valid_test.test_type = 'script'
+      valid_test.test_block = { script_path: 'script.sh' }
+      expect(valid_test.get_test_block_string).to eq("\tscript.sh")
+    end
+
+    it 'raises an error for an unknown test type' do
+      valid_test.test_type = 'invalid_type'
+      expect { valid_test.get_test_block_string }.to raise_error('Unknown test type: invalid_type')
     end
   end
 end

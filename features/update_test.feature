@@ -2,7 +2,8 @@ Feature: Update an existing test case
     As an instructor or TA with write access to an assignment
     So that I can test some functionality of student code
     I want to update an existing test case in an assignment
-
+    
+    @javascript
     Scenario Outline: Update an existing test case
         Given I am logged in as an "instructor"
         Given the following assignments exist:
@@ -20,10 +21,11 @@ Feature: Update an existing test case
             | memory_errors     |
             | coverage          |
             | unit              |
-            | i/o               |
+            | i_o               |
             | performance       |
             | script            |
 
+    @javascript
     Scenario Outline: Update an existing test case with invalid input
         Given I am logged in as an "instructor"
         Given the following assignments exist:
@@ -41,7 +43,7 @@ Feature: Update an existing test case
             | memory_errors     |
             | coverage          |
             | unit              |
-            | i/o               |
+            | i_o               |
             | performance       |
             | script            |
 

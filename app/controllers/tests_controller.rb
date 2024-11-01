@@ -111,7 +111,7 @@ class TestsController < ApplicationController
 
   def set_test_grouping_id
     position = params[:test][:test_grouping_position]
-    test_grouping = TestGrouping.find_by(position: position)
+    test_grouping = TestGrouping.find_by(assignment_id: @assignment.id, position: position)
     @test.test_grouping_id = test_grouping.id if test_grouping
   end
 
@@ -148,6 +148,29 @@ private
 
   # Only allow a list of trusted parameters through.
   def test_params
-    params.require(:test).permit(:name, :points, :test_type, :target, :include, :position, :show_output, :skip, :timeout, :visibility, :assignment_id, :actual_test, :test_grouping_id)
+    params.require(:test).permit(
+      :name,
+      :points,
+      :test_type,
+      :target,
+      :include,
+      :position,
+      :show_output,
+      :skip,
+      :timeout,
+      :visibility,
+      :assignment_id,
+      :test_grouping_id,
+      test_block: [
+        :main_path,
+        :code,
+        :input_path,
+        :output_path,
+        :script_path,
+        approved_includes: [],
+        file_paths: [],
+        source_paths: []
+      ]
+    )
   end
 end

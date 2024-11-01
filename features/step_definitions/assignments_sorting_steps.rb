@@ -4,9 +4,9 @@ Given("the following assignments with creation time exist:") do |table|
     end
 end
 
-Then('I should see a table displaying assignments with columns for "Repository Name", "Created On", "Last Updated", and "Actions"') do
+Then('I should see a table displaying assignments with columns for "Assignment Name", "Created On", "Last Updated", and "Actions"') do
     within('table') do
-        expect(page).to have_css('th', text: 'Repository Name')
+        expect(page).to have_css('th', text: 'Assignment Name')
         expect(page).to have_css('th', text: 'Created On')
         expect(page).to have_css('th', text: 'Last Updated')
         expect(page).to have_css('th', text: 'Actions')

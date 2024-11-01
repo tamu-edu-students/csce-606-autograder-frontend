@@ -133,14 +133,24 @@ RSpec.describe Assignment, type: :model do
 
     before do
       allow(Git).to receive(:clone)
+      allow(FileUtils).to receive(:rm_rf)
+    end
+
+    it 'removes a local clone if it already exists' do
+      allow(Dir).to receive(:exist?).with(local_repo_path).and_return(true)
+      allow(Dir).to receive(:exist?).with("#{local_repo_path}/.git").and_return(false)
+      assignment.send(:clone_repo_to_local, auth_token)
+      expect(FileUtils).to have_received(:rm_rf).with(local_repo_path)
     end
 
     it 'clones the repository successfully' do
+      allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
       expect(Git).to receive(:clone).with(authenticated_url, assignment.local_repository_path).and_return(true)
       assignment.send(:clone_repo_to_local, auth_token)
     end
 
     it 'rescues the error when Git clone fails' do
+      allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
       allow(Git).to receive(:clone).and_raise(Git::Error.new("Failed to clone"))
       expect { assignment.send(:clone_repo_to_local, auth_token) }.to output(/An error occurred: Failed to clone/).to_stdout
     end
@@ -255,21 +265,22 @@ RSpec.describe Assignment, type: :model do
   end
 
   describe '#push_changes_to_github' do
-    it 'commits local changes and pushes to the remote repository if the local repository exists' do
+    before do
+      allow(assignment).to receive(:clone_repo_to_local).with(auth_token)
+    end
+
+    it 'reclones the remote repository, commits local changes and pushes to the remote repository' do
+      expect(assignment).to receive(:clone_repo_to_local).with(auth_token)
       expect(assignment).to receive(:commit_local_changes).with(local_repo_path, user)
       expect(assignment).to receive(:sync_to_github).with(local_repo_path)
 
-      # Call the method
       assignment.push_changes_to_github(user, auth_token)
     end
 
-    it 'logs an error if the local repository does not exist' do
-      # Simulate the repo not existing
+    it 'logs an error if local repository is not found after cloning step' do
       allow(Dir).to receive(:exist?).with(local_repo_path).and_return(false)
-
       expect(Rails.logger).to receive(:error).with("Local repository not found for #{assignment.repository_name}")
 
-      # Call the method
       assignment.push_changes_to_github(user, auth_token)
     end
   end
@@ -310,6 +321,50 @@ RSpec.describe Assignment, type: :model do
         expect { assignment.send(:sync_to_github, local_repo_path) }
           .to raise_error(Git::GitExecuteError, 'Push error')
       end
+    end
+  end
+
+  describe '#fetch_directory_structure' do
+    let(:github_token) { 'test_github_token' }
+    let(:assignment) { Assignment.new(assignment_name: 'Test Assignment', repository_name: repository_name) }
+    let(:client) { instance_double(Octokit::Client) }
+    let(:organization) { 'AutograderFrontend' }
+    let(:repository_name) { 'test_repo' }
+    let(:repo_path) { "#{organization}/#{repository_name}" }
+    let(:directory_content) do
+      [
+        { type: 'dir', name: 'folder1', path: 'tests/folder1' },
+        { type: 'file', name: 'file1.txt', path: 'tests/file1.txt' }
+      ]
+    end
+    let(:folder1_content) do
+      [
+        { type: 'file', name: 'file2.txt', path: 'tests/folder1/file2.txt' }
+      ]
+    end
+
+    before do
+      allow(Octokit::Client).to receive(:new).and_return(client)
+      # Stub for the root 'tests' directory
+      allow(client).to receive(:contents).with(repo_path, path: 'tests').and_return(directory_content)
+      # Stub for the 'tests/folder1' directory, to handle recursion in build_file_tree
+      allow(client).to receive(:contents).with(repo_path, path: 'tests/folder1').and_return(folder1_content)
+    end
+
+    it 'returns the file tree structure for the tests directory' do
+      result = assignment.fetch_directory_structure(github_token)
+      expect(result).to be_an(Array)
+      expect(result.first[:name]).to eq('folder1')
+      expect(result.first[:type]).to eq('directory')
+      expect(result.first[:children].first[:name]).to eq('file2.txt')
+      expect(result.first[:children].first[:type]).to eq('file')
+    end
+
+    it 'logs an error and returns an empty array if a GitHub API error occurs' do
+      allow(client).to receive(:contents).with(repo_path, path: 'tests').and_raise(Octokit::Error.new({ message: "GitHub API Error" }))
+
+      expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
+      expect(assignment.fetch_directory_structure(github_token)).to eq([])
     end
   end
 end
