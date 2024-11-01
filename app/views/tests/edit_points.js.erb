@@ -1,0 +1,81 @@
+console.log('edit_points.js.erb rendered');
+console.log('Test ID:', <%= @test.id %>);
+
+var testCard = document.querySelector("[data-test-id='<%= @test.id %>']");
+console.log('Test card found:', !!testCard);
+
+if (testCard) {
+  console.log('Test card HTML:', testCard.innerHTML);
+  
+  var container = testCard.querySelector('.edit-form-container');
+  console.log('Container found:', !!container);
+  
+  if (!container) {
+    console.log('Container not found, creating it');
+    container = document.createElement('div');
+    container.className = 'edit-form-container';
+    testCard.appendChild(container);
+  }
+  
+  container.innerHTML = `
+    <div class="edit-form">
+      <strong><%= @test.name %></strong>
+      <%= form_with model: [@assignment, @test_grouping, @test], url: update_points_assignment_test_grouping_test_path(@assignment, @test_grouping, @test), method: :post, local: false do |form| %>
+        <div class="form-group">
+          <%= form.label :points, "Points:" %>
+          <%= form.number_field :points, value: @test.points, class: "form-control d-inline", min: 0, style: "width: 80px;" %>
+        </div>
+        <div class="form-actions">
+          <%= form.submit "Save", class: "btn btn-sm btn-primary" %>
+          <button type="button" class="btn btn-sm btn-secondary cancel-edit">Cancel</button>
+        </div>
+      <% end %>
+    </div>
+  `;
+  container.style.display = 'block';
+  
+  var testInfo = testCard.querySelector('.test-info');
+  if (testInfo) {
+    testInfo.style.display = 'none';
+  }
+  
+  console.log('Form inserted and shown');
+
+  // Add event listener for cancel button
+  var cancelButton = container.querySelector('.cancel-edit');
+  if (cancelButton) {
+    cancelButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      container.style.display = 'none';
+      if (testInfo) {
+        testInfo.style.display = 'block';
+      }
+    });
+  }
+
+  // Add event listener for form submission
+  var form = container.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var formData = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        credentials: 'same-origin'
+      }).then(response => {
+          if (response.ok) {
+            console.log('Update successful, reloading page');
+            window.location.reload();
+          } else {
+            console.error('Update failed');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  }
+}

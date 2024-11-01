@@ -249,11 +249,11 @@ RSpec.describe AssignmentsController, type: :controller do
     it 'updates Github permissions' do
       allow(User).to receive(:all).and_return(User.where(id: [ user1.id, user2.id, user3.id ]))
       expect(@mock_client).to receive(:add_collaborator)
-      .with('AutograderFrontend/test-assignment', user1.name, permission: 'pull')
+      .with("AutograderFrontend/#{assignment.repository_name}", user1.name, permission: 'pull')
       expect(@mock_client).to receive(:add_collaborator)
-        .with('AutograderFrontend/test-assignment', user2.name, permission: 'push')
+        .with("AutograderFrontend/#{assignment.repository_name}", user2.name, permission: 'push')
       expect(@mock_client).to receive(:remove_collaborator)
-        .with('AutograderFrontend/test-assignment', user3.name)
+        .with("AutograderFrontend/#{assignment.repository_name}", user3.name)
       post :update_users, params: valid_params
     end
   end
