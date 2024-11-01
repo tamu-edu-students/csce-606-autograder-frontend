@@ -11,4 +11,3 @@ FactoryBot.define do
       # Add any other necessary attributes and associations here
     end
   end
-  

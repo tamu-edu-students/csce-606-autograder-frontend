@@ -419,18 +419,16 @@ RSpec.describe AssignmentsController, type: :controller do
     let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
 
     it 'updates the positions of tests based on test_ids' do
-      post :update_order, params: { assignment_id: assignment.id, test_ids: [test2.id, test1.id] }
+      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
       expect(test1.reload.position).to eq(2)
       expect(test2.reload.position).to eq(1)
     end
 
     it 'responds with a success status and JSON message' do
-      post :update_order, params: { assignment_id: assignment.id, test_ids: [test2.id, test1.id] }
+      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
       expect(response).to have_http_status(:success)
       expect(response.content_type).to include("application/json")
       expect(JSON.parse(response.body)).to eq("status" => "success")
     end
   end
-
-
 end
