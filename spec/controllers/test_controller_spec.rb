@@ -133,7 +133,6 @@ RSpec.describe TestsController, type: :controller do
   end
 
   describe 'GET #edit_points' do
-
     describe 'when all records are found' do
       before do
         allow(Rails.logger).to receive(:debug)
