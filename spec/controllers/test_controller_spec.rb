@@ -133,9 +133,6 @@ RSpec.describe TestsController, type: :controller do
   end
 
   describe 'GET #edit_points' do
-    let(:assignment) { create(:assignment) }
-    let(:test_grouping) { create(:test_grouping, assignment: assignment) }
-    let(:test) { create(:test, test_grouping: test_grouping) }
 
     describe 'when all records are found' do
       before do
