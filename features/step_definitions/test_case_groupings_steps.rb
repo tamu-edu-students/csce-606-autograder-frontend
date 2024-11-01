@@ -71,14 +71,52 @@
   When("I move {string} to after {string} in {string} group") do |test_name, target_test_name, group_name|
     # Find the test group container
     group = find(".test-grouping-title", text: group_name).ancestor(".test-grouping-card")
-
+  
     # Find the source and target test cards
     source_test = group.find(".test-card", text: test_name)
     target_test = group.find(".test-card", text: target_test_name)
-
-    # Perform drag-and-drop using JavaScript
-    page.driver.browser.action.drag_and_drop(source_test.native, target_test.native).perform
+  
+    # Execute JavaScript to simulate the drag-and-drop
+    page.execute_script(<<~JS, source_test[:id], target_test[:id])
+      function simulateDragAndDrop(sourceId, targetId) {
+        const source = document.getElementById(sourceId);
+        const target = document.getElementById(targetId);
+  
+        if (!source || !target) {
+          console.error('Source or target element not found');
+          return;
+        }
+  
+        const dataTransfer = new DataTransfer();
+        const dragStartEvent = new DragEvent('dragstart', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: dataTransfer
+        });
+        source.dispatchEvent(dragStartEvent);
+  
+        const dropEvent = new DragEvent('drop', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: dataTransfer
+        });
+        target.dispatchEvent(dropEvent);
+  
+        const dragEndEvent = new DragEvent('dragend', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: dataTransfer
+        });
+        source.dispatchEvent(dragEndEvent);
+      }
+  
+      simulateDragAndDrop(arguments[0], arguments[1]);
+    JS
+  
+    # Wait for the UI update and any potential server processing
+    sleep 1
   end
+  
 
   Then("I should see {string} after {string} in {string} group") do |test_name, target_test_name, group_name|
     # Find the test group container
