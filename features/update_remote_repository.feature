@@ -14,7 +14,7 @@ Feature: Update remote assignment repository
         | assignment_name | repository_name   |
         | csce-120-hw1    | csce-120-hw1      |
         Given "charlie" has write access to the "csce-120-hw1" repository
-        
+
 
     Scenario: New file is added to local repository
         When We add a new file under the local "csce-120-hw1" repository
@@ -26,10 +26,10 @@ Feature: Update remote assignment repository
         When We modify an existing file under the local "csce-120-hw1" repository
         Then We should see a local commit message indicating the file was modified by "charlie"
         And We should see a remote commit message indicating the file was modified by "charlie"
-        And We should see the modified file in the "csce-120-hw1" repository on GitHub 
+        And We should see the modified file in the "csce-120-hw1" repository on GitHub
 
     Scenario: Existing file is deleted in local repository
-        When We delete an existing file under the local "csce-120-hw1" repository 
-        Then We should see a local commit message indicating the file was deleted by "charlie" 
-        And We should see a remote commit message indicating the file was deleted by "charlie" 
+        When We delete an existing file under the local "csce-120-hw1" repository
+        Then We should see a local commit message indicating the file was deleted by "charlie"
+        And We should see a remote commit message indicating the file was deleted by "charlie"
         And We should not see the deleted file in the "csce-120-hw1" repository on GitHub

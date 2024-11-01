@@ -3,7 +3,6 @@ require 'rspec/mocks'
 Before do
   RSpec::Mocks.setup
   allow_any_instance_of(Assignment).to receive(:push_changes_to_github)
-
   allow_any_instance_of(Assignment).to receive(:fetch_directory_structure).and_return(
     [
       { name: ".gitignore", type: "file" },
