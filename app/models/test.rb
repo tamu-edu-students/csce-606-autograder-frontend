@@ -4,7 +4,7 @@ class Test < ApplicationRecord
 
   acts_as_list scope: :test_grouping
 
-  VALID_TEST_TYPES = [ "approved_includes", "compile", "coverage", "i/o", "memory_errors", "performance", "script", "unit"  ]
+  VALID_TEST_TYPES = [ "approved_includes", "compile", "coverage", "i_o", "memory_errors", "performance", "script", "unit"  ]
 
   # Validations for required fields
   validates :test_block, presence: true
@@ -45,7 +45,7 @@ class Test < ApplicationRecord
     when "unit", "performance"
       # code block with prepended tabs on each line
       test_block["code"].split("\n").map { |line| "\t#{line}" }.join("\n")
-    when "i/o"
+    when "i_o"
       # input and output paths with prepended tabs
       "\tinput: #{test_block["input_path"]}\n" \
       "\toutput: #{test_block["output_path"]}"
@@ -71,7 +71,7 @@ class Test < ApplicationRecord
       "compile" => %w[file_paths],
       "coverage" => %w[source_paths main_path],
       "unit" => %w[code],
-      "i/o" => %w[input_path output_path],
+      "i_o" => %w[input_path output_path],
       "performance" => %w[code],
       "script" => %w[script_path],
       "memory_errors" => %w[file_paths]
