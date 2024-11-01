@@ -56,7 +56,7 @@
 #   describe "PATCH /assignments/:assignment_id/tests/:id" do
 #     context "with valid parameters" do
 #       it "updates the test and redirects" do
-#         patch assignment_test_path(assignment, test_case), params: { test: { name: 'Updated Test', points: 15, test_type: 'i/o', test_block: 'Updated code' } }
+#         patch assignment_test_path(assignment, test_case), params: { test: { name: 'Updated Test', points: 15, test_type: 'i_o', test_block: 'Updated code' } }
 #         expect(response).to redirect_to(assignment_path(assignment, test_case))
 #         follow_redirect!
 #         expect(response.body).to include("Test was successfully updated.")

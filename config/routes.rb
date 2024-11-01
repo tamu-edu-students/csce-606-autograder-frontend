@@ -38,6 +38,11 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
+  # Route for dynamically loading the test block
+  get "test_blocks/:test_type", to: "assignments#render_test_block_partial", as: "render_test_block_partial"
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # config/routes.rb
+  # get "/favicon.ico", to: proc { [ 204, {}, [] ] }
 end

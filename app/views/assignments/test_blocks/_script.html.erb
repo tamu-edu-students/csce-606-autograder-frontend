@@ -1,0 +1,9 @@
+<div class="form-group mb-3">
+  <label for="script_path">Script Path</label>
+  <input type="text" 
+         id="test_block_script_path" 
+         name="test[test_block][script_path]" 
+         class="form-control" 
+         placeholder="Enter Script Path" 
+         value="<%= test&.test_block&.dig('script_path') %>">
+</div>
