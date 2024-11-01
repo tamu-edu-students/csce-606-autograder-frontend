@@ -1,13 +1,5 @@
 require 'rspec/mocks'
 
-Before do
-  RSpec::Mocks.setup
-end
-
-After do
-  RSpec::Mocks.teardown
-end
-
 When("I upload a new file {string} under the {string} folder") do |file_name, folder_name|
     # Simulate the file input element and create a fake file object
     file_path = Rails.root.join("spec/fixtures/#{file_name}")
