@@ -2,9 +2,22 @@ require 'rails_helper'
 RSpec.describe TestsController, type: :controller do
   let!(:assignment) { Assignment.create!(assignment_name: 'Assignment 1', repository_name: 'assignment-1') }
 
-  let!(:test_case) { assignment.tests.create!(name: 'Test 1', points: 10, test_type: 'unit', target: 'target', test_block: { code: 'Test code' }) }
+  let!(:test_case) do
+    assignment.tests.create!(
+      name: 'Test 1',
+      points: 10,
+      test_type: 'unit',
+      target: 'target',
+      test_block: { code: 'Test code' }
+    )
+  end
 
   let(:user) { User.create!(name: 'User', email: 'test@example.com') }
+
+  let(:test_grouping) { create(:test_grouping, assignment: assignment) }
+  let(:valid_params) { { points: 10 } }
+  let(:invalid_params) { { points: nil } }
+  let(:current_user) { create(:user) }
   # Mock authentication helper methods
   before do
     allow(controller).to receive(:current_user_and_token).and_return([ double("User"), "mock_auth_token" ])
@@ -116,6 +129,110 @@ RSpec.describe TestsController, type: :controller do
     it "update_remote is called" do
       delete :destroy, params: { assignment_id: assignment.id, id: test_case.id }
       expect(controller).to have_received(:update_remote)
+    end
+  end
+
+  describe 'GET #edit_points' do
+    let(:assignment) { create(:assignment) }
+    let(:test_grouping) { create(:test_grouping, assignment: assignment) }
+    let(:test) { create(:test, test_grouping: test_grouping) }
+
+    describe 'when all records are found' do
+      before do
+        allow(Rails.logger).to receive(:debug)
+        allow(controller).to receive(:puts)
+      end
+
+      it 'assigns the correct instance variables' do
+        get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
+        expect(assigns(:assignment)).to eq(assignment)
+        expect(assigns(:test_grouping)).to eq(test_grouping)
+        expect(assigns(:test)).to eq(test_case)
+      end
+
+      it 'responds with JS format' do
+        get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
+        expect(response.content_type).to include('text/javascript')
+      end
+    end
+
+    describe 'when assignment is not found' do
+      it 'raises ActiveRecord::RecordNotFound' do
+        expect {
+          get :edit_points, params: { assignment_id: 'non_existent', test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe 'when test_grouping is not found' do
+      it 'raises ActiveRecord::RecordNotFound' do
+        test_case = create(:test, test_grouping: create(:test_grouping, assignment: assignment))
+
+        expect {
+          get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: 'non_existent', id: test_case.id }, format: :js
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+
+    describe 'when test is not found' do
+      it 'raises ActiveRecord::RecordNotFound' do
+        expect {
+          get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: 'non_existent' }, format: :js
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe 'when assignment is nil' do
+      before do
+        allow(Assignment).to receive(:find).and_return(nil)
+      end
+
+      it 'raises ActiveRecord::RecordNotFound' do
+        expect {
+          get :edit_points, params: { assignment_id: 'non_existent', test_grouping_id: 'any', id: 'any' }, format: :js
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe 'PATCH #update_points' do
+    before do
+      allow(controller).to receive(:current_user_and_token).and_return([ current_user, "auth_token" ])
+      allow(controller).to receive(:update_remote)
+    end
+
+    describe "with valid parameters" do
+      it "updates the test points and redirects to the assignment path for HTML request" do
+        patch :update_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id, test: valid_params }, format: :html
+        test_case.reload
+
+        expect(test_case.points).to eq(10)
+        expect(controller).to have_received(:update_remote).with(current_user, "auth_token")
+        expect(response).to redirect_to(assignment_path(assignment))
+        expect(flash[:notice]).to eq("Test points updated successfully.")
+      end
+
+      it "updates the test points and returns success JSON response" do
+        patch :update_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id, test: valid_params }, format: :json
+        test_case.reload
+
+        expect(test_case.points).to eq(10)
+        expect(controller).to have_received(:update_remote).with(current_user, "auth_token")
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to eq("success" => true, "points" => 10)
+      end
+    end
+
+    describe "with invalid parameters" do
+      it "does not update the test points and returns an error in JSON format" do
+        patch :update_points, params: { assignment_id: assignment.id, test_grouping_id: test_grouping.id, id: test_case.id, test: invalid_params }, format: :json
+        test_case.reload
+
+        expect(test_case.points).to eq(10)
+        expect(response.content_type).to eq("application/json; charset=utf-8")
+        expect(JSON.parse(response.body)["success"]).to be_falsey
+      end
     end
   end
 end

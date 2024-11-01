@@ -8,7 +8,7 @@
 <div class="container" data-assignment-id="<%= @assignment.id %>">
   <div class="row">
     <div id = 'test' class="col-md-3">
-      <div class="scrollable-container">
+      <div class="scrollable-container" data-controller="points">
 
       <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment),
       local: true, html: { class: "d-flex align-items-center new-test-grouping-form" } do |form| %>
@@ -19,6 +19,9 @@
         <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
       </button>
     <% end %>
+
+          <div data-points-target="totalPoints">Total Points: <span>0</span></div>
+
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% if @test_groupings.present? %>
             <% @test_groupings.sort_by(&:position).each do | test_grouping | %>
@@ -26,30 +29,20 @@
               <div class="test-grouping-title"
               data-action="click->test-grouping-#toggleTestGrouping"
               data-test-grouping-id="<%= test_grouping.id %>">
-                <% if @editing_test_grouping_id == test_grouping.id %>
-                  <!-- If we are editing the current test grouping, show the form -->
-                  <%= form_with model: test_grouping, url: assignment_test_grouping_path(@assignment, test_grouping), method: :patch, local: true, remote: true do |form| %>
-                    <div class="d-inline-block">
-                      <%= form.text_field :name, class: "form-control d-inline", value: test_grouping.name %>
-                    </div>
-
-                    <!-- Save and Cancel buttons -->
-                    <%= form.submit "Save", class: "save-button" %>
-                    <button class="btn btn-sm btn-secondary" onclick="window.location.reload()">Cancel</button>
-                  <% end %>
-                <% else %>
                   <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
                   <%= "#{test_grouping.position}) #{test_grouping.name}" %>
 
                   <!-- Delete Button -->
                   <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
-                <% end %>
               </div>
 
                 <div class="test-list" id="test-list-<%= test_grouping.id %>">
                   <% test_grouping.tests.sort_by(&:position).each do | test | %>
-                    <div class="test-card" data-test-id="<%= test.id %>">
-                      <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
+                    <div class="test-card" data-test-id="<%= test.id %>" data-points-target="testInfo">
+                      <div class="test-info">
+                        <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
+                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button" %>
+                      </div>
                     </div>
                   <% end %>
                 </div>
