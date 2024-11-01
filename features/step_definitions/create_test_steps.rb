@@ -53,10 +53,9 @@ Then('I should see the {string} dynamic test block partial') do |type|
     end
     expect(page).to have_button("Add Source Path")
   when 'performance'
-    expect(page).to have_selector("input[name='test[test_block][code]']", visible: true)
+    expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true)
   when 'unit'
-    expect(page).to have_selector("input[name='test[test_block][code]']", visible: true)
-
+    expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true)
   when 'script'
     expect(page).to have_selector("input[name='test[test_block][script_path]']", visible: true)
   else

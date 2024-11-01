@@ -12,8 +12,6 @@ Given(/^I am logged in as an instructor$/) do
     fill_in 'Target', with: 'target.cpp'
     steps %(And I add the "#{test_type}" dynamic text block field)
     click_button "Create Test"
-
-    Capybara.default_max_wait_time = 10
     # Wait for the success message to ensure the test case is created
     expect(page).to have_content("Test was successfully created")
 
