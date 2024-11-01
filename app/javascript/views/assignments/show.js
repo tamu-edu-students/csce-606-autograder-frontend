@@ -1,41 +1,48 @@
-// Update the URL with the selected test and open grouping IDs
-function updateURL(element) {
-    const url = new URL(window.location);
-    const testId = element.dataset.test_id;
-    
 
-        // Ensure testId is defined before setting it in the URL
-    if (testId) {
-        url.searchParams.set("test_id", testId);
+  function loadTestPartial(testType) {
+    fetch(`/test_blocks/${testType}`)
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("dynamic-test-block-container").innerHTML = html;
+      })
+      .catch(error => console.error('Error loading test partial:', error));
+  }
+
+  function addNewField(containerId, placeholder, className = 'form-control mb-2') {
+    console.log(`Add button clicked for container: ${containerId}`);
+    const container = document.getElementById(containerId);
+    if (container) {
+      const newField = document.createElement('div');
+      newField.className = `${containerId}-field`; // Dynamic class based on container ID
+      newField.innerHTML = `<input type="text" 
+                            name="test[test_block][${containerId}][]" 
+                            class="${className}" 
+                            placeholder="${placeholder}">`;
+      container.appendChild(newField);
     } else {
-        console.error("test_id is undefined");
+      console.error(`${containerId} not found`);
     }
-    // Retrieve open groupings and add them to the URL
-    const openGroupings = Array.from(document.querySelectorAll('.dropdown-checkbox:checked'))
-      .map(checkbox => checkbox.nextElementSibling.dataset.groupingId);
-  
-    url.searchParams.set("test_id", testId);
-    if (openGroupings.length > 0) {
-      url.searchParams.set("open_groupings", openGroupings.join(","));
-    } else {
-      url.searchParams.delete("open_groupings");
-    }
-  
-    window.history.replaceState({}, '', url);
   }
   
-  // On page load, keep the specified groupings open
-  document.addEventListener("DOMContentLoaded", function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const openGroupings = urlParams.get("open_groupings");
+  // Specific functions that call the generic addNewField function
+  function addSourcePathField() {
+    addNewField('source-paths-container', 'Enter Source Path');
+  }
   
-    if (openGroupings) {
-      openGroupings.split(",").forEach(id => {
-        const checkbox = document.querySelector(`.dropdown-checkbox[id="group-${id}"]`);
-        if (checkbox) {
-          checkbox.checked = true;
-        }
-      });
-    }
-  });
+  function addCompilePathField() {
+    addNewField('compile-file-container', 'Enter Compile Path');
+  }
   
+  function addMemoryErrorsPathField() {
+    addNewField('memory-errors-container', 'Enter Memory Errors Path');
+  }
+  
+  function addApprovedIncludesField() {
+    addNewField('approved-includes-container', 'Enter Approved Includes');
+  }
+  
+  window.loadTestPartial = loadTestPartial;
+  window.addSourcePathField = addSourcePathField;
+  window.addCompilePathField = addCompilePathField;
+  window.addMemoryErrorsPathField = addMemoryErrorsPathField;
+  window.addApprovedIncludesField = addApprovedIncludesField;

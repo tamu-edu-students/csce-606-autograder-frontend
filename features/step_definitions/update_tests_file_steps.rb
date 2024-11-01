@@ -70,17 +70,15 @@ When('I set the target to {string}') do |string|
 end
 
 When('I fill in the {string} test block with {string}') do |test_type, test|
-  test_block = case test_type
+  case test_type
   when 'unit'
-    { code: test }
-  when 'approved_includes', 'compile', 'memory_errors', 'i/o',
+    fill_in 'Enter Unit', with: test
+  when 'approved_includes', 'compile', 'memory_errors', 'i_o',
     'script', 'coverage', 'performance'
     raise "Step not implemented for test type: #{test_type}"
   else
     raise "Unknown test type: #{test_type}"
   end
-
-  fill_in 'Test block', with: test_block.to_json
 end
 
 Then('I should see a success message') do
@@ -130,7 +128,7 @@ Given('the assignment contains {string} tests') do |string|
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Test block', with: { code: 'EXPECT_EQ(1, 1);' }.to_json
+    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
     click_button "Create Test"
   end
 end
@@ -139,4 +137,6 @@ When('I delete the {string} test') do |string|
   test = @assignment.tests.find_by(name: "test#{string.to_i+1}")
   visit assignment_path(@assignment, test_id: test.id)
   click_button 'Delete Test'
+
+  page.driver.browser.switch_to.alert.accept
 end
