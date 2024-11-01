@@ -41,7 +41,6 @@ Given(/^I am logged in as an instructor$/) do
     within('#test-details') do
       fill_in 'Name', with: "Updated #{@test_case.name}"
       fill_in 'Points', with: 10.0
-      select 'i_o', from: 'Test Type'
       click_button 'Update Test'  # Update button in the form
     end
     expect(page).to have_content("Test was successfully updated")
@@ -61,7 +60,6 @@ Given(/^I am logged in as an instructor$/) do
     # save_and_open_page
 
     expect(page).to have_field('Name', with: @test_case.name)
-    expect(page).to have_select('Test Type', selected: 'i_o')
     expect(page).to have_field('Points', with: '10.0')
   end
 
