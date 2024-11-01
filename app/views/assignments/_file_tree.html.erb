@@ -1,25 +1,26 @@
-<div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="file-checkbox-list" style="display: block;">
-  <ul>
-    <% @files.each do |item| %>
-      <% if item[:type] == "dir" %>
-        <li class="directory">
-          <span class="directory-name" 
-                data-path="<%= item[:path] %>"
-                data-action="click->file_selection#toggleDirectory">
-            <%= item[:name] %>
-          </span>
-        </li>
-      <% else %>
-        <li class="file">
-          <label>
-            <input type="checkbox" 
-                  class="file-checkbox" 
-                  data-file-path="<%= item[:path] %>"
-                  data-action="change->file_selection#updateField">
-            <%= item[:name] %>
-          </label>
-        </li>
-      <% end %>
-    <% end %>
-  </ul>
-</div>
+<div class="file-tree-container">
+        <h4>File Tree for <strong>/tests</strong> folder <span style="cursor: pointer; color: blue;" onclick="toggleTree()"></span></h4>
+        <div id="fileTreeContainer">
+          <%= render_file_tree(@directory_structure) %>
+        </div>
+      </div>
+      
+
+
+      <script>
+      const assignmentIdtemp = "<%= @assignment.id %>"; 
+
+      function toggleTree() {
+        document.getElementById('fileTreeContainer').classList.toggle('hidden');
+      }
+
+      function toggleFolder(element) {
+        const childrenContainer = element.parentNode.querySelector('.children-container');
+        if (childrenContainer) {
+          childrenContainer.classList.toggle('hidden');
+          element.classList.toggle('expanded');
+        }
+      }
+
+
+    </script>

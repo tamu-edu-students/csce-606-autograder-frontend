@@ -3,11 +3,17 @@ require 'rspec/mocks'
 Before do
   RSpec::Mocks.setup
   allow_any_instance_of(Assignment).to receive(:push_changes_to_github)
-  allow_any_instance_of(TestsHelper).to receive(:current_user_and_token).and_return(
-    [ User.create!(name: 'Test User', email: 'test@example.com'), 'fake_github_token' ]
+
+  allow_any_instance_of(Assignment).to receive(:fetch_directory_structure).and_return(
+    [
+      { name: ".gitignore", type: "file" },
+      { name: "README.md", type: "file" },
+      { name: "tests", type: "directory", children: [
+        { name: "unit_test.cpp", type: "file" }
+      ] }
+    ]
   )
 
-  # Simulate login by setting session and current_user
   @current_user = User.create!(name: 'sam', email: 'sam@example.com', role: 'instructor')
   page.set_rack_session(user_id: @current_user.id)
 end
@@ -64,17 +70,15 @@ When('I set the target to {string}') do |string|
 end
 
 When('I fill in the {string} test block with {string}') do |test_type, test|
-  test_block = case test_type
+  case test_type
   when 'unit'
-    { code: test }
-  when 'approved_includes', 'compile', 'memory_errors', 'i/o',
+    fill_in 'Enter Unit', with: test
+  when 'approved_includes', 'compile', 'memory_errors', 'i_o',
     'script', 'coverage', 'performance'
     raise "Step not implemented for test type: #{test_type}"
   else
     raise "Unknown test type: #{test_type}"
   end
-
-  fill_in 'Test block', with: test_block.to_json
 end
 
 Then('I should see a success message') do
@@ -124,7 +128,7 @@ Given('the assignment contains {string} tests') do |string|
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    fill_in 'Test block', with: { code: 'EXPECT_EQ(1, 1);' }.to_json
+    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
     click_button "Create Test"
   end
 end
@@ -133,4 +137,6 @@ When('I delete the {string} test') do |string|
   test = @assignment.tests.find_by(name: "test#{string.to_i+1}")
   visit assignment_path(@assignment, test_id: test.id)
   click_button 'Delete Test'
+
+  page.driver.browser.switch_to.alert.accept
 end

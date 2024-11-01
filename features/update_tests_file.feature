@@ -3,6 +3,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
   So that the .tests remains up to date with any changes
   I want to update the .tests file to reflect every test creation/update/deletion
 
+  @javascript
   Scenario Outline: Create a valid unit test for empty assignment
     Given the following assignments exist:
       | assignment_name | repository_name   |
@@ -23,8 +24,9 @@ Feature: Regenerate .tests file on test creation/update/deletion
     Examples:
       | type      | name  | points | target   | test_code                                               |
       | unit      | test1 | 1      | code.cpp | EXPECT_FALSE(is_prime(867));                            |
-      | unit      | test2 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
+      | unit      | test2 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));EXPECT_FALSE(is_prime(867)); |
 
+  @javascript
   Scenario Outline: Create a valid unit test for non-empty assignment
     Given the following assignments exist:
       | assignment_name | repository_name   |
@@ -44,9 +46,10 @@ Feature: Regenerate .tests file on test creation/update/deletion
 
     Examples:
       | type      | name  | points | target   | test_code                                               |
-      | unit      | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));\nEXPECT_FALSE(is_prime(867)); |
+      | unit      | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));EXPECT_FALSE(is_prime(867)); |
       | unit      | test4 | 1      | code.cpp | EXPECT_TRUE(is_even(64));                               |
 
+  @javascript
   Scenario Outline: Delete a unit test
     Given the following assignments exist:
       | assignment_name | repository_name   |

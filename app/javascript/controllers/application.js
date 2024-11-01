@@ -1,5 +1,6 @@
 import { Application } from "@hotwired/stimulus"
 import TestGroupingCardController from "../controllers/test_grouping_card_controller"
+import "../views/assignments/show"
 import FileSelectionController from "./file_selection_controller"
 
 const application = Application.start()
