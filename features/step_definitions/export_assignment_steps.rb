@@ -3,11 +3,11 @@ Given(/^I am logged in as an organization member$/) do
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
   end
 
-  When(/^I click the "Create and Download ZIP" button for "(.*)"$/) do |assignment_name|
+  When(/^I click the "Export to Gradescope" button for "(.*)"$/) do |assignment_name|
     @assignment = Assignment.find_by!(assignment_name: assignment_name)
     # mock
     FileUtils.touch(File.join(@assignment.local_repository_path, "#{@assignment.assignment_name}.zip"))
-    click_on 'Create and Download ZIP'
+    click_on 'Export to Gradescope'
   end
 
   Then(/^I should see "(.*)\.zip" file in my downloads folder$/) do |assignment_name|
