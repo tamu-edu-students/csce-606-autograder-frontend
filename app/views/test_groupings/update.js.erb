@@ -1,6 +1,0 @@
-
-$("#test-grouping-card-<%= @test_grouping.id %> .test-grouping-title").html(`
-  <%= "#{@test_grouping.position}) #{@test_grouping.name}" %>
-  <%= button_to "✎", edit_assignment_test_grouping_path(@assignment, @test_grouping), method: :get, remote: true, class: "btn btn-sm btn-secondary" %>
-  <%= button_to "x", assignment_test_grouping_path(@assignment, @test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
-`);

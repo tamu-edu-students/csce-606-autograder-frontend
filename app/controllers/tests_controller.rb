@@ -5,6 +5,7 @@ class TestsController < ApplicationController
   before_action :set_assignment
   # before_action :set_test_grouping
   before_action :set_test, only: [ :show, :edit, :update, :destroy ]
+  skip_before_action :verify_authenticity_token, only: [ :edit_points ]
 
 
   # GET /tests or /tests.json
@@ -79,7 +80,6 @@ class TestsController < ApplicationController
     end
   end
 
-
   # DELETE /assignments/:assignment_id/tests/:id
   def destroy
     @assignment = Assignment.find(params[:assignment_id])
@@ -93,6 +93,44 @@ class TestsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # GET
+  def edit_points
+    @assignment = Assignment.find(params[:assignment_id])
+    raise ActiveRecord::RecordNotFound if @assignment.nil?
+    @test_grouping = TestGrouping.find(params[:test_grouping_id])
+    @test = Test.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def update_points
+    @assignment = Assignment.find(params[:assignment_id])
+    @test_grouping = TestGrouping.find(params[:test_grouping_id])
+    @test = Test.find(params[:id])
+
+    if @test.update(test_params)
+      current_user, auth_token = current_user_and_token
+      update_remote(current_user, auth_token)
+
+      respond_to do |format|
+        format.html { redirect_to assignment_path(@assignment), notice: "Test points updated successfully." }
+        format.json { render json: { success: true, points: @test.points } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { success: false, error: @test.errors.full_messages.join(", ") } }
+      end
+    end
+  end
+
+  private
+
+  def test_params
+    params.require(:test).permit(:points)
+  end
+
 
   private
 

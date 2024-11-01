@@ -11,7 +11,12 @@ Rails.application.routes.draw do
   resources :assignments do
     resources :tests
     resources :test_groupings do
-      resources :tests
+      resources :tests do
+        member do
+          get :edit_points
+          post :update_points
+        end
+      end
     end
     collection do
       get "search"

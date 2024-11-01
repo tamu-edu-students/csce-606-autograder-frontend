@@ -162,11 +162,15 @@ class Assignment < ActiveRecord::Base
 
   # Commit local changes to the repository
   def commit_local_changes(local_repo_path, user)
-      git = Git.open(local_repo_path) # Assuming the `ruby-git` gem is being used
-      git.config("user.name", user.name) # Set the Git user name
-      git.config("user.email", user.email) # Set the Git user email
-      git.add(all: true) # Add all changes (new, modified, deleted files)
-      git.commit("Changes made by #{user.name}") # Use the passed user object to get username
+      begin
+        git = Git.open(local_repo_path) # Assuming the `ruby-git` gem is being used
+        git.config("user.name", user.name) # Set the Git user name
+        git.config("user.email", user.email) # Set the Git user email
+        git.add(all: true) # Add all changes (new, modified, deleted files)
+        git.commit("Changes made by #{user.name}") # Use the passed user object to get username
+      rescue Git::Error => e
+        puts "Error in commiting: #{e.message}"
+      end
   end
 
   # Push local changes to the GitHub repository
