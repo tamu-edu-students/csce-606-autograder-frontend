@@ -59,7 +59,6 @@
     group_title = find(".test-grouping-title", text: group_name)
     #group_title.click
     page.execute_script("arguments[0].click();", group_title)
-    save_and_open_screenshot
   end
 
   Then("I should see the following tests in {string} group:") do |group_name, table|
@@ -70,14 +69,51 @@
     end
   end
 
-  When('I move {string} to after {string} in {string} group') do |string, string2, string3|
-    #pending # Write code here that turns the phrase above into concrete actions
-    save_and_open_screenshot
+  When("I move {string} to after {string} in {string} group") do |test_name, target_test_name, group_name|
+    # Find the test group container
+    group = find(".test-grouping-title", text: group_name).ancestor(".test-grouping-card")
+  
+    # Find the source and target test cards
+    source_test = group.find(".test-card", text: test_name)
+    target_test = group.find(".test-card", text: target_test_name)
+  
+    # Perform drag-and-drop using JavaScript
+    page.driver.browser.action.drag_and_drop(source_test.native, target_test.native).perform
+
   end
 
-  Then('I should see {string} after {string} in {string} group') do |string, string2, string3|
-    pending # Write code here that turns the phrase above into concrete actions
+  Then("I should see {string} after {string} in {string} group") do |test_name, target_test_name, group_name|
+    # Find the test group container
+    group = find(".test-grouping-title", text: group_name).ancestor(".test-grouping-card")
+
+    test_names = group.all(".test-card").map(&:text)
+    puts test_names # Debug output to verify the order
+
+    # Find the matching entries in the array
+    formatted_test_name = test_names.find { |name| name.include?(test_name) }
+    formatted_target_name = test_names.find { |name| name.include?(target_test_name) }
+    
+    # Verify the positions
+    expect(test_names.index(formatted_test_name)).to be > test_names.index(formatted_target_name)
   end
+
+  Then("the positions of the tests in {string} group should be updated correctly") do |group_name|
+    # Find the test group in the database
+    group = TestGrouping.find_by(name: group_name)
+    tests_in_db = group.tests.order(:position)
+  
+    # Print positions for debugging
+    tests_in_db.each do |test|
+      puts "#{test.name} - Position: #{test.position}"
+    end
+  
+    # Verify that the positions are sequential
+    expected_positions = (1..tests_in_db.size).to_a
+    actual_positions = tests_in_db.map(&:position)
+    expect(actual_positions).to eq(expected_positions)
+  end
+  
+
 
   When('I select {string} for the assignment {string}') do |string, string2|
     pending # Write code here that turns the phrase above into concrete actions

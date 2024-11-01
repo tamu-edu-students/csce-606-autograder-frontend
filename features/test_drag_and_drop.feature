@@ -32,6 +32,7 @@ Feature: The user should be able to move test cards within and in-between groups
 
     When I move "Test_BF_1" to after "Test_BF_2" in "Basic Functionality" group
     Then I should see "Test_BF_1" after "Test_BF_2" in "Basic Functionality" group
+    And the positions of the tests in "Basic Functionality" group should be updated correctly
 #   Scenario: Move test in-between groups
 #     When I move "Test_BF_1" from "Basic Functionality" group to after "Test_EC_1" in "Edge Cases" group
 #     Then I should see "Test_BF_1" after "Test_EC_1" in "Edge Cases" group
