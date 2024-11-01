@@ -3,6 +3,8 @@ import TestGroupingCardController from "../controllers/test_grouping_card_contro
 import "../views/assignments/show"
 import PointsController from "./points_controller"
 
+import PointsController from "./points_controller"
+
 import FileSelectionController from "./file_selection_controller"
 
 const application = Application.start()
