@@ -42,6 +42,17 @@
     margin-top: 20px;
   }
 
+  .assignment-title {
+    display: flex;
+    margin-bottom: 30px;
+    background-color: #8b8d90;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    align-items: center;
+  }
+
 /* Styles for the form and submit button */
 form {
     display: flex;
