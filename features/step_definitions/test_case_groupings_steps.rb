@@ -11,7 +11,6 @@
   end
 
   Then("I should see {string} in the list of test case groupings") do |grouping_name|
-    save_and_open_screenshot
     within(".scrollable-container") do
       expect(page).to have_content(grouping_name)
     end
