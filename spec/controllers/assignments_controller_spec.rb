@@ -23,7 +23,7 @@ RSpec.describe AssignmentsController, type: :controller do
   let!(:user2) { create(:user) }
   let!(:user3) { create(:user) }
   let(:client) { instance_double(Octokit::Client) }
-  let!(:specific_test) { create(:test, assignment: assignment) }
+  let!(:specific_test) { create(:test, assignment: assignment, test_block: { code: 'Test code' }, test_type: 'unit') }
 
   before do
     allow(controller).to receive(:require_login).and_return(true)
