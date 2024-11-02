@@ -31,6 +31,8 @@ Feature: The user should be able to move test cards within and in-between groups
         | Test_BF_2   |
 
     When I move "Test_BF_1" to after "Test_BF_2" in "Basic Functionality" group
+    And I am on the "Assignment Management" page for "assignment1"
+    When I expand the "Basic Functionality" test group
     Then I should see "Test_BF_1" after "Test_BF_2" in "Basic Functionality" group
     And the positions of the tests in "Basic Functionality" group should be updated correctly
 #   Scenario: Move test in-between groups
