@@ -25,13 +25,92 @@
   end
 
   And("the following test case groupings exist for {string}:") do |assignment_name, table|
-    assignment = Assignment.find_by(assignment_name: assignment_name)
+    @assignment = Assignment.find_by(assignment_name: assignment_name)
 
     table.hashes.each do |row|
         grouping_name = row["grouping_name"]
-        TestGrouping.create!(name: grouping_name, assignment: assignment)
+        TestGrouping.create!(name: grouping_name, assignment: @assignment)
     end
   end
+
+  Given('some tests exist in {string} group in order:') do |grouping_name, table|
+    grouping = TestGrouping.find_by(name: grouping_name)
+
+    if grouping.nil?
+      puts "Test grouping not found."
+    end
+
+    table.hashes.each_with_index do |row, index|
+      Test.create!(
+        name: row["test_name"],
+        points: 10,
+        test_type: "unit",
+        target: "target.cpp",
+        position: index + 1,
+        test_grouping_id: grouping.id,
+        assignment_id: @assignment.id,
+        test_block: { code: "assert_equal(...)" }
+      )
+    end
+  end
+
+  When("I expand the {string} test group") do |group_name|
+    group_title = find(".test-grouping-title", text: group_name)
+    # group_title.click
+    page.execute_script("arguments[0].click();", group_title)
+  end
+
+  Then("I should see the following tests in {string} group:") do |group_name, table|
+    within(:css, ".test-grouping-card", text: group_name) do
+      table.hashes.each do |row|
+        expect(page).to have_content(row["test_name"])
+      end
+    end
+  end
+
+  When("I move {string} to after {string} in {string} group") do |test_name, target_test_name, group_name|
+    group = TestGrouping.find_by(name: group_name)
+    source_test = group.tests.find_by(name: test_name)
+    target_test = group.tests.find_by(name: target_test_name)
+
+    # Move the source test after the target test
+    new_position = target_test.position + 1
+
+    # Ensure no position duplication occurs
+    group.tests.where('position >= ?', new_position).order(:position).each do |test|
+      test.update!(position: test.position + 1)
+    end
+
+    source_test.update!(position: new_position)
+  end
+
+
+
+
+  Then("I should see {string} after {string} in {string} group") do |test_name, target_test_name, group_name|
+    # Find the test group container
+    group = find(".test-grouping-title", text: group_name).ancestor(".test-grouping-card")
+
+    test_names = group.all(".test-card").map(&:text)
+    puts test_names # Debug output to verify the order
+
+    # Find the matching entries in the array
+    formatted_test_name = test_names.find { |name| name.include?(test_name) }
+    formatted_target_name = test_names.find { |name| name.include?(target_test_name) }
+
+    # Verify the positions
+    expect(test_names.index(formatted_test_name)).to be > test_names.index(formatted_target_name)
+  end
+
+  Then("the positions of the tests in {string} group should be updated correctly") do |group_name|
+    group = TestGrouping.find_by(name: group_name)
+    test_positions = group.tests.order(:position).pluck(:name, :position)
+
+    test_positions.each_cons(2) do |(prev_test, prev_pos), (next_test, next_pos)|
+      expect(next_pos).to eq(prev_pos + 1), "Expected position of #{next_test} to follow #{prev_test}."
+    end
+  end
+
 
 
   When('I select {string} for the assignment {string}') do |string, string2|
