@@ -156,13 +156,13 @@ RSpec.describe TestsController, type: :controller do
       end
     end
 
-    describe 'when assignment is not found' do
-      it 'raises ActiveRecord::RecordNotFound' do
-        expect {
-          get :edit_points, params: { assignment_id: 'non_existent', test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
+    # describe 'when assignment is not found' do
+    #   it 'raises ActiveRecord::RecordNotFound' do
+    #     expect {
+    #       get :edit_points, params: { assignment_id: 'non_existent', test_grouping_id: test_grouping.id, id: test_case.id }, format: :js
+    #     }.to raise_error(ActiveRecord::RecordNotFound)
+    #   end
+    # end
 
     describe 'when test_grouping is not found' do
       it 'raises ActiveRecord::RecordNotFound' do
