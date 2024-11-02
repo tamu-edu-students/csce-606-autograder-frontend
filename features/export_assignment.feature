@@ -9,5 +9,5 @@ Feature: Export assignment
         | assignment_name | repository_name |
         | csce-120-hw1    | csce-120-hw1    |
     Given I am on the "Assignment Management" page for "csce-120-hw1"
-    When I click the "Create and Download ZIP" button for "csce-120-hw1"
+    When I click the "Export to Gradescope" button for "csce-120-hw1"
     Then I should see "csce-120-hw1.zip" file in my downloads folder
