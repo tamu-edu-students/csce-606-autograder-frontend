@@ -65,38 +65,43 @@ end
 
 # this need to be changed into add dynamic test block field
 Given('I add the {string} dynamic text block field') do |test_type|
-  Capybara.using_wait_time 5 do
     case test_type
-    when 'approved_includes'
-      fill_in 'Enter Approved Includes', with: 'file1'
-      click_button "Add Approved Includes"
-      fill_in 'Enter Approved Includes', with: 'file2', match: :first
-    when 'compile'
-      fill_in 'Enter Compile Path', with: 'file1'
-      click_button 'Add Compile Path'
-      fill_in 'Enter Compile Path', with: 'file2', match: :first
-    when 'coverage'
-      fill_in 'Enter Main Path', with: 'main'
-
-      fill_in 'Enter Source Path', with: 'source1'
-      click_button 'Add Source Path'
-      fill_in 'Enter Source Path', with: 'source2', match: :first
-    when 'performance'
-      fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
-    when 'unit'
-      fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
-    when 'i_o'
-      fill_in 'Enter Input Path', with: 'input'
-      fill_in 'Enter Output Path', with: 'output'
-    when 'memory_errors'
-      fill_in 'Enter Memory Errors Path', with: 'file1'
-      click_button 'Add Memory Errors Path'
-      fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
-    when 'script'
-      fill_in 'Enter Script Path', with: 'script'
-    else
-      raise "Unknown test type: #{test_type}"
-    end
+  when 'approved_includes'
+    expect(page).to have_field('Enter Approved Includes', wait: 10)
+    fill_in 'Enter Approved Includes', with: 'file1'
+    click_button "Add Approved Includes"
+    fill_in 'Enter Approved Includes', with: 'file2', match: :first
+  when 'compile'
+    expect(page).to have_field('Enter Compile Path', wait: 10)
+    fill_in 'Enter Compile Path', with: 'file1'
+    click_button 'Add Compile Path'
+    fill_in 'Enter Compile Path', with: 'file2', match: :first
+  when 'coverage'
+    expect(page).to have_field('Enter Main Path', wait: 10)
+    fill_in 'Enter Main Path', with: 'main'
+    fill_in 'Enter Source Path', with: 'source1'
+    click_button 'Add Source Path'
+    fill_in 'Enter Source Path', with: 'source2', match: :first
+  when 'performance'
+    expect(page).to have_field('Enter Performance', wait: 10)
+    fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
+  when 'unit'
+    expect(page).to have_field('Enter Unit', wait: 10)
+    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
+  when 'i_o'
+    expect(page).to have_field('Enter Input Path', wait: 10)
+    fill_in 'Enter Input Path', with: 'input'
+    fill_in 'Enter Output Path', with: 'output'
+  when 'memory_errors'
+    expect(page).to have_field('Enter Memory Errors Path', wait: 10)
+    fill_in 'Enter Memory Errors Path', with: 'file1'
+    click_button 'Add Memory Errors Path'
+    fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
+  when 'script'
+    expect(page).to have_field('Enter Script Path', wait: 10)
+    fill_in 'Enter Script Path', with: 'script'
+  else
+    raise "Unknown test type: #{test_type}"
   end
 end
 
