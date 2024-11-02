@@ -455,37 +455,37 @@ RSpec.describe AssignmentsController, type: :controller do
     end
   end
 
-  # describe 'GET #render_test_block_partial' do
-  #   before do
-  #     @test = create(:test, assignment: assignment)
-  #   end
+  describe 'GET #render_test_block_partial' do
+    before do
+      @test = create(:test, assignment: assignment, test_type: 'unit')
+    end
 
-  #   it 'renders the appropriate partial for a given test type' do
-  #     get :render_test_block_partial, params: { test_type: @test.test_type }
-  #     expect(response).to render_template(partial: "assignments/test_blocks/_unit")
-  #   end
+    it 'renders the appropriate partial for a given test type' do
+      get :render_test_block_partial, params: { test_type: @test.test_type }
+      expect(response).to render_template(partial: "assignments/test_blocks/_unit")
+    end
 
-  #   it 'responds with a success status' do
-  #     get :render_test_block_partial, params: { test_type: 'compile', id: assignment.id }, xhr: true
-  #     expect(response).to have_http_status(:success)
-  #   end
-  # end
+    it 'responds with a success status' do
+      get :render_test_block_partial, params: { test_type: 'compile', id: assignment.id }, xhr: true
+      expect(response).to have_http_status(:success)
+    end
+  end
 
-  # describe 'POST #update_order' do
-  #   let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1') }
-  #   let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
+  describe 'POST #update_order' do
+    let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1') }
+    let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
 
-  #   it 'updates the positions of tests based on test_ids' do
-  #     post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
-  #     expect(test1.reload.position).to eq(2)
-  #     expect(test2.reload.position).to eq(1)
-  #   end
+    it 'updates the positions of tests based on test_ids' do
+      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
+      expect(test1.reload.position).to eq(2)
+      expect(test2.reload.position).to eq(1)
+    end
 
-  #   it 'responds with a success status and JSON message' do
-  #     post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
-  #     expect(response).to have_http_status(:success)
-  #     expect(response.content_type).to include("application/json")
-  #     expect(JSON.parse(response.body)).to eq("status" => "success")
-  #   end
-  # end
+    it 'responds with a success status and JSON message' do
+      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
+      expect(response).to have_http_status(:success)
+      expect(response.content_type).to include("application/json")
+      expect(JSON.parse(response.body)).to eq("status" => "success")
+    end
+  end
 end
