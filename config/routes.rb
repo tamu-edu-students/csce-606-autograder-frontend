@@ -30,6 +30,9 @@ Rails.application.routes.draw do
     member do
       get :directory_structure
     end
+    member do
+      post :upload_file
+    end
   end
 
   get "test_groupings/find_by_position", to: "test_groupings#find_by_position"
