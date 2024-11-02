@@ -472,8 +472,8 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'POST #update_order' do
-    let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1') }
-    let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
+    let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1', test_block: {code: 'Test code' }, test_type: 'unit') }
+    let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2', test_block: {code: 'Test code' }, test_type: 'unit') }
 
     it 'updates the positions of tests based on test_ids' do
       post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
