@@ -31,5 +31,7 @@ module AutograderFrontend
         ENV[key.to_s] = value
       end if File.exist?(env_file)
     end
+
+    config.fixture_paths = [ "#{::Rails.root}/spec/fixtures" ]
   end
 end
