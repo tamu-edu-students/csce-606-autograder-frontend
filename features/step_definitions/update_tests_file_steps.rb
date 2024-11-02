@@ -123,8 +123,8 @@ end
 Given('the assignment contains {string} tests') do |string|
   for i in 1..string.to_i
     visit assignment_path(@assignment)
-    click_link('Add new test')
-    select "unit", from: 'Test type'
+    click_link('Add New Test')
+    select "unit", from: 'Test Type'
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'

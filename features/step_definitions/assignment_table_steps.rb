@@ -2,8 +2,8 @@ When('I click on {string} link') do |assignment_name|
     find('a', text: assignment_name).click
   end
 
-Then('I should be redirected to the {string} page for {string}') do |page_name, assignment_name|
-    expect(page).to have_content("#{page_name}: #{assignment_name}")
+Then('I should be redirected to the Assignment page for {string}') do |assignment_name|
+    expect(page).to have_content("#{assignment_name}")
 end
 
 Then('I should see {string} button in each assignment row') do |button_text|
