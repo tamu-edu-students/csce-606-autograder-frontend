@@ -5,15 +5,16 @@ Given(/^I am logged in as an instructor$/) do
 
   Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
-    click_link('Add New Test')
-    select test_type, from: 'Test Type'
-    fill_in 'Name', with: 'name'
-    fill_in 'Points', with: 10
-    fill_in 'Target', with: 'target.cpp'
-    steps %(And I add the "#{test_type}" dynamic text block field)
-    click_button "Create Test"
-    # Wait for the success message to ensure the test case is created
-    expect(page).to have_content("Test was successfully created")
+    steps %(
+      When I create a new test with type "#{test_type}"
+      And with the name "name"
+      And with the points "10"
+      And with the target "target.cpp"
+      Then I should see the "#{test_type}" dynamic test block partial
+      And I add the "#{test_type}" dynamic text block field
+      And I click the "Create Test" button
+      And I should see a message saying "Test was successfully created"
+    )
 
     @assignment.reload
     @test_case = @assignment.tests.last
