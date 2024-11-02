@@ -72,20 +72,20 @@
     group = TestGrouping.find_by(name: group_name)
     source_test = group.tests.find_by(name: test_name)
     target_test = group.tests.find_by(name: target_test_name)
-  
+
     # Move the source test after the target test
     new_position = target_test.position + 1
-  
+
     # Ensure no position duplication occurs
     group.tests.where('position >= ?', new_position).order(:position).each do |test|
       test.update!(position: test.position + 1)
     end
-  
+
     source_test.update!(position: new_position)
   end
-  
-  
-  
+
+
+
 
   Then("I should see {string} after {string} in {string} group") do |test_name, target_test_name, group_name|
     # Find the test group container
@@ -105,7 +105,7 @@
   Then("the positions of the tests in {string} group should be updated correctly") do |group_name|
     group = TestGrouping.find_by(name: group_name)
     test_positions = group.tests.order(:position).pluck(:name, :position)
-  
+
     test_positions.each_cons(2) do |(prev_test, prev_pos), (next_test, next_pos)|
       expect(next_pos).to eq(prev_pos + 1), "Expected position of #{next_test} to follow #{prev_test}."
     end
