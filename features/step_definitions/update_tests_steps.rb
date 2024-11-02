@@ -15,7 +15,7 @@ Given(/^I am logged in as an instructor$/) do
       And I click the "Create Test" button
       And I should see a message saying "Test was successfully created"
     )
-
+    
     @assignment.reload
     @test_case = @assignment.tests.last
     puts "Test Case ID: #{@test_case&.id}"
