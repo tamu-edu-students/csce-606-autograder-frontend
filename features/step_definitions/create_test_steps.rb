@@ -76,7 +76,6 @@ Given('I add the {string} dynamic text block field') do |test_type|
     fill_in 'Enter Compile Path', with: 'file2', match: :first
   when 'coverage'
     fill_in 'Enter Main Path', with: 'main'
-
     fill_in 'Enter Source Path', with: 'source1'
     click_button 'Add Source Path'
     fill_in 'Enter Source Path', with: 'source2', match: :first
@@ -97,6 +96,7 @@ Given('I add the {string} dynamic text block field') do |test_type|
     raise "Unknown test type: #{test_type}"
   end
 end
+
 
 Given('I add the dynamic text block field with {string}') do |script_path|
   fill_in 'Enter Script Path', with: 'script_path'

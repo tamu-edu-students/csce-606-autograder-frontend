@@ -11,8 +11,33 @@ export default class extends Controller {
   }
 
   end(event) {
-    // Log the event to confirm drag-and-drop is working
-    console.log("Dragged item to new position", event)
+    console.log("Dragged item to new position", event);
+  
+    // Retrieve correct test IDs from data-id attribute
+    const testIds = this.sortable.toArray().map(itemId => {
+      return document.querySelector(`[data-id="${itemId}"]`).getAttribute("data-id");
+    });
+  
+    const groupingId = this.element.getAttribute("data-grouping-id");
+  
+    // Send the reordered IDs to the server
+    fetch(`/assignments/${groupingId}/update_test_order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+      },
+      body: JSON.stringify({ test_ids: testIds })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Order saved successfully:", data);
+    })
+    .catch(error => {
+      console.error("Error saving order:", error);
+    });
   }
+  
+
 }
 
