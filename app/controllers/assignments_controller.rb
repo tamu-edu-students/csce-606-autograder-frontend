@@ -61,6 +61,7 @@ class AssignmentsController < ApplicationController
 
   # PATCH/PUT /assignments/1 or /assignments/1.json
   def update
+    Rails.logger.debug "Params: #{params.inspect}"
     respond_to do |format|
       if @assignment.update(assignment_params)
         format.html { redirect_to @assignment, notice: "Assignment was successfully updated." }

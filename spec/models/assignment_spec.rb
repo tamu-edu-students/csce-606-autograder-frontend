@@ -297,11 +297,14 @@ RSpec.describe Assignment, type: :model do
     end
 
     context 'when an error occurs while committing' do
-      it 'raises an error' do
+      it 'catches the error and outputs an error message' do
         allow(Git).to receive(:open).with(local_repo_path).and_raise(Git::GitExecuteError.new('Git error'))
 
-        expect { assignment.send(:commit_local_changes, local_repo_path, user) }
-          .to raise_error(Git::GitExecuteError, 'Git error')
+        expect(assignment).to receive(:puts).with("Error in commiting: Git error")
+
+        expect {
+          assignment.send(:commit_local_changes, local_repo_path, user)
+        }.not_to raise_error
       end
     end
   end
