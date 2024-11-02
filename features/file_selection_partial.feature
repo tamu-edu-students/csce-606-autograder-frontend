@@ -12,4 +12,13 @@ Feature: File Selection from Nested Dropdown in Test Form
     When I click on "include"
     Then I should see a nested file structure dropdown
 
-
+  @javascript
+  Scenario: Selecting multiple files from different subdirectories
+    When I click on "include"
+    And I expand the "io_tests" directory
+    And I select the following files:
+      | Directory             | File           |
+      | tests/c++/io_tests    | input.txt      |
+      | tests/c++/io_tests    | output.txt     |
+      | tests/c++/io_tests    | readme.txt     |
+    Then the include field should display the selected file paths
