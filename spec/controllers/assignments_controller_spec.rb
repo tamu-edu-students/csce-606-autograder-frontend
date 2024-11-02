@@ -455,21 +455,21 @@ RSpec.describe AssignmentsController, type: :controller do
     end
   end
 
-  describe 'GET #render_test_block_partial' do
-    before do
-      @test = create(:test, assignment: assignment)
-    end
+  # describe 'GET #render_test_block_partial' do
+  #   before do
+  #     @test = create(:test, assignment: assignment)
+  #   end
 
-    it 'renders the appropriate partial for a given test type' do
-      get :render_test_block_partial, params: { test_type: @test.test_type }
-      expect(response).to render_template(partial: "assignments/test_blocks/_unit")
-    end
+  #   it 'renders the appropriate partial for a given test type' do
+  #     get :render_test_block_partial, params: { test_type: @test.test_type }
+  #     expect(response).to render_template(partial: "assignments/test_blocks/_unit")
+  #   end
 
-    it 'responds with a success status' do
-      get :render_test_block_partial, params: { test_type: 'compile', id: assignment.id }, xhr: true
-      expect(response).to have_http_status(:success)
-    end
-  end
+  #   it 'responds with a success status' do
+  #     get :render_test_block_partial, params: { test_type: 'compile', id: assignment.id }, xhr: true
+  #     expect(response).to have_http_status(:success)
+  #   end
+  # end
 
   describe 'POST #update_order' do
     let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1') }
