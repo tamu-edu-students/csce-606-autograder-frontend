@@ -33,8 +33,13 @@ Given("I am on the {string} page for assignment permissions") do |page_name|
 end
 
 # Step definitions for user interactions
-When("I click on {string}") do |username|
-  click_link username
+When("I click on {string}") do |link|
+  if link == "include"
+    find('#test_include').click
+    expect(page).to have_css('#include-file-tree-dropdown', visible: true, wait: 5)
+  else
+    click_link link
+  end
 end
 
 When('I {string} {string} for the assignment {string}') do |action, access, repository_name|

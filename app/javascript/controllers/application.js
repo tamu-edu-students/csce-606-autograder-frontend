@@ -11,6 +11,7 @@ const application = Application.start()
 // Register the test_grouping_card controller
 application.register("test_grouping_card", TestGroupingCardController)
 application.register("points", PointsController)
+application.register("file_selection", FileSelectionController)
 
 // Configure Stimulus development experience
 application.debug = false
