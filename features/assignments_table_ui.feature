@@ -23,9 +23,9 @@ Feature: Update Assignments view based on Wireframe
         Then I should see "Created On" column highlighted
         When I click on the "Last Updated" column header
         Then I should see "Last Updated" column highlighted
-    
-    
-    Scenario Outline: Assignment name link should redirect to edit assignment view 
+
+
+    Scenario Outline: Assignment name link should redirect to edit assignment view
         Given I am on the "Assignment" page
         When I click on "assignment-1-repo" link
-        Then I should be redirected to the "Assignment" page for "assignment1"
+        Then I should be redirected to the Assignment page for "assignment1"

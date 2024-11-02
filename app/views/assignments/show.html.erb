@@ -1,12 +1,15 @@
 <%= stylesheet_link_tag 'assignment_show', media: 'all' %>
-<h1>Assignment: <%= @assignment.assignment_name %></h1>
-
+<div class="assignment-title">
+  <%= link_to 'Add New Test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
+  <h1><%= @assignment.assignment_name %></h1>
+  <%= link_to 'Export to Gradescope', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-success export-to-gradescope' %>
+</div>
 <!-- Display tests for the assignment -->
 <div class="container" data-assignment-id="<%= @assignment.id %>">
   <div class="row">
-    <div id = 'test' class="col-md-6">
-      <h2>Tests for <%= @assignment.assignment_name %></h2>
+    <div id = 'test' class="col-md-3">
       <div class="scrollable-container" data-controller="points">
+
       <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment),
       local: true, html: { class: "d-flex align-items-center new-test-grouping-form" } do |form| %>
       <div class="form-group mb-0" style="margin-right: 10px;">
@@ -28,7 +31,7 @@
               data-test-grouping-id="<%= test_grouping.id %>">
                   <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
                   <%= "#{test_grouping.position}) #{test_grouping.name}" %>
-                
+
                   <!-- Delete Button -->
                   <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
               </div>
@@ -53,19 +56,15 @@
 
 
       <!-- Link to add a new test -->
-      <%= link_to 'Add new test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
-      <%= link_to 'Create and Download ZIP', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-primary' %>
-      
+
       <%= render 'file_tree' %>
-      
-      
+
+
       </div>
 
-    <div id = 'test-details' class="col-md-6">
+    <div id = 'test-details' class="col-md-9">
       <!-- Form to create or edit a test -->
-      <div id="test-form" class="test-form">
-        <h2><%= @test.persisted? ? "Edit Test for Assignment #{@assignment.assignment_name}" : "New Test for Assignment #{@assignment.assignment_name}" %></h2>
-        <%= link_to 'Back to Assignment', assignments_path, class: 'btn btn-primary back-btn' %>
+      <div id="test-form" class="test-form d-flex w-100">
         <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
     </div>

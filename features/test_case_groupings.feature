@@ -38,7 +38,7 @@ Feature: Test Case Groupings CRUD
     Then I should see an error message "Test grouping name can't be blank"
 
   Scenario: Create a new test case inside a test case grouping
-    When I click on the "Add new test" link
+    When I click on the "Add New Test" link
     Then I should see the "test-form" view
   # Scenario: Update a existing test case grouping with modified name
   #    When I click on the "✎" button next to "Basic Functionality"
