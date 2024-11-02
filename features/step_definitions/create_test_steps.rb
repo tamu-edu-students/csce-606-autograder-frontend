@@ -67,47 +67,31 @@ end
 Given('I add the {string} dynamic text block field') do |test_type|
   case test_type
   when 'approved_includes'
-    within('#approved-includes-container') do
-      fill_in 'Enter Approved Includes', with: 'file1'
-      click_button "Add Approved Includes"
-      fill_in 'Enter Approved Includes', with: 'file2', match: :first
-    end
+    fill_in 'Enter Approved Includes', with: 'file1'
+    click_button "Add Approved Includes"
+    fill_in 'Enter Approved Includes', with: 'file2', match: :first
   when 'compile'
-    within('#compile-file-container') do
-      fill_in 'Enter Compile Path', with: 'file1'
-      click_button 'Add Compile Path'
-      fill_in 'Enter Compile Path', with: 'file2', match: :first
-    end
+    fill_in 'Enter Compile Path', with: 'file1'
+    click_button 'Add Compile Path'
+    fill_in 'Enter Compile Path', with: 'file2', match: :first
   when 'coverage'
     fill_in 'Enter Main Path', with: 'main'
-    within('#source-paths-container') do
-      fill_in 'Enter Source Path', with: 'source1'
-      click_button 'Add Source Path'
-      fill_in 'Enter Source Path', with: 'source2', match: :first
-    end
+    fill_in 'Enter Source Path', with: 'source1'
+    click_button 'Add Source Path'
+    fill_in 'Enter Source Path', with: 'source2', match: :first
   when 'performance'
-    within('#performance-container') do
-      fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
-    end
+    fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
   when 'unit'
-    within('#unit-container') do
-      fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
-    end
+    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
   when 'i_o'
-    within('#io-container') do
-      fill_in 'Enter Input Path', with: 'input'
-      fill_in 'Enter Output Path', with: 'output'
-    end
+    fill_in 'Enter Input Path', with: 'input'
+    fill_in 'Enter Output Path', with: 'output'
   when 'memory_errors'
-    within('#memory-errors-container') do
-      fill_in 'Enter Memory Errors Path', with: 'file1'
-      click_button 'Add Memory Errors Path'
-      fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
-    end
+    fill_in 'Enter Memory Errors Path', with: 'file1'
+    click_button 'Add Memory Errors Path'
+    fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
   when 'script'
-    within('#script-container') do
-      fill_in 'Enter Script Path', with: 'script'
-    end
+    fill_in 'Enter Script Path', with: 'script'
   else
     raise "Unknown test type: #{test_type}"
   end
