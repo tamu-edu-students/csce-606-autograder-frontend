@@ -166,7 +166,7 @@ RSpec.describe TestsController, type: :controller do
 
     describe 'when test_grouping is not found' do
       it 'raises ActiveRecord::RecordNotFound' do
-        test_case = create(:test, test_grouping: create(:test_grouping, assignment: assignment))
+        test_case = create(:test, test_grouping: create(:test_grouping, assignment: assignment), test_block: { code: 'Test code'}, test_type: 'unit')
 
         expect {
           get :edit_points, params: { assignment_id: assignment.id, test_grouping_id: 'non_existent', id: test_case.id }, format: :js
