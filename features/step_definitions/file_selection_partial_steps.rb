@@ -1,14 +1,14 @@
 Then("I should see a nested file structure dropdown") do
   within('#include-file-tree-dropdown') do
     expect(page).to have_css('.file-tree', visible: true)
-    
+
     within('.file-tree') do
       expect(page).to have_css('li.file.file-item', minimum: 1)
       expect(page).to have_css('li.file.file-item label input[type="checkbox"].file-checkbox', minimum: 1)
 
       expect(page).to have_css('li.dir.dir-item', minimum: 1)
       expect(page).to have_css('li.dir.dir-item span.directory-name', minimum: 1)
-      
+
 
       within('li.dir.dir-item') do
         expect(page).to have_css('ul.directory-children', visible: false)

@@ -50,12 +50,28 @@ RSpec.describe AssignmentsController, type: :controller do
         { name: "test_file.txt", type: "file" }
       ]
     end
+    let(:mocked_file_tree) do
+      {
+        "tests" => {
+          "test_file.txt" => { name: "test_file.txt", path: "tests/test_file.txt", type: "file" },
+          "c++" => {
+            "test_file.txt" => { name: "test_file.txt", path: "tests/c++/test_file.txt", type: "file" }
+          }
+        }
+      }
+    end
 
     before do
       allow(Octokit::Client).to receive(:new).and_return(client_double)
       allow(client_double).to receive(:contents).with("AutograderFrontend/#{assignment.repository_name}", path: "tests")
                                               .and_return([ { name: "test_file.txt", type: "file" } ])
+      allow_any_instance_of(AssignmentsController).to receive(:build_complete_tree).with(assignment).and_return(mocked_file_tree)
       allow(assignment).to receive(:fetch_directory_structure).with(mock_github_token).and_return(directory_structure)
+    end
+
+    it 'assigns @file_tree with the mocked file structure' do
+      get :show, params: { id: assignment.to_param }
+      expect(assigns(:file_tree)).to eq(mocked_file_tree)
     end
 
     it 'retrieves the directory structure from GitHub and assigns it to @directory_structure' do
@@ -77,7 +93,6 @@ RSpec.describe AssignmentsController, type: :controller do
 
     it 'returns a success response' do
       allow(controller).to receive(:build_complete_tree).and_return([])
-      assignment = Assignment.create! valid_attributes
       get :show, params: { id: assignment.to_param }
       expect(response).to be_successful
     end
@@ -460,7 +475,7 @@ RSpec.describe AssignmentsController, type: :controller do
   describe 'fetch directory contents' do
     let(:client) { instance_double('Client') }
     let(:repo) { 'example_repo' }
-    let(:path) { 'root' }
+    let(:path) { 'tests/c++' }
 
     let(:file_item) do
       double(
