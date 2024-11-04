@@ -6,7 +6,7 @@
             name="test[test_block][file_paths][]" 
             class="form-control mb-2" 
             placeholder="Enter Compile Path"
-            value="<%= test&.test_block&.dig('file_paths').to_json || '[]'  %>">
+            value="<%= (test&.test_block&.dig('file_paths') || []).map { |file_path| file_path }.join(', ') %>">
     <div id="compile-file-tree-dropdown" class="dropdown-content" style="display: none;">
     <!-- Tree will be rendered here -->
     </div>

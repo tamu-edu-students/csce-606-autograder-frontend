@@ -18,7 +18,7 @@
             name="test[test_block][source_paths][]" 
             class="form-control mb-2" 
             placeholder="Enter Source Path"
-            value="<%= test&.test_block&.dig('source_paths').to_json || '[]' %>">
+            value="<%= (test&.test_block&.dig('source_paths') || []).map { |file_path| file_path }.join(', ') %>">
     <div id="source-path-file-tree-dropdown" class="dropdown-content" style="display: none;">
     <!-- Tree will be rendered here -->
     </div>

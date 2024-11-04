@@ -74,9 +74,23 @@ export default class extends Controller {
 
   initializeCheckedBoxes(field, dropdown) {
     if (field && field.value && dropdown) {
-      const selectedPaths = field.value.split(',').map(path => path.trim());
-      const checkboxes = dropdown.querySelectorAll('.file-checkbox');
+      // Parse field.value as JSON if it looks like a stringified array
+      let selectedPaths;
+      try {
+        selectedPaths = JSON.parse(field.value);
+        if (Array.isArray(selectedPaths) && typeof selectedPaths[0] === 'string') {
+          // If it’s an array of strings, proceed as expected
+          selectedPaths = selectedPaths.map(path => path.trim());
+        } else if (Array.isArray(selectedPaths) && Array.isArray(selectedPaths[0])) {
+          // If it’s an array within an array, flatten it
+          selectedPaths = selectedPaths[0].map(path => path.trim());
+        }
+      } catch (e) {
+        // If parsing fails, treat field.value as a comma-separated string
+        selectedPaths = field.value.split(',').map(path => path.trim());
+      }
       
+      const checkboxes = dropdown.querySelectorAll('.file-checkbox');
       checkboxes.forEach(checkbox => {
         if (selectedPaths.includes(checkbox.dataset.filePath)) {
           checkbox.checked = true;
@@ -84,6 +98,7 @@ export default class extends Controller {
       });
     }
   }
+  
 
   setupEventListeners() {
     const fields = [
