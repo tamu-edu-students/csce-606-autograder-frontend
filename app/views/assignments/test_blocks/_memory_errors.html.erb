@@ -1,23 +1,14 @@
 <div class="form-group mb-3">
   <label>Memory Errors Path</label>
   <div id="memory-errors-container">
-    <% if test&.test_block&.dig("file_paths").present? %>
-      <% test.test_block["file_paths"].each_with_index do |path, index| %>
-        <div class="file-path-field">
-          <input type="text" 
-                 name="test[test_block][file_paths][]" 
-                 class="form-control mb-2" 
-                 placeholder="Enter Memory Errors Path" 
-                 value="<%= path %>">
-        </div>
-      <% end %>
-    <% else %>
-      <!-- Display one empty field if no source paths exist yet -->
-      <input type="text" 
-             name="test[test_block][file_paths][]" 
-             class="form-control mb-2" 
-             placeholder="Enter Memory Errors Path">
-    <% end %>
+    <input type="text"
+            id = "test_block_mem_error_paths" 
+            name="test[test_block][file_paths][]" 
+            class="form-control mb-2" 
+            placeholder="Enter Memory Errors Path"
+            value="<%= (test&.test_block&.dig('source_paths') || []).to_json || '[]' %>">
+    <div id="mem-error-file-tree-dropdown" class="dropdown-content" style="display: none;">
+      <!-- Tree will be rendered here -->
+    </div>
   </div>
-  <button type="button" class="btn btn-secondary mt-2" onclick="addMemoryErrorsPathField()">Add Memory Errors Path</button>
 </div>

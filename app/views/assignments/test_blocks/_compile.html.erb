@@ -1,23 +1,14 @@
 <div class="form-group mb-3">
   <label>Compile Path</label>
   <div id="compile-file-container">
-    <% if test&.test_block&.dig("file_paths").present? %>
-      <% test.test_block["file_paths"].each_with_index do |path, index| %>
-        <div class="file-path-field">
-          <input type="text" 
-                 name="test[test_block][file_paths][]" 
-                 class="form-control mb-2" 
-                 placeholder="Enter Compile Path" 
-                 value="<%= path %>">
-        </div>
-      <% end %>
-    <% else %>
-      <!-- Display one empty field if no source paths exist yet -->
-      <input type="text" 
-             name="test[test_block][file_paths][]" 
-             class="form-control mb-2" 
-             placeholder="Enter Compile Path">
-    <% end %>
+    <input type="text"
+            id = "test_block_compile_paths" 
+            name="test[test_block][file_paths][]" 
+            class="form-control mb-2" 
+            placeholder="Enter Compile Path"
+            value="<%= test&.test_block&.dig('file_paths').to_json || '[]'  %>">
+    <div id="compile-file-tree-dropdown" class="dropdown-content" style="display: none;">
+    <!-- Tree will be rendered here -->
+    </div>
   </div>
-  <button type="button" class="btn btn-secondary mt-2" onclick="addCompilePathField()">Add Compile Path</button>
 </div>
