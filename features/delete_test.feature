@@ -3,6 +3,7 @@ Feature: Delete a test case
     So that I can no longer test some functionality of student code
     I want to delete a test case in an assignment
 
+    
     @javascript
     Scenario: Delete a test case
         Given the following assignments exist:
