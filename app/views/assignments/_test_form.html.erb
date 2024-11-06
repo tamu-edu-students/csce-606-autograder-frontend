@@ -1,30 +1,30 @@
 <%= form_with model: [@assignment, @test], local: true do |form| %>
 	<div data-controller="file-selection" 
 		data-file-selection-assignment-id-value="<%= @assignment.id %>"
-		data-file-selection-tree-value="<%= @file_tree.to_json %>">
-		<div class="form-grid w-100">
-			<div class="d-flex form-group justify-content-between">
-			<div class="w-50">
-				<%= form.label :name, "Test Name" %>
-				<%= form.text_field :name, class: "form-control" %>
-			</div>
+		data-file-selection-tree-value="<%= @file_tree.to_json %>"
+		class="form-grid w-100">
+        <div class="d-flex form-group justify-content-between">
+            <div class="w-50">
+                <%= form.label :name, "Test Name" %>
+                <%= form.text_field :name, class:"form-control" %>
+            </div>
 
 			<div class="d-flex align-items-center">
 				<% if @test.persisted? %>
-				<div class="delete-actions\">
-					<%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
-				</div>
+					<div class="delete-actions\">
+						<%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
+					</div>
 				<% end %>
 
 				<div class="form-actions">
-				<%= form.submit @test.persisted? ? "Update Test" : "Create Test", class: "btn btn-primary" %>
+					<%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
 				</div>
 			</div>
-			</div>
+        </div>
 
-			<hr>
+		<hr>
 
-			<div class="justify-content-between d-flex">
+		<div class="justify-content-between d-flex">
 			<div class="form-group">
 				<%= form.label :test_grouping_position, "Grouping Number" %>
 				<%= form.text_field :test_grouping_position, class: "form-control" %>
@@ -32,94 +32,90 @@
 
 			<div class="form-group">
 				<%= form.label :position, "Test Number" %>
-				<%= form.text_field :position, class: "form-control" %>
+				<%= form.text_field :position , class:"form-control"%>
 			</div>
 
 			<div class="form-group">
 				<%= form.label :points %>
-				<%= form.number_field :points, class: "form-control" %>
+				<%= form.number_field :points, class:"form-control" %>
 			</div>
-			</div>
+		</div>
 
-			<hr>
+		<hr>
 
-			<div class="d-flex">
-				<div class="form-group align-items-center justify-content-space-evenly">
-					<div>
-					<%= form.label :test_type, "Test Type" %>
-					<% if @test.persisted? %>
-						<%= form.text_field :test_type, class: "form-control", readonly: true %>
-					<% else %>
+        <div class="d-flex">
+            <div class="form-group align-items-center justify-content-space-evenly">
+                <div>
+                	<%= form.label :test_type, "Test Type" %>
+                    <% if @test.persisted? %>
+                    	<%= form.text_field :test_type, class: "form-control", readonly: true %>
+                    <% else %>
 						<%= form.select :test_type, options_for_select(
-						[['coverage', 'coverage'],
-						['compile', 'compile'],
-						['approved_includes', 'approved_includes'],
-						['memory_errors', 'memory_errors'],
-						['unit', 'unit'],
-						['i_o', 'i_o'],
-						['performance', 'performance'],
-						['script', 'script']],
-						@test.test_type),
-						{ include_blank: 'Please select a test type' },
-						{ class: "form-control", id: "test_type",
-						data: { action: "change->file-selection#initializeDropdowns" }, 
-						onchange: "if (this.value) { loadTestPartial(this.value); } else { window.location.href = '#{assignment_path(@assignment)}'; }" } %>
-					<% end %>
-					</div>
-
-					<div class="form-group">
-					<%= form.label :target %>
-					<%= form.text_field :target, class: "form-control", id: "test_target", readonly: true %>
-
+							[['coverage', 'coverage'],
+							['compile', 'compile'],
+							['approved_includes', 'approved_includes'],
+							['memory_errors', 'memory_errors'],
+							['unit', 'unit'],
+							['i_o', 'i_o'],
+							['performance', 'performance'],
+							['script', 'script']],
+							@test.test_type),
+							{ include_blank: 'Please select a test type',
+							class: "form-control"},
+							data: { action: "change->file-selection#initializeDropdowns" }, 
+							onchange: "if (this.value) { loadTestPartial(this.value); } else { window.location.href = '#{assignment_path(@assignment)}'; }" %>
+                    <% end %>
+                </div>
+                <div>
+                    <%= form.label :target %>
+                    <%= form.text_field :target, class: "form-control", id: "test_target", readonly: true %>
 					<div id="target-file-tree-dropdown" class="dropdown-content" style="display: none;">
 					</div>
-					</div>
+                </div>
+                <div class="d-flex">
+                    <div class="w-50 d-flex align-items-center">
+                        <%= form.check_box :show_output %>
+                        <%= form.label :show_output, class: 'ml-2' %>
+                    </div>
+                    <div class="w-50 d-flex align-items-center">
+                        <%= form.check_box :skip %>
+                        <%= form.label :skip, class: 'ml-2' %>
+                    </div>
+                </div>
+            </div>
 
-					<div class="d-flex">
-					<div class="w-50 d-flex align-items-center">
-						<%= form.check_box :show_output %>
-						<%= form.label :show_output, class: 'ml-2' %>
+            <div class="form-group justify-content-space-evenly h-100">
+                <div class="flex-grow-1 h-100">
+                    <%= form.label :include, 'Includes' %>
+                    <%= form.text_area :include, class: "form-control includes", id: "test_include", placeholder: "Add .cpp or .h paths separated by spaces" %>
+					<div id="include-file-tree-dropdown" class="dropdown-content" style="display: none;">
 					</div>
-					<div class="w-50 d-flex align-items-center">
-						<%= form.check_box :skip %>
-						<%= form.label :skip, class: 'ml-2' %>
-					</div>
-					</div>
+                </div>
+            </div>
+        </div>
 
-					<div class="form-group justify-content-space-evenly h-100">
-						<div class="flex-grow-1 h-100">
-							<%= form.label :include, 'Includes' %>
-							<%= form.text_area :include, class: "form-control includes", id: "test_include", placeholder: "Add .cpp or .h paths separated by spaces" %>
-							<div id="include-file-tree-dropdown" class="dropdown-content" style="display: none;">
-							</div>
-						</div>
-					</div>
-				</div>
+		<div class="d-flex justify-content-between">
+			<div class="form-group">
+				<%= form.label :timeout %>
+				<%= form.number_field :timeout, class:"form-control" %>
 			</div>
-
-			<div class="d-flex justify-content-between">
-				<div class="form-group">
-					<%= form.label :timeout %>
-					<%= form.number_field :timeout, class: "form-control" %>
-				</div>
-				<div class="field form-group">
-					<%= form.label :visibility, 'Gradescope Visibility' %>
-					<%= form.select :visibility, options_for_select(
+			<div class="field form-group">
+				<%= form.label :visibility, 'Gradescope Visibility' %>
+				<%= form.select :visibility, options_for_select(
 					[['Hidden', 'hidden'],
 					['After Due Date', 'after_due_date'],
 					['After Published', 'after_published'],
 					['Visible', 'visible']], @test.visibility || 'visible'),
-					class: "form-control" %>
-				</div>
-			</div>
-
-			<hr>
-
-			<div id="dynamic-test-block-container">
-			<% if @test.test_type.present? %>
-				<%= render "assignments/test_blocks/#{@test.test_type}", form: form, test: @test %>
-			<% end %>
+					class:"form-control" %>
 			</div>
 		</div>
+
+        <hr>
+
+        <div id="dynamic-test-block-container">
+            <% if @test.test_type.present? %>
+            <%= render "assignments/test_blocks/#{@test.test_type}", form: form , test: @test %>
+            <% end %>
+        </div>
 	</div>
 <% end %>
