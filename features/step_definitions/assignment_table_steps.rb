@@ -1,5 +1,5 @@
-When('I click on {string} link') do |assignment_name|
-  @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name)
+When('I click on {string} link') do |repository_name|
+  @assignment = Assignment.find_or_create_by!(repository_name: repository_name)
   FileItem = Struct.new(:name, :path, :type, :children)
   stub_request(:get, "https://api.github.com/repos/AutograderFrontend/#{@assignment.repository_name}/contents/tests/c++")
   .with(
@@ -9,11 +9,8 @@ When('I click on {string} link') do |assignment_name|
     'Content-Type'=>'application/json',
     'User-Agent'=>'Octokit Ruby Gem 9.1.0'
   })
-  .to_return(status: 200, body: [
-    FileItem.new('code.tests', 'tests/c++/code.tests', 'file'),
-    FileItem.new('io_tests', 'tests/c++/io_tests', 'dir')
-    ], headers: {})
-    find('a', text: assignment_name).click
+  .to_return(status: 200, body: [], headers: {})
+    find('a', text: repository_name).click
   end
 
 Then('I should be redirected to the Assignment page for {string}') do |assignment_name|

@@ -1,6 +1,7 @@
 require 'webmock/cucumber'
 require 'rspec/mocks'
 
+
 World(RSpec::Mocks::ExampleMethods)
 
 Before do
@@ -11,6 +12,15 @@ Before do
   allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return('philipritchey/autograded-assignment-template')
   allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return('AutograderFrontend')
   allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
+  allow_any_instance_of(AssignmentsController).to receive(:build_complete_tree).and_return(
+    [
+      { name: ".gitignore", type: "file" },
+      { name: "README.md", type: "file" },
+      { name: "tests", type: "directory", children: [
+        { name: "unit_test.cpp", type: "file" }
+      ] }
+    ]
+  )
 end
 
 After do

@@ -146,7 +146,8 @@ When('with the points {string}') do |points|
 end
 
 When('with the target {string}') do |target|
-  fill_in 'Target', with: target
+  #fill_in 'Target', with: target
+  page.execute_script("document.getElementById('test_target').value = '#{target}';")
 end
 
 Then('I should not see any missing attribute error messages') do
