@@ -9,7 +9,7 @@ Given(/^I am logged in as an instructor$/) do
     select test_type, from: 'Test Type'
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
-    fill_in 'Target', with: 'target.cpp'
+    page.execute_script("document.getElementById('test_target').value = 'target.cpp';")
     steps %(And I add the "#{test_type}" dynamic text block field)
     click_button "Create Test"
 
