@@ -74,10 +74,9 @@ Given('I add the {string} dynamic text block field') do |test_type|
     page.execute_script("document.getElementById('test_block_compile_paths').value = 'file1';")
     page.execute_script("document.getElementById('test_block_compile_paths').value = 'file2';")
   when 'coverage'
-    fill_in 'Enter Main Path', with: 'main'
-    fill_in 'Enter Source Path', with: 'source1'
-    click_button 'Add Source Path'
-    fill_in 'Enter Source Path', with: 'source2', match: :first
+    page.execute_script("document.getElementById('test_block_main_path').value = 'main';")
+    page.execute_script("document.getElementById('test_block_source_paths').value = 'source1';")
+    page.execute_script("document.getElementById('test_block_source_paths').value = 'source2';")
   when 'performance'
     fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
   when 'unit'
@@ -86,8 +85,8 @@ Given('I add the {string} dynamic text block field') do |test_type|
     fill_in 'Enter Input Path', with: 'input'
     fill_in 'Enter Output Path', with: 'output'
   when 'memory_errors'
-    fill_in 'Enter Memory Errors Path', with: 'file1'
-    fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
+    page.execute_script("document.getElementById('test_block_mem_error_paths').value = 'file1';")
+    page.execute_script("document.getElementById('test_block_mem_error_paths').value = 'file2';")
   when 'script'
     fill_in 'Enter Script Path', with: 'script'
   else
