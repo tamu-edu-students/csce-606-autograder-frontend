@@ -71,9 +71,11 @@ Given('I add the {string} dynamic text block field') do |test_type|
     click_button "Add Approved Includes"
     fill_in 'Enter Approved Includes', with: 'file2', match: :first
   when 'compile'
-    page.execute_script("document.querySelector('[placeholder=\"Enter Compile Path\"]').value = 'file1';")
-    click_button 'Add Compile Path'
-    page.execute_script("document.querySelector('[placeholder=\"Enter Compile Path\"]').value = 'file2';")
+    # fill_in 'Enter Compile Path', with: 'file1'
+    # click_button 'Add Compile Path'
+    # fill_in 'Enter Compile Path', with: 'file2', match: :first
+    page.execute_script("document.getElementById('test_block_compile_paths').value = 'file1';")
+    page.execute_script("document.getElementById('test_block_compile_paths').value = 'file2';")
   when 'coverage'
     fill_in 'Enter Main Path', with: 'main'
     fill_in 'Enter Source Path', with: 'source1'
