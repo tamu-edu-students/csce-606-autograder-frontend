@@ -14,10 +14,11 @@ Before do
   allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
   allow_any_instance_of(AssignmentsController).to receive(:build_complete_tree).and_return(
     [
-      { name: ".gitignore", type: "file" },
-      { name: "README.md", type: "file" },
-      { name: "tests", type: "directory", children: [
-        { name: "unit_test.cpp", type: "file" }
+      { name: "code.tests", path: "tests/c++/code.tests", type: "file" },
+      { name: "io_tests", path: "tests/c++/io_tests", type: "dir", children: [
+        { name: "input.txt", path: "tests/c++/io_tests/input.txt", type: "file" },
+        { name: "output.txt", path: "tests/c++/io_tests/output.txt", type: "file" },
+        { name: "readme.txt", path: "tests/c++/io_tests/readme.txt", type: "file" }
       ] }
     ]
   )
