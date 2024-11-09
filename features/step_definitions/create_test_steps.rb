@@ -72,11 +72,11 @@ Given('I add the {string} dynamic text block field') do |test_type|
     fill_in 'Enter Approved Includes', with: 'file2', match: :first
   when 'compile'
     page.execute_script("document.getElementById('test_block_compile_paths').value = 'file1';")
-    page.execute_script("document.getElementById('test_block_compile_paths').value = 'file2';")
+    page.execute_script("document.getElementById('test_block_compile_paths').value += ', file2';")
   when 'coverage'
     page.execute_script("document.getElementById('test_block_main_path').value = 'main';")
     page.execute_script("document.getElementById('test_block_source_paths').value = 'source1';")
-    page.execute_script("document.getElementById('test_block_source_paths').value = 'source2';")
+    page.execute_script("document.getElementById('test_block_source_paths').value += ', source2';")
   when 'performance'
     fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
   when 'unit'
@@ -86,7 +86,7 @@ Given('I add the {string} dynamic text block field') do |test_type|
     fill_in 'Enter Output Path', with: 'output'
   when 'memory_errors'
     page.execute_script("document.getElementById('test_block_mem_error_paths').value = 'file1';")
-    page.execute_script("document.getElementById('test_block_mem_error_paths').value = 'file2';")
+    page.execute_script("document.getElementById('test_block_mem_error_paths').value += ', file2';")
   when 'script'
     fill_in 'Enter Script Path', with: 'script'
   else
