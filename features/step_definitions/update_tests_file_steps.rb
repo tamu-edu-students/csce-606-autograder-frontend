@@ -144,6 +144,7 @@ end
 
 When('I delete the {string} test') do |string|
   test = @assignment.tests.find_by(name: "test#{string.to_i+1}")
+  puts
   visit assignment_path(@assignment, test_id: test.id)
   click_button 'Delete Test'
 
