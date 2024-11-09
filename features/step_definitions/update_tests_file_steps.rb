@@ -137,7 +137,7 @@ Given('the assignment contains {string} tests') do |string|
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
     page.execute_script("document.getElementById('test_target').value = 'target.cpp';")
-    steps %(And I add the "#{test_type}" dynamic text block field)
+    steps %(And I add the "unit" dynamic text block field)
     click_button "Create Test"
 
     # Wait for the success message to ensure the test case is created
