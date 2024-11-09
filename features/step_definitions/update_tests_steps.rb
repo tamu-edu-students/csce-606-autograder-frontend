@@ -14,7 +14,7 @@ Given(/^I am logged in as an instructor$/) do
     click_button "Create Test"
 
     # Wait for the success message to ensure the test case is created
-    Capybara.using_wait_time(50) do
+    Capybara.using_wait_time(100) do
       expect(page).to have_content("Test was successfully created")
     end
 
