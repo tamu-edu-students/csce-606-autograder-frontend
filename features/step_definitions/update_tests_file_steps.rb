@@ -143,6 +143,7 @@ Given('the assignment contains {string} tests') do |string|
     # Wait for the success message to ensure the test case is created
     Capybara.using_wait_time(10) do
       expect(page).to have_content("Test was successfully created")
+    end
   end
 end
 
