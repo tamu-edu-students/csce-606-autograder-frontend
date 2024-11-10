@@ -16,6 +16,11 @@ When('I create a new test with type {string}') do |type|
     page.find('body').native.inner_html += "<p class='error'>Missing attribute: type</p>"
   elsif page.has_select?('Test Type', with_options: [ type ])
     select type, from: 'Test Type'
+    select type, from: 'Test Type'
+    select type, from: 'Test Type'
+    select type, from: 'Test Type'
+    select type, from: 'Test Type'
+    select type, from: 'Test Type'
   else
     # Simulate error for invalid test type
     page.find('body').native.inner_html += "<p class='error'>Unknown test type: #{type}</p>"
