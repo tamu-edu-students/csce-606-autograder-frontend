@@ -107,8 +107,6 @@ Given('I add the {string} dynamic text block field') do |test_type|
   end
 end
 
-end
-
 
 Given('I add the dynamic text block field with {string}') do |script_path|
   fill_in 'Enter Script Path', with: 'script_path'
