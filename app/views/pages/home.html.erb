@@ -1,25 +1,25 @@
-
-<body>
-  <div class="wrapper"> <!-- New wrapper div to center the whole content -->
-    <div class="text-container">
-      <h1>Welcome to Autograder!</h1>
-
-    <p>This autograding system allows for an easier creation and maintenance of assignments and their constituent tests</p>
+<body class="bg-features">
+  <div class="d-flex justify-content-center align-items-start vh-100 pt-5">
+    <div class="text-center ">
+      <h1 class="welcome-title mt-5">Welcome to Autograder!</h1>
+      <p class="welcome-text">This autograding system allows for an easier creation and maintenance of assignments and their constituent tests.</p>
 
       <% if current_user %>
-        <p>You are logged in as <%= current_user.name %>!</p>
-      </div>
-      <div class="buttons-container">
-  <%= link_to "Course Dashboard", assignments_path, class: "btn btn-primary", data: { turbo: false } %>
-  <%= link_to "Manage Users", users_path, class: "btn btn-primary", data: { turbo: false } %>
-  </div>
-
-    <% else %>
-      <%= form_tag('/auth/github', method: 'post', data: {turbo: false}) do %> 
-        <button type="submit", class='btn btn-primary'>Login With GitHub</button> 
+        <p class="user-info">You are logged in as <%= current_user.name %>!</p>
+        <div class="buttons-container">
+          <%= link_to "Course Dashboard", assignments_path, class: "btn btn-primary btn-lg mx-2", data: { turbo: false } %>
+          <%= link_to "Manage Users", users_path, class: "btn btn-primary btn-lg mx-2", data: { turbo: false } %>
+        </div>
+      <% else %>
+        <div class="text-center container2 center2" >
+          <%= form_tag('/auth/github', method: 'post', data: { turbo: false }) do %>
+            <button type="submit" class=" btn-github-login mt-3" style="text-align: center">
+              <img src="<%= asset_path 'gitlogo.png' %>" alt="GitHub Logo" class="github-logo">
+              Login With GitHub
+            </button>
+          <% end %>
+        </div>
       <% end %>
-    <% end %>
-  </div>
+    </div>
   </div>
 </body>
-
