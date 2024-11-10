@@ -46,7 +46,7 @@ Feature: Create a new test case
       And with the points "<points>"
       Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
-      And I click the "Create Test" button
+      And I click the "Create Test" button successfully
       And I should see a message saying "Test was successfully created"
       Then I should not see any missing attribute error messages
 

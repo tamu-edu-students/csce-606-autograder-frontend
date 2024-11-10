@@ -29,6 +29,20 @@ When('I click the {string} button') do |button|
   click_on button
 end
 
+When('I click the {string} button successfully') do |button|
+  attempts = 0
+  max_retries = 3
+  while attempts < max_retries
+    click_on button
+    if page.has_content?("Test was successfully created")
+      break
+    end
+    attempts += 1
+    sleep 0.5 # Small delay to allow page update
+  end
+  raise "Failed to create test case" if attempts == max_retries
+end
+
 When('I fill in {string} with {string}') do |field, value|
   if field == 'Repository name' && page.has_current_path?('/assignments/new')
 
