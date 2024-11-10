@@ -67,19 +67,19 @@ Given('I add the {string} dynamic text block field') do |test_type|
   Capybara.using_wait_time(10) do  # Increase wait time specifically for this block
     case test_type
     when 'approved_includes'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Approved Includes', disabled: false)
       fill_in 'Enter Approved Includes', with: 'file1'
       click_button "Add Approved Includes"
       fill_in 'Enter Approved Includes', with: 'file2', match: :first
     when 'compile'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Compile Path', disabled: false)
       fill_in 'Enter Compile Path', with: 'file1'
       click_button 'Add Compile Path'
       fill_in 'Enter Compile Path', with: 'file2', match: :first
     when 'coverage'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Main Path', disabled: false)
       fill_in 'Enter Main Path', with: 'main'
       expect(page).to have_field('Enter Source Path', disabled: false)
@@ -87,27 +87,27 @@ Given('I add the {string} dynamic text block field') do |test_type|
       click_button 'Add Source Path'
       fill_in 'Enter Source Path', with: 'source2', match: :first
     when 'performance'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Performance', disabled: false)
       fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
     when 'unit'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Unit', disabled: false)
       fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
     when 'i_o'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Input Path', disabled: false)
       fill_in 'Enter Input Path', with: 'input'
       expect(page).to have_field('Enter Output Path', disabled: false)
       fill_in 'Enter Output Path', with: 'output'
     when 'memory_errors'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Memory Errors Path', disabled: false)
       fill_in 'Enter Memory Errors Path', with: 'file1'
       click_button 'Add Memory Errors Path'
       fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
     when 'script'
-      #save_and_open_screenshot
+      # save_and_open_screenshot
       expect(page).to have_field('Enter Script Path', disabled: false)
       fill_in 'Enter Script Path', with: 'script'
     else
