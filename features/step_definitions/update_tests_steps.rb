@@ -6,7 +6,12 @@ Given(/^I am logged in as an instructor$/) do
   Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
     click_link('Add New Test')
+
     select test_type, from: 'Test Type'
+    select test_type, from: 'Test Type'
+    select test_type, from: 'Test Type'
+    select test_type, from: 'Test Type'
+
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
