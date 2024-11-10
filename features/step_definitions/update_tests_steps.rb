@@ -18,12 +18,18 @@ Given(/^I am logged in as an instructor$/) do
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
     steps %(And I add the "#{test_type}" dynamic text block field)
-    click_button "Create Test"
-
-    # Wait for the success message to ensure the test case is created
-    Capybara.using_wait_time(10) do
-      expect(page).to have_content("Test was successfully created")
+    # Retry clicking the 'Create Test' button until the success message appears
+    attempts = 0
+    max_retries = 3
+    while attempts < max_retries
+      click_button "Create Test"
+      if page.has_content?("Test was successfully created")
+        break
+      end
+      attempts += 1
+      sleep 0.5 # Small delay to allow page update
     end
+    raise "Failed to create test case" if attempts == max_retries
 
     @assignment.reload
     @test_case = @assignment.tests.last
