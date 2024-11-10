@@ -6,10 +6,18 @@ Given(/^I am logged in as an instructor$/) do
   Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
     click_link('Add New Test')
-    select test_type, from: 'Test Type'
-    select test_type, from: 'Test Type'
-    select test_type, from: 'Test Type'
-    select test_type, from: 'Test Type'
+    # Ensure the test type is selected, retrying if necessary
+    max_retries = 4
+    attempts = 0
+    while attempts < max_retries
+      select test_type, from: 'Test Type'
+      if page.has_select?('Test Type', selected: test_type)
+        break
+      end
+      attempts += 1
+      sleep 0.5 # Small delay to allow JavaScript to trigger
+    end
+    raise "Could not select test type #{test_type}" if attempts == max_retries
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
