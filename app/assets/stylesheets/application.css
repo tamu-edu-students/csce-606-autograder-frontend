@@ -45,10 +45,9 @@
   .assignment-title {
     display: flex;
     margin-bottom: 30px;
-    background-color: #8b8d90;
     padding: 1rem;
     border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow effect */
     justify-content: space-between;
     align-items: center;
   }
@@ -219,6 +218,11 @@ form {
 
   body {
     padding-top: 0;
+    background-color: #f7f7f7; /* Subtle light grey */
+    color: #333; /* Adjusted text color for readability */
+    font-family: Arial, sans-serif; /* Optional: make sure the text looks consistent */
+    margin: 0;
+    padding: 0;
   }
 
 
@@ -319,4 +323,145 @@ form {
 
 h1 {
   text-align: center;
+}
+
+
+/* Navbar */
+.navbar {
+  width: 100%;
+  background-color: #9a9aeae2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar .container {
+  max-width: 100%;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 60px; /* Increased height for larger logo */
+  width: auto;
+  margin-right: 15px;
+}
+
+.navbar-title {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #500000;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.4em;
+  color: #0c0c0c;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #500000;
+}
+
+.navbar-toggler {
+  border-color: #ffffff;
+}
+
+.nav-item{
+  font-size: 1em;
+  color: #500000;
+}
+
+.navbar::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 1px; /* Thickness of the line */
+  background-color: #800000; /* Maroon color */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+/* Background color for the page */
+.bg-features {
+  background-color: #f3f3f3;
+}
+
+/* Centered content slightly upwards */
+.vh-100 {
+  height: 100vh;
+}
+
+.pt-5 {
+  padding-top: 5rem;
+}
+
+/* Title Styling */
+.welcome-title {
+  font-size: 2em;
+  font-weight: bold;
+  color: #500000;
+  margin-bottom: 10px;
+}
+
+/* Text Styling */
+.welcome-text {
+  font-size: 1.2em;
+  color: #333333;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* GitHub Login Button */
+.btn-github-login {
+  display: inline-flex;
+  align-items: center;
+  background-color: #500000; /* Black background */
+  color: #ffffff; /* White text */
+  padding: 10px 20px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for a pronounced look */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-github-login:hover {
+  background-color: #333333; /* Darker shade on hover */
+}
+
+/* GitHub Logo Style */
+.github-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  /* Ensures logo is white on dark background */
+}
+
+.center-content-my {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  
+}
+
+.container2 {
+  height: 50px;
+  position: relative;
+}
+
+.center2 {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
