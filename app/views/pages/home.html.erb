@@ -1,6 +1,6 @@
 <body class="bg-features">
   <div class="d-flex justify-content-center align-items-start vh-100 pt-5">
-    <div class="text-center ">
+    <div class="text-center">
       <h1 class="welcome-title mt-5">Welcome to Autograder!</h1>
       <p class="welcome-text">This autograding system allows for an easier creation and maintenance of assignments and their constituent tests.</p>
 
@@ -13,7 +13,7 @@
       <% else %>
         <div class="text-center container2 center2" >
           <%= form_tag('/auth/github', method: 'post', data: { turbo: false }) do %>
-            <button type="submit" class=" btn-github-login mt-3" style="text-align: center">
+            <button type="submit" class=" btn-github-login mt-5" style="text-align: center">
               <img src="<%= asset_path 'gitlogo.png' %>" alt="GitHub Logo" class="github-logo">
               Login With GitHub
             </button>
