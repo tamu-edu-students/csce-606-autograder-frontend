@@ -230,8 +230,8 @@ Given('the field is empty') do
 end
 
 Then('I should not see the test added to the list of tests in assignment1') do
-    #pending because of the modification of create test button grey()
-  #expect(page).not_to have_content('Test was successfully created')
+  # pending because of the modification of create test button grey()
+  # expect(page).not_to have_content('Test was successfully created')
 end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
