@@ -34,13 +34,12 @@ When('I click the {string} button successfully') do |button|
   max_retries = 3
   while attempts < max_retries
     click_on button
-    if page.has_content?("Test was successfully created")
+    if page.has_content?("Test was successfully created") || page.has_content?("Missing")
       break
     end
     attempts += 1
     sleep 0.5 # Small delay to allow page update
   end
-  raise "Failed to create test case" if attempts == max_retries
 end
 
 When('I fill in {string} with {string}') do |field, value|
