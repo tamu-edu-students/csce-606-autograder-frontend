@@ -38,7 +38,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
     And I set it to "<points>" points
     And I set the target to "<target>"
     And I fill in the "<type>" test block with "<test_code>"
-    And I click the "Create Test" button successfully
+    And I click the "Create Test" button
     Then I should see a success message
     And the .tests file should contain both properly formatted tests
       | type   | name   | points   | target   | test_code   |
