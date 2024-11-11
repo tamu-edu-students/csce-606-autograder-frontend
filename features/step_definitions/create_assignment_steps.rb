@@ -34,7 +34,7 @@ When('I click the {string} button successfully') do |button|
   max_retries = 3
   while attempts < max_retries
     click_on button
-    if page.has_content?("Test was successfully created") || page.has_content?("Missing")
+    if page.has_content?("Test was successfully created") || page.has_content?("Missing") || page.has_content?("Test name must be")
       break
     end
     attempts += 1

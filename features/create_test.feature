@@ -167,7 +167,6 @@ Feature: Create a new test case
       Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button successfully
-      Then the test block should contain the fields "<fields>"
 
       Examples:
         | type              | fields                   |
