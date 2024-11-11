@@ -364,6 +364,7 @@ h1 {
 
 .navbar-nav .nav-link:hover {
   color: #500000;
+  text-decoration: underline;
 }
 
 .navbar-toggler {
@@ -373,6 +374,7 @@ h1 {
 .nav-item{
   font-size: 1em;
   color: #500000;
+  margin-right: 20px;
 }
 
 .navbar::after {
@@ -430,6 +432,7 @@ h1 {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for a pronounced look */
   transition: background-color 0.3s ease;
   cursor: pointer;
+  margin-left: 33%;
 }
 
 .btn-github-login:hover {
@@ -465,3 +468,8 @@ h1 {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+.text-center{
+  position: relative;
+}
+
