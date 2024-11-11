@@ -1,3 +1,7 @@
+  Feature: "Create Test" should be grayed out until minimum necessary information is entered
+    As a CSCE 120 GitHub organization member
+    So that I do not see the create button active while creating a test
+  
   Background:
     Given the following assignments exist:
       | assignment_name | repository_name |
