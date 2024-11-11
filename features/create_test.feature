@@ -63,7 +63,7 @@ Feature: Create a new test case
       And with the points "<points>"
       Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
-      And I click the "Create Test" button successfully
+      And I click the "Create Test" button
       Then I should see an error message saying "Missing attributes: target"
 
       Examples:
