@@ -15,6 +15,7 @@ Given(/^I am logged in as an instructor$/) do
     Capybara.using_wait_time(10) do
       expect(page).to have_select('Test Type', selected: test_type)
     end
+    # comment
     # expect Test Type to be selected
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
