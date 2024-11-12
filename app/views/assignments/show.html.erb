@@ -5,50 +5,41 @@
   <%= link_to 'Export to Gradescope', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-success export-to-gradescope' %>
 </div>
 <!-- Display tests for the assignment -->
-<div class="container" data-assignment-id="<%= @assignment.id %>">
+<div class="container-fluid mt-3" data-assignment-id="<%= @assignment.id %>">
   <div class="row">
-    <div id = 'test' class="col-md-3">
-      <div class="scrollable-container" data-controller="points">
+    <div id="test" class="col-lg-3 col-md-4 col-sm-12 mb-4">
+      <div class="scrollable-container p-3" data-controller="points">
 
-      <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment),
-      local: true, html: { class: "d-flex align-items-center new-test-grouping-form" } do |form| %>
-      <div class="form-group mb-0" style="margin-right: 10px;">
-        <%= form.text_field :name, class: "form-control", placeholder: "New Test Grouping" %>
-      </div>
-      <button type="submit" class="btn btn-primary align-items-center">
-        <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
-      </button>
-    <% end %>
-
-          <div data-points-target="totalPoints">Total Points: <span>0</span></div>
-
+      <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment), local: true, html: { class: "d-flex align-items-center new-test-grouping-form mb-3" } do |form| %>
+          <div class="form-group mb-0 me-2">
+            <%= form.text_field :name, class: "form-control", placeholder: "New Test Grouping" %>
+          </div>
+          <button type="submit" class="btn btn-primary align-items-center">
+            <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
+          </button>
+        <% end %>
+        
+        <div data-points-target="totalPoints" class="mb-2">Total Points: <span>0</span></div>
+        
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% if @test_groupings.present? %>
-            <% @test_groupings.sort_by(&:position).each do | test_grouping | %>
-              <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card">
-              <div class="test-grouping-title"
-              data-action="click->test-grouping-#toggleTestGrouping"
-              data-test-grouping-id="<%= test_grouping.id %>">
-                  <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
-                  <%= "#{test_grouping.position}) #{test_grouping.name}" %>
-
-                  <!-- Delete Button -->
-                  <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button" %>
-              </div>
-
-              <div class="test-list" 
-                id="test-list-<%= test_grouping.id %>" 
-                data-controller="test_card" 
-                data-grouping-id="<%= test_grouping.id %>">
-                <% test_grouping.tests.sort_by(&:position).each do | test | %>
-                  <div class="test-card" data-id="<%= test.id %>" data-test-id="<%= test.id %>" data-points-target="testInfo">
-                    <div class="test-info">
-                      <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
-                      <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button" %>
+            <% @test_groupings.sort_by(&:position).each do |test_grouping| %>
+              <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card mb-3">
+                <div class="test-grouping-title d-flex justify-content-between align-items-center" data-action="click->test-grouping-#toggleTestGrouping" data-test-grouping-id="<%= test_grouping.id %>">
+                  <span><%= "#{test_grouping.position}) #{test_grouping.name}" %></span>
+                  <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button btn btn-sm btn-outline-danger" %>
+                </div>
+                
+                <div class="test-list mt-2 ps-2 border-start" id="test-list-<%= test_grouping.id %>" data-controller="test_card" data-grouping-id="<%= test_grouping.id %>">
+                  <% test_grouping.tests.sort_by(&:position).each do |test| %>
+                    <div class="test-card mb-2" data-id="<%= test.id %>" data-test-id="<%= test.id %>" data-points-target="testInfo">
+                      <div class="test-info">
+                        <%= link_to "#{test.position}) #{test.name} (#{test.points} pts.)", assignment_path(@assignment, test_id: test.id), class: "text-link" %>
+                        <%= button_to "✎", edit_points_assignment_test_grouping_test_path(@assignment, test_grouping, test), method: :get, remote: true, format: :js, class: "edit-button btn btn-sm btn-outline-secondary" %>
+                      </div>
                     </div>
-                  </div>
-                <% end %>
-              </div>
+                  <% end %>
+                </div>
               </div>
             <% end %>
           <% else %>
@@ -63,11 +54,10 @@
       <%= render 'file_tree' %>
 
 
-      </div>
-
-    <div id = 'test-details' class="col-md-9">
-      <!-- Form to create or edit a test -->
-      <div id="test-form" class="test-form d-flex w-100">
+    </div>
+ 
+    <div id="test-details" class="col-lg-9 col-md-8 col-sm-12">
+      <div id="test-form" class="test-form p-3">
         <%= render 'assignments/test_form', assignment: @assignment, test: @test %>
       </div>
     </div>

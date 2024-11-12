@@ -1,116 +1,106 @@
 <%= form_with model: [@assignment, @test], local: true do |form| %>
-    <div class="form-grid w-100">
-        <div class="d-flex form-group justify-content-between">
-            <div class="w-50">
-                <%= form.label :name, "Test Name" %>
+	<div class="container-fluid">
+	  <div class="row mb-3">
+		<div class="col-md-6">
+		  <%= form.label :name, "Test Name" %>
                 <%= form.text_field :name, class:"form-control" %>
-            </div>
-
-			<div class="d-flex align-items-center">
-				<% if @test.persisted? %>
-					<div class="delete-actions\">
-						<%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
-					</div>
-				<% end %>
-
-				<div class="form-actions">
-					<%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
-				</div>
-			</div>
-        </div>
-
-		<hr>
-
-		<div class="justify-content-between d-flex">
-			<div class="form-group">
-				<%= form.label :test_grouping_position, "Grouping Number" %>
-				<%= form.text_field :test_grouping_position, class: "form-control" %>
-			</div>
-
-			<div class="form-group">
-				<%= form.label :position, "Test Number" %>
-				<%= form.text_field :position , class:"form-control"%>
-			</div>
-
-			<div class="form-group">
-				<%= form.label :points %>
-				<%= form.number_field :points, class:"form-control" %>
+		</div>
+		<div class="col-md-6 d-flex align-items-center justify-content-end">
+		  <% if @test.persisted? %>
+			<%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?"}, class: "btn btn-danger me-2" %>
+		  <% end %>
+		  <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class: "btn btn-primary" %>
+		</div>
+	  </div>
+  
+	  <hr>
+  
+	  <div class="row mb-3">
+		<div class="col-md-4">
+		  <%= form.label :test_grouping_position, "Grouping Number" %>
+		  <%= form.text_field :test_grouping_position, class: "form-control" %>
+		</div>
+		<div class="col-md-4">
+		  <%= form.label :position, "Test Number" %>
+		  <%= form.text_field :position , class:"form-control"%>
+		</div>
+		<div class="col-md-4">
+		  <%= form.label :points %>
+		  <%= form.number_field :points, class:"form-control" %>
+		</div>
+	  </div>
+  
+	  <hr>
+  
+	  <div class="row mb-3">
+		<div class="col-md-4">
+		  <%= form.label :test_type, "Test Type" %>
+		  <%= form.select :test_type, options_for_select([
+		  ['coverage', 'coverage'],
+			['compile', 'compile'],
+			['approved_includes', 'approved_includes'],
+			['memory_errors', 'memory_errors'],
+			['unit', 'unit'],
+			['i_o', 'i_o'],
+			['performance', 'performance'],
+			['script', 'script']
+		  ], @test.test_type), { include_blank: 'Please select a test type'},class: "form-control" %>
+		</div>
+		<div class="col-md-4">
+		  <%= form.label :target %>
+		  <%= form.text_field :target, class:"form-control" %>
+		</div>
+		<div class="col-md-4 d-flex align-items-center">
+		  <div class="form-check me-3">
+			<%= form.check_box :show_output, class: "form-check-input" %>
+			<%= form.label :show_output, class: "form-check-label" %>
+		  </div>
+		  <div class="form-check">
+			<%= form.check_box :skip, class: "form-check-input" %>
+			<%= form.label :skip, class: "form-check-label" %>
+		  </div>
+		</div>
+	  </div>
+  
+	  <div class="row mb-3">
+		<div class="col-md-12">
+		  <%= form.label :include, 'Includes' %>
+		  <%= form.text_area :include, class:"form-control", placeholder: "Add .cpp or .h paths separated by spaces"%>
+		  </div>
+	  </div>
+  
+	  <div class="row mb-3">
+		<div class="col-md-6">
+			<%= form.label :timeout, "Timeout" %>
+			<div class="input-group" style="display: flex; align-items: center;">
+			<%= form.number_field :timeout, class: "form-control", placeholder: "0 seconds", id: "timeout-field", style: "max-width: 100px; text-align: right;" %>
+			<span class="input-group-text timeout-label">Seconds</span>
 			</div>
 		</div>
-
-		<hr>
-
-        <div class="d-flex">
-            <div class="form-group align-items-center justify-content-space-evenly">
-                <div>
-                	<%= form.label :test_type, "Test Type" %>
-                    <% if @test.persisted? %>
-                    	<%= form.text_field :test_type, class: "form-control", readonly: true %>
-                    <% else %>
-						<%= form.select :test_type, options_for_select(
-							[['coverage', 'coverage'],
-							['compile', 'compile'],
-							['approved_includes', 'approved_includes'],
-							['memory_errors', 'memory_errors'],
-							['unit', 'unit'],
-							['i_o', 'i_o'],
-							['performance', 'performance'],
-							['script', 'script']],
-							@test.test_type),
-							{ include_blank: 'Please select a test type',
-							class: "form-control"},
-							onchange: "loadTestPartial(this.value)" %>
-                    <% end %>
-                </div>
-                <div>
-                    <%= form.label :target %>
-                    <%= form.text_field :target, class:"form-control" %>
-                </div>
-                <div class="d-flex">
-                    <div class="w-50 d-flex align-items-center">
-                        <%= form.check_box :show_output %>
-                        <%= form.label :show_output, class: 'ml-2' %>
-                    </div>
-                    <div class="w-50 d-flex align-items-center">
-                        <%= form.check_box :skip %>
-                        <%= form.label :skip, class: 'ml-2' %>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group justify-content-space-evenly h-100">
-                <div class="flex-grow-1 h-100">
-                    <%= form.label :include, 'Includes' %>
-                    <%= form.text_area :include , class:"form-control includes", placeholder: "Add .cpp or .h paths separated by spaces"%>
-                </div>
-            </div>
-        </div>
-
-		<div class="d-flex justify-content-between">
-			<div class="form-group">
-				<%= form.label :timeout %>
-				<%= form.number_field :timeout, class:"form-control" %>
-			</div>
-			<div class="field form-group">
-				<%= form.label :visibility, 'Gradescope Visibility' %>
-				<%= form.select :visibility, options_for_select(
-					[['Hidden', 'hidden'],
-					['After Due Date', 'after_due_date'],
-					['After Published', 'after_published'],
-					['Visible', 'visible']], @test.visibility || 'visible'),
-					class:"form-control" %>
-			</div>
+		<div class="col-md-6">
+			<%= form.label :visibility, 'Gradescope Visibility' %>
+			<%= form.select :visibility, options_for_select([
+			['Hidden', 'hidden'],
+			['After Due Date', 'after_due_date'],
+			['After Published', 'after_published'],
+			['Visible', 'visible']
+			], @test.visibility || 'visible'), class: "form-control" %>
+		</div>
 		</div>
 
-        <hr>
+	
+	
+		
+		
 
-        <div id="dynamic-test-block-container">
-            <% if @test.test_type.present? %>
-            <%= render "assignments/test_blocks/#{@test.test_type}", form: form , test: @test %>
-            <% end %>
-        </div>
-    </div>
-<% end %>
-
-
-
+  
+	  <hr>
+  
+	  <div id="dynamic-test-block-container">
+		<% if @test.test_type.present? %>
+		  <%= render "assignments/test_blocks/#{@test.test_type}", form: form, test: @test %>
+		<% end %>
+	  </div>
+	</div>
+  <% end %>
+  
