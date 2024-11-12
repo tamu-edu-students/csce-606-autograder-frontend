@@ -22,6 +22,7 @@ Given(/^I am logged in as an instructor$/) do
     check_test_block(test_type)
     fill_test_block(test_type)
 
+    # Test main cucumber
     expect(page).to have_button('Create Test')
     expect(page).to have_select('Test Type', selected: test_type)
     click_button "Create Test"
