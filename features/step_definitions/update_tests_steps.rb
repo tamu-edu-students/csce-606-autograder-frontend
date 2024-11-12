@@ -6,21 +6,30 @@ Given(/^I am logged in as an instructor$/) do
   Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
     click_link('Add New Test')
-    select test_type, from: 'Test Type'
+    # Expect button with text 'Create Test' to be visible
+    expect(page).to have_button('Create Test')
+    Capybara.using_wait_time(10) do
+      select test_type, from: 'Test Type'
+    end
+
+    Capybara.using_wait_time(10) do
+      expect(page).to have_select('Test Type', selected: test_type)
+    end
+    # expect Test Type to be selected
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    steps %(And I add the "#{test_type}" dynamic text block field)
+    check_test_block(test_type)
+    fill_test_block(test_type)
+
+    expect(page).to have_button('Create Test')
+    expect(page).to have_select('Test Type', selected: test_type)
     click_button "Create Test"
 
     # Wait for the success message to ensure the test case is created
-    Capybara.using_wait_time(10) do
-      expect(page).to have_content("Test was successfully created")
-    end
-
+    expect(page).to have_content("Test was successfully created")
     @assignment.reload
     @test_case = @assignment.tests.last
-    puts "Test Case ID: #{@test_case&.id}"
   end
 
   Given(/^I have created an assignment with a test case of type "(.*)"$/) do |type|
