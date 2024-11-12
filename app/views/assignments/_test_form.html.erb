@@ -85,13 +85,26 @@
             </div>
 
             <div class="form-group justify-content-space-evenly h-100">
-                <div class="flex-grow-1 h-100">
-                    <%= form.label :include, 'Includes' %>
-                    <%= form.text_area :include, class: "form-control includes", id: "test_include", placeholder: "Add .cpp or .h paths separated by spaces" %>
-					<div id="include-file-tree-dropdown" class="dropdown-content" style="display: none;">
+				<div class="flex-grow-1 h-100">
+					<%= form.label :include, 'Provided Files' %>
+
+					<!-- Button to open the dropdown -->
+					<div id="include-file-dropdown" class="dropdown">
+						<button class="btn btn-secondary" type="button" id="includeDropdownMenuButton" aria-expanded="false">
+							Please select files to be provided
+							<span id="dropdownArrow" class="arrow">▼</span>
+						</button>
+						
+						<!-- Dropdown menu containing the file tree -->
+						<div id="include-file-tree-dropdown" class="dropdown-content" aria-labelledby="includeDropdownMenuButton">
+							<!-- File tree will be rendered here by JavaScript -->
+						</div>
 					</div>
-                </div>
-            </div>
+					
+					<!-- Hidden field to store the selected file paths -->
+					<%= form.hidden_field :include, value: (@test.include || []).to_json, id: 'test_include', class: 'file-selection-field' %>
+				</div>
+			</div>
         </div>
 
 		<div class="d-flex justify-content-between">

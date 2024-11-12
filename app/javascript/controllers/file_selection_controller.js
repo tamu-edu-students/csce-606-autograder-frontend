@@ -23,6 +23,7 @@ export default class extends Controller {
     // Dropdown fields
     this.targetField = document.getElementById("test_target");
     this.includeField = document.getElementById("test_include");
+    console.log(this.includeField);
     this.mainPathField = document.getElementById("test_block_main_path");
     this.sourcePathField = document.getElementById("test_block_source_paths");
     this.compilePathField = document.getElementById("test_block_compile_paths");
@@ -58,6 +59,8 @@ export default class extends Controller {
       });
     }
 
+    this.includeDropdown.style.display = "none";
+
     this.setupEventListeners();
 
     // Initialize dropdown content based on selected paths
@@ -78,6 +81,9 @@ export default class extends Controller {
       let selectedPaths;
       try {
         selectedPaths = JSON.parse(field.value);
+        if (selectedPaths.length === 0) {
+          return
+        }
         if (Array.isArray(selectedPaths) && typeof selectedPaths[0] === 'string') {
           // If it’s an array of strings, proceed as expected
           selectedPaths = selectedPaths.map(path => path.trim());
@@ -102,7 +108,7 @@ export default class extends Controller {
 
   setupEventListeners() {
     const fields = [
-      this.targetField, this.includeField, this.mainPathField, this.sourcePathField,
+      this.targetField, this.mainPathField, this.sourcePathField,
       this.compilePathField, this.memoryErrorsPathField, this.inputPathField,
       this.outputPathField, this.scriptPathField
     ];
@@ -111,6 +117,12 @@ export default class extends Controller {
       if (field) {
         field.addEventListener("click", (e) => this.toggleDropdown(e));
       }
+    });
+
+    document.getElementById('includeDropdownMenuButton').addEventListener('click', (e) => {
+      this.toggleDropdown(e);
+      const arrow = document.getElementById("dropdownArrow");
+      arrow.classList.toggle("rotated");
     });
 
     document.addEventListener("click", (e) => this.hideallDropdowns(e));
@@ -198,18 +210,27 @@ export default class extends Controller {
   toggleDropdown(event) {
     event.preventDefault();
     event.stopPropagation();
-
+  
     const field = event.currentTarget;
-    const dropdown = this.getDropdownForField(field);
+    let dropdown;
+  
+    if (field.id === "includeDropdownMenuButton") {
+      dropdown = this.includeDropdown;
+    } else {
+      dropdown = this.getDropdownForField(field);
+    }
+  
     if (!dropdown) return;
-
+  
     // Hide all other dropdowns
     this.hideAllDropdownsExcept(dropdown);
-
+  
     // Toggle current dropdown visibility
     const isHidden = dropdown.style.display === "none";
     dropdown.style.display = isHidden ? "block" : "none";
+  
   }
+  
 
 
   updateField(event) {
@@ -233,7 +254,8 @@ export default class extends Controller {
     let selectedPaths;
     if (field.id === "test_block_source_paths" || 
         field.id === "test_block_mem_error_paths" || 
-        field.id === "test_block_compile_paths") {
+        field.id === "test_block_compile_paths" ||
+        field.id === "test_include") {
         // For these fields, keep them as arrays
         selectedPaths = field.value ? JSON.parse(field.value) : [];
     } else {
@@ -254,7 +276,8 @@ export default class extends Controller {
     // Update field value based on field type
     if (field.id === "test_block_source_paths" || 
         field.id === "test_block_mem_error_paths" || 
-        field.id === "test_block_compile_paths") {
+        field.id === "test_block_compile_paths" ||
+        field.id === "test_include") {
         // Store it as a JSON string for the input field
         field.value = JSON.stringify(selectedPaths);
     } else {
