@@ -35,7 +35,7 @@ end
 # Step definitions for user interactions
 When("I click on {string}") do |link|
   if link == "include"
-    find('#test_include').click
+    find('#include-file-dropdown').click
     expect(page).to have_css('#include-file-tree-dropdown', visible: true, wait: 5)
   else
     click_link link

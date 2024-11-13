@@ -52,8 +52,16 @@ Then(/^the include field should display the selected file paths$/) do
 
   include_field = find("#test_include", visible: :all)
 
+  # Get paths from selected checkboxes
   selected_file_paths = checkboxes.select(&:checked?).map { |checkbox| checkbox['data-file-path'] }
-  displayed_file_paths = include_field.value.split(",").map(&:strip)
+
+  # Parse the displayed file paths to remove extra quotes or brackets
+  displayed_file_paths = begin
+    JSON.parse(include_field.value)  # Attempt to parse JSON format if present
+  rescue JSON::ParserError
+    include_field.value.split(",").map { |path| path.gsub(/["\[\]]/, '').strip }
+  end
 
   expect(displayed_file_paths).to match_array(selected_file_paths)
 end
+
