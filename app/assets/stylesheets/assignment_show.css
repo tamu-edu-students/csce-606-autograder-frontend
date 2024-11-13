@@ -172,7 +172,7 @@
 .test-info {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
 }
 
@@ -182,12 +182,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 10px;
-  max-width: calc(100% - 100px); /* Adjust based on your needs */
+  max-width: calc(100% - 100px); 
 }
 
 .points-editor {
   flex-shrink: 0;
-  width: 90px; /* Adjust this width as needed */
+  width: 95px; 
   display: flex;
   align-items: center;
   justify-content: flex-end;

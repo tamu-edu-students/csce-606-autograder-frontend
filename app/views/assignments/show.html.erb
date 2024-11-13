@@ -20,7 +20,7 @@
       </button>
     <% end %>
 
-          <div data-points-target="totalPoints">Total Points: <span>0</span></div>
+          <div id="totalPoints">Total Points: <span><%= @total_points %></span></div>
 
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% if @test_groupings.present? %>

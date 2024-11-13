@@ -31,6 +31,7 @@ class AssignmentsController < ApplicationController
     @test ||= Test.new(assignment: @assignment)  # Default to a new test if no test is selected
     github_token = session[:github_token]
     @directory_structure = @assignment.fetch_directory_structure(github_token)
+    @total_points = @test_groupings.sum { |tg| tg.tests.sum(:points) }
   end
 
   # GET /assignments/new
