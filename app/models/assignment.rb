@@ -285,9 +285,15 @@ class Assignment < ActiveRecord::Base
     else
       test.include
     end
-    # Convert array or string to space-separated format
-    include_list = includes.is_a?(Array) ? includes.join(" ") : includes
-    optional_attrs += "@include: #{include_list}\n"
+    # # Convert array or string to space-separated format
+    # include_list = includes.is_a?(Array) ? includes.join(" ") : includes
+    # optional_attrs += "@include: #{include_list}\n"
+     
+    if includes.present?
+      include_list = includes.is_a?(Array) ? includes.join(" ") : includes
+      optional_attrs += "@include: #{include_list}\n"
+    end
+
     optional_attrs += "@number: #{test.position}\n" if test.position.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
     optional_attrs += "@skip: #{test.skip}\n" if test.skip.present?
