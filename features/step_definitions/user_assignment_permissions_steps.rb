@@ -36,7 +36,16 @@ end
 When("I click on {string}") do |link|
   if link == "include"
     find('#include-file-dropdown').click
-    expect(page).to have_css('#include-file-tree-dropdown', visible: true, wait: 5)
+    expect(page).to have_css('#include-file-tree-dropdown', visible: true, wait: 5)    
+  elsif link == "compile"
+    find('#test_block_compile_paths').click
+    expect(page).to have_css('#compile-file-tree-dropdown', visible: true, wait: 5) 
+  elsif link == "source-paths"
+    find('#test_block_source_paths').click
+    expect(page).to have_css('#source-path-file-tree-dropdown', visible: true, wait: 5) 
+  elsif link == "memory_errors"
+    find('#test_block_mem_error_paths').click
+    expect(page).to have_css('#mem-error-file-tree-dropdown', visible: true, wait: 5) 
   else
     click_link link
   end

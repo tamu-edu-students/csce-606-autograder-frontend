@@ -16,7 +16,7 @@ Feature: File Selection from Nested Dropdown in Test Form
   Scenario: Selecting multiple files from different subdirectories
     When I click on "include"
     And I expand the "io_tests" directory
-    And I select the following files:
+    And I select the following files in "include" dropdown:
       | Directory             | File           |
       | tests/c++/io_tests    | input.txt      |
       | tests/c++/io_tests    | output.txt     |
