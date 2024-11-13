@@ -18,14 +18,14 @@ Given(/^I am logged in as an instructor$/) do
     # expect Test Type to be selected
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
-    fill_in 'Target', with: 'target.cpp'
+    page.execute_script("document.getElementById('test_target').value = '#{"target.cpp"}';")
     check_test_block(test_type)
     fill_test_block(test_type)
 
     expect(page).to have_button('Create Test')
     expect(page).to have_select('Test Type', selected: test_type)
     click_button "Create Test"
-
+    
     # Wait for the success message to ensure the test case is created
     expect(page).to have_content("Test was successfully created")
     @assignment.reload
