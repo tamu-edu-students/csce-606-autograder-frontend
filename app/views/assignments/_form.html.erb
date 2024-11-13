@@ -21,6 +21,13 @@
   </div>
 
   <div class="form-group">
+    <%= form.label :approved_files, style: "display: block" %>
+    <%= form.text_area :files_to_submit,
+    placeholder: 'Newline-separated list of files that students must submit',
+    class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
     <%= form.submit 'Submit', class: 'btn btn-primary btn-block' %>
   </div>
 <% end %>

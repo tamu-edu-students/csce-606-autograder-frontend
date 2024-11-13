@@ -92,3 +92,7 @@ When('I try to visit the {string} page') do |string|
   end
   visit path
 end
+
+Then('I should see the "Approved files" text area') do
+  expect(page).to have_field("assignment[files_to_submit]")
+end
