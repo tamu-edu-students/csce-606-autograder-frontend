@@ -25,22 +25,22 @@ Then("I should see a nested file structure dropdown") do
 end
 
 When("I expand the {string} directory") do |dir_name|
-  # within("#include-file-tree-dropdown") do
-  #   find("li", text: dir_name).click
-  # end
-  # within("#compile-file-tree-dropdown") do
+    # within("#include-file-tree-dropdown") do
+    #   find("li", text: dir_name).click
+    # end
+    # within("#compile-file-tree-dropdown") do
     find("li", text: dir_name).click
   # end
 end
 
 And(/^I select the following files in "(.*)" dropdown:$/) do |dropdown_type, table|
   dropdown_id = case dropdown_type
-                when "include" then "include-file-tree-dropdown"
-                when "compile" then "compile-file-tree-dropdown"
-                when "source-paths" then "source-path-file-tree-dropdown"
-                when "memory_errors" then "mem-error-file-tree-dropdown"
-                else raise "Unknown dropdown type: #{dropdown_type}"
-                end
+  when "include" then "include-file-tree-dropdown"
+  when "compile" then "compile-file-tree-dropdown"
+  when "source-paths" then "source-path-file-tree-dropdown"
+  when "memory_errors" then "mem-error-file-tree-dropdown"
+  else raise "Unknown dropdown type: #{dropdown_type}"
+  end
 
   table.hashes.each do |row|
     directory = row['Directory']
@@ -76,4 +76,3 @@ Then(/^the include field should display the selected file paths$/) do
 
   expect(displayed_file_paths).to match_array(selected_file_paths)
 end
-

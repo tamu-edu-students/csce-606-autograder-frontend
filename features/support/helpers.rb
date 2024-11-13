@@ -25,7 +25,7 @@ def fill_test_block(test_type)
       # fill_in 'Enter Source Path', with: 'source1'
       # click_button 'Add Source Path'
       # fill_in 'Enter Source Path', with: 'source2', match: :first
-      
+
       steps %(
         And I click on "source-paths"
         And I expand the "io_tests" directory

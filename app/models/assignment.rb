@@ -280,13 +280,13 @@ class Assignment < ActiveRecord::Base
   def format_optional_attributes(test)
     optional_attrs = ""
     optional_attrs += "@target: #{test.target}\n" if test.target.present?
-    includes = if test.include.is_a?(String) && test.include.start_with?('[')
+    includes = if test.include.is_a?(String) && test.include.start_with?("[")
       JSON.parse(test.include)
     else
       test.include
     end
     # Convert array or string to space-separated format
-    include_list = includes.is_a?(Array) ? includes.join(' ') : includes
+    include_list = includes.is_a?(Array) ? includes.join(" ") : includes
     optional_attrs += "@include: #{include_list}\n"
     optional_attrs += "@number: #{test.position}\n" if test.position.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
