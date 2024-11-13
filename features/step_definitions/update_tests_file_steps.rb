@@ -136,9 +136,14 @@ Given('the assignment contains {string} tests') do |string|
     select "unit", from: 'Test Type'
     fill_in 'Name', with: "test#{i}"
     fill_in 'Points', with: 10
-    fill_in 'Target', with: 'target.cpp'
-    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
+    page.execute_script("document.getElementById('test_target').value = 'target.cpp';")
+    steps %(And I add the "unit" dynamic text block field)
     click_button "Create Test"
+
+    # Wait for the success message to ensure the test case is created
+    Capybara.using_wait_time(100) do
+      expect(page).to have_content("Test was successfully created")
+    end
   end
 end
 
