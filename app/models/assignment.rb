@@ -288,7 +288,7 @@ class Assignment < ActiveRecord::Base
     # # Convert array or string to space-separated format
     # include_list = includes.is_a?(Array) ? includes.join(" ") : includes
     # optional_attrs += "@include: #{include_list}\n"
-     
+
     if includes.present?
       include_list = includes.is_a?(Array) ? includes.join(" ") : includes
       optional_attrs += "@include: #{include_list}\n"
