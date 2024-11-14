@@ -11,11 +11,19 @@ Then("I should see a points editor and test name for each test in their respecti
   end
   
   When('I click on the point editor for {string}') do |test_name|
-    # Find the specific test card containing the test name
     within('.test-grouping-list') do
-      test_link = find('a.text-link', text: /#{test_name}/)
-      test_card = test_link.ancestor('.test-card')
-      test_card.find('.points-input').click
+      # First, find all test cards and iterate through them
+      all('.test-card').each do |test_card|
+        # Find the link within the test card
+        link = test_card.find('.test-info a.text-link')
+        
+        # The link text includes position number, so we need to check if it contains our test name
+        if link.text.include?(test_name)
+          # Once we find the right test card, click its points input
+          test_card.find('.points-input').click
+          break
+        end
+      end
     end
   end
   
