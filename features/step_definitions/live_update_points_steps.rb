@@ -12,16 +12,26 @@ Then("I should see a points editor and test name for each test in their respecti
   
   When('I click on the point editor for {string}') do |test_name|
     within('.test-grouping-list') do
-        @current_test_card = all('.test-info').find { |info| info.text.include?(test_name) }
-        raise "Test '#{test_name}' not found" unless @current_test_card
+      # First, find all test cards and iterate through them
+      all('.test-card').each do |test_card|
+        # Find the link within the test card
+        link = test_card.find('.test-info a.text-link')
         
-        @current_test_card.find('.points-input').click
+        # The link text includes position number, so we need to check if it contains our test name
+        if link.text.include?(test_name)
+          # Once we find the right test card, click its points input
+          puts test_name
+          test_card.find('.points-input').click
+          break
+        end
+      end
     end
   end
   
   When('I enter {string} in the text field') do |points|
-    input = @current_test_card.find('.points-input')
-    input.set(points)
+    # Find the currently focused points input
+    current_input = find('.points-input:focus')
+    current_input.set(points)
   end
   
   # Simulate clicking outside the input field or pressing Enter
