@@ -10,18 +10,13 @@ Then("I should see a points editor and test name for each test in their respecti
     end
   end
   
-  # Simulate clicking on the points editor and entering points
   When('I click on the point editor for {string}') do |test_name|
-    # Retrieve the test ID based on the test name using ActiveRecord
-    puts test_name
-    
-    test = Test.find_by(name: "Test_BF_1")
-    
-    # Locate the test-card using the data-test-id attribute
-    test_card = find(".test-card[data-test-id='#{test.id}']")
-    
-    # Click on the points input field within the test-card
-    test_card.find('.points-input').click
+    # Find the specific test card containing the test name
+    within('.test-grouping-list') do
+      test_link = find('a.text-link', text: /#{test_name}/)
+      test_card = test_link.ancestor('.test-card')
+      test_card.find('.points-input').click
+    end
   end
   
   When('I enter {string} in the text field') do |points|
