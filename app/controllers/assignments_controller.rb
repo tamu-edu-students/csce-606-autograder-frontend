@@ -213,7 +213,7 @@ class AssignmentsController < ApplicationController
       node
     end
   end
-  
+
   def files_string_to_jsonb(files_string)
     return { files_to_submit: [] } if files_string.nil? || files_string.empty?
     files_string = files_string.gsub("\\n", "\n")
