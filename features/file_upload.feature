@@ -1,13 +1,13 @@
-Feature: File Upload 
+Feature: File Upload
   As a CSCE 120 GitHub organization member
   So that I can upload new test files
   I want to be able to see the new file in the file tree directory
 
   Background: Assignments in the GitHub organization
     Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment1       |
-    
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment1       | main.cpp\nhelper.cpp\nhelper.h\n |
+
 
   Scenario: Upload a new test file using "Upload file" button
     Given I am logged in as an "instructor"

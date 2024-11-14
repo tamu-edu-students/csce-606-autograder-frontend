@@ -2,8 +2,8 @@ Feature: File Selection from Nested Dropdown in Test Form
 
   Background:
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
+      | assignment_name | repository_name   | files_to_submit                  |
+      | assignment1     | assignment1       | main.cpp\nhelper.cpp\nhelper.h\n |
     And I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
 

@@ -49,7 +49,8 @@ class AssignmentsController < ApplicationController
 
   # POST /assignments or /assignments.json
   def create
-    @assignment = Assignment.new(assignment_params)
+    modified_params = assignment_params.merge(files_to_submit: files_string_to_jsonb(assignment_params[:files_to_submit]))
+    @assignment = Assignment.new(modified_params)
     github_token = session[:github_token]
 
     respond_to do |format|
@@ -181,36 +182,10 @@ class AssignmentsController < ApplicationController
 
   private
 
-  def build_complete_tree(assignment)
-    github_token = session[:github_token]
-    client = Octokit::Client.new(access_token: github_token)
-    repo = "AutograderFrontend/#{assignment.repository_name}"
-
-    begin
-      fetch_directory_contents(client, repo, "tests/c++")
-    rescue Octokit::Error => e
-      Rails.logger.error "GitHub API Error: #{e.message}"
-      []
-    end
-  end
-
-  def fetch_directory_contents(client, repo, path)
-    contents = client.contents(repo, path: path)
-
-    contents.map do |item|
-      node = {
-        name: item.name,
-        path: item.path,
-        type: item.type
-      }
-
-      if item.type == "dir"
-        clean_path = item.path.gsub(/\s+/, "++")
-        node[:children] = fetch_directory_contents(client, repo, clean_path)
-      end
-
-      node
-    end
+  def files_string_to_jsonb(files_string)
+    return { files_to_submit: [] } if files_string.nil? || files_string.empty?
+    files_string = files_string.gsub("\\n", "\n")
+    { files_to_submit: files_string.split("\n").map(&:strip).reject(&:empty?) }
   end
 
   def handle_assignment_save
@@ -247,7 +222,7 @@ class AssignmentsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def assignment_params
-    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url, :files_to_submit)
   end
 
     def update_github_permissions(assignment)
