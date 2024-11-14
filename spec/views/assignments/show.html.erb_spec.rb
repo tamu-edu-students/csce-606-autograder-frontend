@@ -20,8 +20,6 @@ RSpec.describe "assignments/show.html.erb", type: :view do
   it "displays all the tests for the assignment" do
     render
     
-    puts rendered
-
     expect(rendered).to have_content("Test 1")
     expect(rendered).to match("10.0")
     expect(rendered).to have_content("Unit")
