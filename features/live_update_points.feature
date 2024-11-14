@@ -25,7 +25,7 @@ Feature: Live update for points
         And I enter "<points>" in the text field
         And I click outside the text field or press Enter
         Then the points for "<Test Name>" should update to "<points>"
-            | Test Name   | Grouping Name       | points |
-            | Test_BF_1   | Basic Functionality | 5      |
-            | Test_EC_1   | Edge Cases          | 3      |
+            | Test Name   | points |
+            | Test_BF_1   | 5      |
+            | Test_EC_1   | 3      |
         And the total points at the top should update to "8.00"
