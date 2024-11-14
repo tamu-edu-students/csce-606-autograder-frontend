@@ -305,4 +305,16 @@ class Assignment < ActiveRecord::Base
       self.repository_name = repository_name
     end
   end
+
+  def init_run_autograder_script
+    file_path = File.join(local_repository_path, "run_autograder")
+    file_content = File.read(file_path)
+
+    files_to_submit_string = files_to_submit["files_to_submit"].join(" ")
+    file_content.gsub!(/files_to_submit=\([^\)]*\)/, "files_to_submit=( #{files_to_submit_string} )")
+
+    File.open(file_path, "w") do |file|
+      file.write file_content
+    end
+  end
 end
