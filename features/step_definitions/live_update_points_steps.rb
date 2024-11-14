@@ -17,6 +17,7 @@ Then("I should see a points editor and test name for each test in their respecti
         # Find the link within the test card
         link = test_card.find('.test-info a.text-link')
         
+        puts link.text
         # The link text includes position number, so we need to check if it contains our test name
         if link.text.include?("1) #{test_name}")
           # Once we find the right test card, click its points input
