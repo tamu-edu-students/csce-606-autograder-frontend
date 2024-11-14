@@ -12,8 +12,8 @@ Then("I should see a points editor and test name for each test in their respecti
   
   # Simulate clicking on the points editor and entering points
   When('I click on the point editor for {string}') do |test_name|
-    test_row = find('.test-info', text: test_name)
-    test_row.find('.points-input').click
+    test_row = find('.test-info .text-link', text: /\d+\) #{test_name}/)
+    test_row.find(:xpath, '..').find('.points-input').click
   end
   
   When('I enter {string} in the text field') do |points|
