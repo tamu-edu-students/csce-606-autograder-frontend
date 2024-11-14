@@ -17,16 +17,15 @@ Feature: Live update for points
             |Test_BF_1              | Basic Functionality |
             |Test_EC_1              | Edge Cases          |
         And I am on the "Assignment Management" page for "assignment1"
-
+    
     @javascript
     Scenario Outline: Verify the points editor icon functionality and live updates
         Then I should see a points editor and test name for each test in their respective test groupings
-        When I click on the point editor for "<Test Name>"
-        And I enter "<points>" in the text field
+        When I click on the point editor for "<Test_Name>" and enter "<Points>" in the text field
         And I click outside the text field or press Enter
-        Then the points for "<Test Name>" should update to "<points>"
+        Then the points for "<Test_Name>" should update to "<Points>"
 
         Examples:
-            | Test Name | points |
-            | Test_BF_1 | 5     |
-            | Test_EC_1 | 3     |
+            | Test_Name | Points  |
+            | Test_BF_1 | 10.0     |
+            | Test_EC_1 | 3.0     |

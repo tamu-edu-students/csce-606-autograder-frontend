@@ -10,34 +10,29 @@ Then("I should see a points editor and test name for each test in their respecti
     end
   end
   
-  When('I click on the point editor for {string}') do |test_name|
+  When('I click on the point editor for {string} and enter {string} in the text field') do |test_name, points|
+    test = Test.find_by(name: test_name)
+    test2 = Test.find_by(name: "Test_EC_1")
     within('.test-grouping-list') do
       # First, find all test cards and iterate through them
       all('.test-card').each do |test_card|
         # Find the link within the test card
-        link = test_card.find('.test-info a.text-link')
-        
-        puts link.text
+        link = test_card.find('.test-info a.text-link') 
         # The link text includes position number, so we need to check if it contains our test name
-        if link.text.include?("1) #{test_name}")
-          # Once we find the right test card, click its points input
-          puts test_name
-          test_card.find('.points-input').click
+        if link.text.include?("#{test.position}) #{test_name}")
+          # Once we find the right test card, click its points input and set the value
+          input = test_card.find('.points-input')
+          input.click
+          input.set(points)
           break
         end
       end
     end
   end
   
-  When('I enter {string} in the text field') do |points|
-    # Find the currently focused points input
-    current_input = find('.points-input:focus')
-    current_input.set(points)
-  end
-  
   # Simulate clicking outside the input field or pressing Enter
   When('I click outside the text field or press Enter') do
-    find('.points-input:focus').send_keys(:enter)
+    find('#totalPoints').click
     # Add a small wait for AJAX
     sleep 0.5
   end
