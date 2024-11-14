@@ -1,6 +1,6 @@
 <%= form_with model: [@assignment, @test], local: true do |form| %>
-	<div class="container-fluid">
-	  <div class="row mb-3">
+	<div class="container-fluid test-editor">
+	  <div class="row mb-3 right-column">
 		<div class="col-md-6">
 		  <%= form.label :name, "Test Name" %>
                 <%= form.text_field :name, class:"form-control" %>
@@ -44,7 +44,8 @@
 			['i_o', 'i_o'],
 			['performance', 'performance'],
 			['script', 'script']
-		  ], @test.test_type), { include_blank: 'Please select a test type'},class: "form-control" %>
+		  ], @test.test_type), { include_blank: 'Please select a test type' },
+    { class: "form-control", onchange: "loadTestPartial(this.value)" } %>
 		</div>
 		<div class="col-md-4">
 		  <%= form.label :target %>

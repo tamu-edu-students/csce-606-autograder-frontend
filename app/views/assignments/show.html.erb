@@ -7,7 +7,7 @@
 <!-- Display tests for the assignment -->
 <div class="container-fluid mt-3" data-assignment-id="<%= @assignment.id %>">
   <div class="row">
-    <div id="test" class="col-lg-3 col-md-4 col-sm-12 mb-4">
+    <div id="test" class="col-lg-3 col-md-4 col-sm-12 mb-4 left-column">
       <div class="scrollable-container p-3" data-controller="points">
 
       <%= form_with model: [@assignment, TestGrouping.new], url: assignment_test_groupings_path(@assignment), local: true, html: { class: "d-flex align-items-center new-test-grouping-form mb-3" } do |form| %>
