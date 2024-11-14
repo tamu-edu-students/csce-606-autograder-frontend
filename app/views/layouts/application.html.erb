@@ -62,6 +62,34 @@
             createButton.disabled = !allFieldsValid;
           }
         }
+
+            // Function to toggle Target field requirement based on Test Type
+        function toggleTargetRequirement() {
+          if (testType && ["compile", "memory_errors", "script"].includes(testType.value)) {
+            // Make Target field optional
+            if (testTarget) testTarget.required = false;
+            if (targetAsterisk) targetAsterisk.style.display = "none";
+          } else {
+            // Make Target field required
+            if (testTarget) testTarget.required = true;
+            if (targetAsterisk) targetAsterisk.style.display = "inline";
+          }
+          checkRequiredFields(); // Re-check form validity
+        }
+        // Initial check for Target field requirement
+        toggleTargetRequirement();
+        // Add event listeners to check fields on change
+        if (testName) testName.addEventListener("input", checkRequiredFields);
+        if (testPoints) testPoints.addEventListener("input", checkRequiredFields);
+        if (testType) testType.addEventListener("change", function() {
+          toggleTargetRequirement();
+          checkRequiredFields();
+        });
+        if (testTarget) testTarget.addEventListener("input", checkRequiredFields);
+      }
+      // Run validation on page load and when Turbo renders or updates the frame
+      document.addEventListener("turbo:load", initializeFormValidation);
+      document.addEventListener("turbo:frame-render", initializeFormValidation);
     </script>
 
   </body>
