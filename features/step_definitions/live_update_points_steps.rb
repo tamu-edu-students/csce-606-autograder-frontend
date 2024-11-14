@@ -1,4 +1,6 @@
 Then('I should see a points editor next to the test name for {string}') do |test_name|
+    puts page.html
+
     expect(page).to have_selector('.test-info', text: test_name)
     expect(page).to have_selector('.points-editor', text: 'pts.')
   end
