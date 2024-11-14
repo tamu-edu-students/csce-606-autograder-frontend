@@ -61,6 +61,15 @@
                     <% end %>
                 </div>
                 <div>
+					
+                    <%= form.label :target %>
+                    <%= form.select :target,
+						options_for_select(
+							@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
+							@test.target),
+						{ class:"form-control",
+						include_blank: 'Select a target file' } %>
+                </div>
     <label for="test_target">Target
         <% if @test.persisted? %>
             <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>

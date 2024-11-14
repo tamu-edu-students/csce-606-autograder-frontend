@@ -35,7 +35,10 @@
 
   Given("the following assignments exist:") do |table|
     table.hashes.each do |hash|
-      @assignment = Assignment.create!(assignment_name: hash['assignment_name'], repository_name: hash['repository_name'])
+      @assignment = Assignment.create!(
+        assignment_name: hash['assignment_name'],
+        repository_name: hash['repository_name'],
+        files_to_submit: { files_to_submit: hash['files_to_submit'].split("\n").map(&:strip).reject(&:empty?) })
     end
   end
 
