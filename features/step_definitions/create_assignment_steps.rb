@@ -96,3 +96,18 @@ end
 Then('I should see the "Approved files" text area') do
   expect(page).to have_field("assignment[files_to_submit]")
 end
+
+When('I add {string} to the "Approved files" field') do |approved_files|
+  fill_in 'assignment[files_to_submit]', with: approved_files
+end
+
+Given('an assignment with name {string}, repository name {string}, and approved files {string}') do |assignment_name, repository_name, files|
+  steps %(
+    Given I am logged in as an "instructor" named "alice"
+    When I click the "Create Assignment" button
+    And I fill in "Assignment name" with "#{assignment_name}"
+    And I fill in "Repository name" with "#{repository_name}"
+    And I add "#{files}" to the "Approved files" field
+    And I click the "Submit" button
+  )
+end

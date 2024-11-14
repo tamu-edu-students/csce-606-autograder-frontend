@@ -80,7 +80,9 @@ When('with the points {string}') do |points|
 end
 
 When('with the target {string}') do |target|
-  select target, from: 'Target'
+  unless target.nil? || target.empty?
+    select target, from: 'Target'
+  end
 end
 
 Then('I should not see any missing attribute error messages') do
