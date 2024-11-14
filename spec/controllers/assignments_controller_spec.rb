@@ -31,8 +31,6 @@ RSpec.describe AssignmentsController, type: :controller do
     allow(controller).to receive(:session).and_return({ user_id: user.id, github_token: mock_github_token })  # Mock the session
     @mock_client = instance_double(Octokit::Client)
     allow(Octokit::Client).to receive(:new).and_return(@mock_client)
-    @mock_client = instance_double(Octokit::Client)
-    allow(Octokit::Client).to receive(:new).and_return(@mock_client)
   end
 
   describe 'GET #index' do
@@ -43,32 +41,45 @@ RSpec.describe AssignmentsController, type: :controller do
     end
   end
 
-  describe 'GET #show' do
-    let(:assignment) { Assignment.create!(valid_attributes) }
-    let(:client_double) { instance_double(Octokit::Client) }
-    let(:directory_structure) do
-      [
-        { name: "test_file.txt", type: "file" }
-      ]
-    end
-
-    before do
-      allow(Octokit::Client).to receive(:new).and_return(client_double)
-      allow(client_double).to receive(:contents).with("AutograderFrontend/#{assignment.repository_name}", path: "tests")
-                                              .and_return([ { name: "test_file.txt", type: "file" } ])
-      allow(assignment).to receive(:fetch_directory_structure).with(mock_github_token).and_return(directory_structure)
-    end
-
-    it 'retrieves the directory structure from GitHub and assigns it to @directory_structure' do
-      get :show, params: { id: assignment.to_param }
-      expect(assigns(:directory_structure)).to eq(directory_structure)
-    end
-
-    it 'returns a success response' do
-      get :show, params: { id: assignment.to_param }
-      expect(response).to be_successful
-    end
+describe 'GET #show' do
+  let(:directory_structure) do
+    [
+      { name: "test_file.txt", type: "file" }
+    ]
   end
+
+  before do
+    # Ensure assignment is created before any test groupings
+    @assignment = Assignment.create!(valid_attributes)
+    @test_grouping_1 = @assignment.test_groupings.create!(name: 'Test Grouping 1')
+    @test_grouping_2 = @assignment.test_groupings.create!(name: 'Test Grouping 2')
+    @test1 = @assignment.tests.create!(name: 'Test 1', points: 10.0, test_type: 'unit', target: 'target', test_block: { code: 'Test body' }, test_grouping_id: @test_grouping_1.id)
+    @test2 = @assignment.tests.create!(name: 'Test 2', points: 20.0, test_type: 'unit', target: 'target', test_block: { code: 'Test body' }, test_grouping_id: @test_grouping_2.id)
+
+    allow_any_instance_of(Assignment).to receive(:fetch_directory_structure).and_return(directory_structure)
+  end
+
+  it 'retrieves the directory structure from GitHub and assigns it to @directory_structure' do
+    get :show, params: { id: @assignment.to_param }
+    expect(assigns(:directory_structure)).to eq(directory_structure)
+  end
+
+  it 'assigns the test groupings to @test_groupings including associated tests' do
+    get :show, params: { id: @assignment.to_param }
+    expect(assigns(:test_groupings)).to include(@test_grouping_1, @test_grouping_2)
+    expect(assigns(:test_groupings).flat_map(&:tests)).to include(@test1, @test2)
+  end
+
+  it 'returns a success response' do
+    get :show, params: { id: @assignment.to_param }
+    expect(response).to be_successful
+  end
+
+  it 'assigns the correct total points to @total_points' do
+    get :show, params: { id: @assignment.to_param }
+    expect(assigns(:total_points)).to eq(30.0)
+  end
+end
 
   describe 'GET #new' do
     it 'returns a success response' do
