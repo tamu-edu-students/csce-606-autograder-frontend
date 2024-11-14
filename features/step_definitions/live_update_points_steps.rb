@@ -13,8 +13,12 @@ Then("I should see a points editor and test name for each test in their respecti
   # Simulate clicking on the points editor and entering points
   When('I click on the point editor for {string}') do |test_name|
     # Retrieve the test ID based on the test name using ActiveRecord
+    puts test_name
+    
     test = Test.find_by(name: test_name)
     
+    puts test
+
     # Locate the test-card using the data-test-id attribute
     test_card = find(".test-card[data-test-id='#{test.id}']")
     
