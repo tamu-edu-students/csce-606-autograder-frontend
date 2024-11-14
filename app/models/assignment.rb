@@ -308,14 +308,14 @@ class Assignment < ActiveRecord::Base
   end
 
   def init_run_autograder_script
-    file_path = File.join(local_repository_path, "run_autograder")
-    file_content = File.read(file_path)
+    run_autograder_path = File.join(local_repository_path, "run_autograder")
+    run_autograder_content = File.read(run_autograder_path)
 
     files_to_submit_string = files_to_submit["files_to_submit"].join(" ")
-    file_content.gsub!(/files_to_submit=\([^\)]*\)/, "files_to_submit=( #{files_to_submit_string} )")
+    run_autograder_content.gsub!(/files_to_submit=\([^\)]*\)/, "files_to_submit=( #{files_to_submit_string} )")
 
-    File.open(file_path, "w") do |file|
-      file.write file_content
+    File.open(run_autograder_path, "w") do |file|
+      file.write run_autograder_content
     end
   end
 end
