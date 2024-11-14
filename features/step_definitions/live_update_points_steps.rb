@@ -15,10 +15,8 @@ Then("I should see a points editor and test name for each test in their respecti
     # Retrieve the test ID based on the test name using ActiveRecord
     puts test_name
     
-    test = Test.find_by(name: test_name)
+    test = Test.find_by(name: "Test_BF_1")
     
-    puts test
-
     # Locate the test-card using the data-test-id attribute
     test_card = find(".test-card[data-test-id='#{test.id}']")
     
