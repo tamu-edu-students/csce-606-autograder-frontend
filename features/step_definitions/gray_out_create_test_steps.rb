@@ -1,3 +1,22 @@
+Then("I should see an asterisk next to the {string} field") do |field|
+  asterisk_element = find("label[for='test_#{field.downcase}'] span", visible: true)
+  expect(asterisk_element).to have_content('*')
+end
+When("I enter {string} in the {string} field") do |value, field|
+  fill_in "test_#{field.downcase}", with: value
+end
+When("I select {string} as the {string} type") do |type, field|
+  select type, from: "test_#{field.downcase}"
+end
+Then("the {string} button should be active") do |button_text|
+  button = find("input[type='submit'][value='#{button_text}']")
+  expect(button).not_to be_disabled
+end
+Then("the {string} button should remain disabled") do |button_text|
+  button = find("input[type='submit'][value='#{button_text}']")
+  expect(button).to be_disabled
+end
+
 When("I attempt to fill in fields as follows:") do |table|
   create_test_button = find("input[type='submit'][value='Create Test']") # Locate button by text explicitly
 
