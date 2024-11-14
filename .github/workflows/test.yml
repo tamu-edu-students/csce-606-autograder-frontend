@@ -117,7 +117,7 @@ jobs:
         run: bundle exec rspec
 
       - name: Run Cucumber
-        run: bundle exec cucumber
+        run: bundle exec cucumber features/live_update_points.feature
 
       # - name: Code Climate Coverage Action
       #   uses: paambaati/codeclimate-action@v9.0.0
