@@ -5,15 +5,15 @@ Feature: Manage assignment access for each user
 
   Background:
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
-      | assignment2     | assignment-2-repo |
-      | assignment3     | assignment-3-repo |
+      | assignment_name | repository_name   | files_to_submit                  |
+      | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
+      | assignment2     | assignment-2-repo | main.cpp\nhelper.cpp\nhelper.h\n |
+      | assignment3     | assignment-3-repo | main.cpp\nhelper.cpp\nhelper.h\n |
     And the following users exist in assignment permissions:
-      | name     | role       | 
-      | alice    | ta         | 
+      | name     | role       |
+      | alice    | ta         |
       | bob      | ta         |
-      | charlie  | instructor | 
+      | charlie  | instructor |
     And the following permissions exist:
       | user     | assignment         | role          |
       | alice    | assignment-1-repo  | no-permission |
@@ -25,19 +25,19 @@ Feature: Manage assignment access for each user
     And I am logged in as an "instructor" named "charlie"
     And I am on the "Manage Assignments" page for user permissions
 
-  Scenario: Grant a single user read access to an assignment 
+  Scenario: Grant a single user read access to an assignment
     When I click on "Manage Access" for "assignment-1-repo"
     And I "select" "read" for the user "alice"
     And I click "Save Changes"
     Then I should see that "alice" has "read" access to the remote "assignment-1-repo" repository
 
-  Scenario: Grant a single user write access to an assignment 
+  Scenario: Grant a single user write access to an assignment
     When I click on "Manage Access" for "assignment-2-repo"
     And I "select" "write" for the user "alice"
     And I click "Save Changes"
     Then I should see that "alice" has "read-write" access to the remote "assignment-2-repo" repository
 
-  Scenario: Grant all users read access to an assignment 
+  Scenario: Grant all users read access to an assignment
     When I click on "Manage Access" for "assignment-1-repo"
     And I select "Select All" for the "read" permission
     And I click "Save Changes"
@@ -50,7 +50,7 @@ Feature: Manage assignment access for each user
     And I click "Save Changes"
     Then I should see that "alice" has "no-permission" access to the remote "assignment-1-repo" repository
     And I should see that "bob" has "no-permission" access to the remote "assignment-1-repo" repository
-   
+
   Scenario: Remove a single user's read access to an assignment
     When I click on "Manage Access" for "assignment-3-repo"
     And I "deselect" "read" for the user "bob"
@@ -76,4 +76,3 @@ Feature: Manage assignment access for each user
     And I click "Save Changes"
     Then I should see that "alice" has "read-write" access to the remote "assignment-1-repo" repository
     And I should see that "bob" has "read-write" access to the remote "assignment-1-repo" repository
-   

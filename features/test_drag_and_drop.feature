@@ -4,10 +4,10 @@ Feature: The user should be able to move test cards within and in-between groups
   I want to be able to move test cards within the same group or in-between different groups
   Background: Assignments in the GitHub organization
     Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment1 |
-        | assignment2     | assignment2 |
-        | assignment3     | assignment3 |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment1       | main.cpp\nhelper.cpp\nhelper.h\n |
+        | assignment2     | assignment2       | main.cpp\nhelper.cpp\nhelper.h\n |
+        | assignment3     | assignment3       | main.cpp\nhelper.cpp\nhelper.h\n |
     And I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
     And the following test case groupings exist for "assignment1":
@@ -16,8 +16,8 @@ Feature: The user should be able to move test cards within and in-between groups
         | Edge Cases          |
     And some tests exist in "Basic Functionality" group in order:
         | test_name   |
-        | Test_BF_1   | 
-        | Test_BF_2   | 
+        | Test_BF_1   |
+        | Test_BF_2   |
         # | Test_EC_1   | Edge Cases          |
         # | Test_EC_2   | Edge Cases          |
     And I am on the "Assignment Management" page for "assignment1"

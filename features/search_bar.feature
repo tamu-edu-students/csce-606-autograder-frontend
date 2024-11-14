@@ -2,10 +2,10 @@ Feature: Search functionality on the assignments page
 
     Background:
     Given the following assignments exist:
-        | assignment_name   | repository_name   |
-        | assignment-1      | assignment-1-repo |
-        | assignment-2      | assignment-2-repo |
-        | assignment-3      | assignment-3-repo |
+        | assignment_name   | repository_name   | files_to_submit                  |
+        | assignment-1      | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
+        | assignment-2      | assignment-2-repo | main.cpp\nhelper.cpp\nhelper.h\n |
+        | assignment-3      | assignment-3-repo | main.cpp\nhelper.cpp\nhelper.h\n |
 
 
     Scenario: User searches for an assignment by name
