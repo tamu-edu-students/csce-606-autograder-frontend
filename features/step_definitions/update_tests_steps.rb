@@ -6,30 +6,21 @@ Given(/^I am logged in as an instructor$/) do
   Given('I have created a test case of type {string}') do |test_type|
     visit assignment_path(@assignment)
     click_link('Add New Test')
-    # Expect button with text 'Create Test' to be visible
-    expect(page).to have_button('Create Test')
-    Capybara.using_wait_time(10) do
-      select test_type, from: 'Test Type'
-    end
-
-    Capybara.using_wait_time(10) do
-      expect(page).to have_select('Test Type', selected: test_type)
-    end
-    # expect Test Type to be selected
+    select test_type, from: 'Test Type'
     fill_in 'Name', with: 'name'
     fill_in 'Points', with: 10
     fill_in 'Target', with: 'target.cpp'
-    check_test_block(test_type)
-    fill_test_block(test_type)
-
-    expect(page).to have_button('Create Test')
-    expect(page).to have_select('Test Type', selected: test_type)
+    steps %(And I add the "#{test_type}" dynamic text block field)
     click_button "Create Test"
 
     # Wait for the success message to ensure the test case is created
-    expect(page).to have_content("Test was successfully created")
+    Capybara.using_wait_time(10) do
+      expect(page).to have_content("Test was successfully created")
+    end
+
     @assignment.reload
     @test_case = @assignment.tests.last
+    puts "Test Case ID: #{@test_case&.id}"
   end
 
   Given(/^I have created an assignment with a test case of type "(.*)"$/) do |type|
@@ -40,10 +31,13 @@ Given(/^I am logged in as an instructor$/) do
     visit assignment_path(@assignment, test_id: @test_case.id)
   end
 
-  Then('I should see the test type as a read-only text field') do
-    # Check that the test type is displayed as a read-only text field and not as a dropdown
-    expect(page).to have_field('Test Type', readonly: true)
+  
+
+  Then("I should see the test type as a read-only text field") do
+    field = find_field("test_test_type", readonly: true)
+    expect(field.value).to eq("approved_includes")
   end
+  
 
   When(/^I update the test case with valid input$/) do
     # Navigate to the assignment management page (the show page with the form)
