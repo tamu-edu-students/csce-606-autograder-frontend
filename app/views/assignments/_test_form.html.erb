@@ -60,31 +60,34 @@
 							onchange: "loadTestPartial(this.value)" %>
                     <% end %>
                 </div>
+                
                 <div>
-					
-                    <%= form.label :target %>
-                    <%= form.select :target,
+                    <label for="test_target">Target
+                        <% if @test.persisted? %>
+                            <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>
+                                <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+                            <% end %>
+                        <% else %>
+                            <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+                        <% end %>
+                    </label>
+                    
+                    <% if @test.persisted? %>
+                            <%= form.select :target,
 						options_for_select(
 							@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
 							@test.target),
 						{ class:"form-control",
 						include_blank: 'Select a target file' } %>
+                    <% else %>
+                            <%= form.select :target,
+						options_for_select(
+							@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
+							@test.target),
+						{ class:"form-control", id: "test_target",
+						include_blank: 'Select a target file' } %>
+                    <% end %>
                 </div>
-    <label for="test_target">Target
-        <% if @test.persisted? %>
-            <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>
-                <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
-            <% end %>
-        <% else %>
-            <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
-        <% end %>
-    </label>
-    <% if @test.persisted? %>
-        <%= form.text_field :target, class: "form-control"%>
-    <% else %>
-        <%= form.text_field :target, class: "form-control", id: "test_target" %>
-    <% end %>
-</div>
 
 
 
