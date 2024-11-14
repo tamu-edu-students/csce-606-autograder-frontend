@@ -23,78 +23,12 @@ When('I create a new test with type {string}') do |type|
 end
 
 Then('I should see the {string} dynamic test block partial') do |type|
-  # # can see the right partial rendered in the bottom
-  # save_and_open_page
-
-  case type
-  when 'approved_includes'
-    # puts 'type appinclu'
-    within('#approved-includes-container') do
-      expect(page).to have_selector("input[name='test[test_block][approved_includes][]']", visible: true)
-    end
-    expect(page).to have_button("Add Approved Includes")
-  when 'compile'
-    within('#compile-file-container') do
-      expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
-    end
-    expect(page).to have_button("Add Compile Path")
-  when 'memory_errors'
-    within('#memory-errors-container') do
-      expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
-    end
-    expect(page).to have_button("Add Memory Errors Path")
-  when 'i_o'
-    expect(page).to have_selector("input[name='test[test_block][input_path]']", visible: true)
-    expect(page).to have_selector("input[name='test[test_block][output_path]']", visible: true)
-  when 'coverage'
-    expect(page).to have_selector("input[name='test[test_block][main_path]']", visible: true)
-    within('#source-paths-container') do
-      expect(page).to have_selector("input[name='test[test_block][source_paths][]']", visible: true)
-    end
-    expect(page).to have_button("Add Source Path")
-  when 'performance'
-    expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true)
-  when 'unit'
-    expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true)
-  when 'script'
-    expect(page).to have_selector("input[name='test[test_block][script_path]']", visible: true)
-  else
-    raise "Unknown test type: #{type}"
-  end
+  check_test_block(type)
 end
 
 # this need to be changed into add dynamic test block field
 Given('I add the {string} dynamic text block field') do |test_type|
-  case test_type
-  when 'approved_includes'
-    fill_in 'Enter Approved Includes', with: 'file1'
-    click_button "Add Approved Includes"
-    fill_in 'Enter Approved Includes', with: 'file2', match: :first
-  when 'compile'
-    fill_in 'Enter Compile Path', with: 'file1'
-    click_button 'Add Compile Path'
-    fill_in 'Enter Compile Path', with: 'file2', match: :first
-  when 'coverage'
-    fill_in 'Enter Main Path', with: 'main'
-    fill_in 'Enter Source Path', with: 'source1'
-    click_button 'Add Source Path'
-    fill_in 'Enter Source Path', with: 'source2', match: :first
-  when 'performance'
-    fill_in 'Enter Performance', with: 'EXPECT_EQ(1, 1);'
-  when 'unit'
-    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
-  when 'i_o'
-    fill_in 'Enter Input Path', with: 'input'
-    fill_in 'Enter Output Path', with: 'output'
-  when 'memory_errors'
-    fill_in 'Enter Memory Errors Path', with: 'file1'
-    click_button 'Add Memory Errors Path'
-    fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
-  when 'script'
-    fill_in 'Enter Script Path', with: 'script'
-  else
-    raise "Unknown test type: #{test_type}"
-  end
+  fill_test_block(test_type)
 end
 
 
