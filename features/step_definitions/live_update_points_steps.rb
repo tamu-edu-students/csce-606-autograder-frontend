@@ -28,15 +28,16 @@ Then("I should see a points editor and test name for each test in their respecti
   end
   
   When('I enter {string} in the text field') do |points|
-    fill_in 'test[points]', with: points
+    # Find the currently focused points input
+    current_input = find('.points-input:focus')
+    current_input.set(points)
   end
   
   # Simulate clicking outside the input field or pressing Enter
   When('I click outside the text field or press Enter') do
-    # Simulate a click outside
-    find('body').click
-    # Or simulate pressing Enter on the input field
-    # find('.points-input').send_keys(:enter)
+    find('.points-input:focus').send_keys(:enter)
+    # Add a small wait for AJAX
+    sleep 0.5
   end
   
   # Verify that the points were updated correctly in the database
