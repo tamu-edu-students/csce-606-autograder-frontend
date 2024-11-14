@@ -5,10 +5,10 @@ Feature: Create a new test case
 
     Background: Assignments in the GitHub organization
         Given the following assignments exist:
-            | assignment_name | repository_name   |
-            | assignment1     | assignment1 |
-            | assignment2     | assignment2 |
-            | assignment3     | assignment3 |
+            | assignment_name | repository_name   | files_to_submit                  |
+            | assignment1     | assignment1       | main.cpp\nhelper.cpp\nhelper.h\n |
+            | assignment2     | assignment2       | main.cpp\nhelper.cpp\nhelper.h\n |
+            | assignment3     | assignment3       | main.cpp\nhelper.cpp\nhelper.h\n |
         Given I am logged in as an "instructor"
         And I am on the "Assignment Management" page for "assignment1"
 
@@ -30,14 +30,14 @@ Feature: Create a new test case
 
         Examples:
         | type              | name  | points | target      |
-        | approved_includes | test1 | 10     | target1.cpp |
-        | compile           | test2 | 10     | target2.cpp |
-        | memory_errors     | test3 | 10     | target3.cpp |
-        | coverage          | test4 | 10     | target4.cpp |
-        | unit              | test5 | 10     | target5.cpp |
-        | i_o               | test6 | 10     | target6.cpp |
-        | performance       | test7 | 10     | target7.cpp |
-        | script            | test8 | 10     | target8.cpp |
+        | approved_includes | test1 | 10     | main.cpp    |
+        | compile           | test2 | 10     | helper.cpp  |
+        | memory_errors     | test3 | 10     | helper.h    |
+        | coverage          | test4 | 10     | main.cpp    |
+        | unit              | test5 | 10     | helper.cpp  |
+        | i_o               | test6 | 10     | helper.h    |
+        | performance       | test7 | 10     | main.cpp    |
+        | script            | test8 | 10     | helper.cpp  |
 
     @javascript
     Scenario: Exempt tests missing target
@@ -87,10 +87,10 @@ Feature: Create a new test case
 
       Examples:
         | type              | name  | points | target      | attribute |
-        | memory_errors     |       | 10     | target2.cpp | name      |
-        | script            | test3 |        | target3.cpp | points    |
-        | approved_includes |       | 10     | target4.cpp | name      |
-        | coverage          | test2 |        | target5.cpp | points    |
+        | memory_errors     |       | 10     | main.cpp    | name      |
+        | script            | test3 |        | helper.cpp  | points    |
+        | approved_includes |       | 10     | helper.h    | name      |
+        | coverage          | test2 |        | main.cpp | points    |
 
     @javascript
     Scenario Outline: Tests missing multiple required attributes
@@ -105,17 +105,17 @@ Feature: Create a new test case
 
       Examples:
         | type              | name  | points | target      | attribute1 | attribute2 |
-        | memory_errors     |       |        | target1.cpp | name       | points     |
+        | memory_errors     |       |        | main.cpp    | name       | points     |
         | unit              | test3 |        |             | points     | target     |
-        | approved_includes |       |        | target4.cpp | name       | points     |
+        | approved_includes |       |        | helper.cpp  | name       | points     |
         | coverage          |       | 10     |             | name       | target     |
 
 
   Rule: Test names must be unique
     Background:
       Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
       And I am logged in as an "instructor"
       And I am on the "Assignment Management" page for "assignment1"
 
@@ -124,7 +124,7 @@ Feature: Create a new test case
       When I create a new test with type "unit"
       And with the name "test0"
       And with the points "10"
-      And with the target "target1.cpp"
+      And with the target "main.cpp"
       Then I should see the "unit" dynamic test block partial
       And I add the "unit" dynamic text block field
       And I click the "Create Test" button
@@ -135,7 +135,7 @@ Feature: Create a new test case
       When I create a new test with type "unit"
       And with the name "test1"
       And with the points "10"
-      And with the target "target1.cpp"
+      And with the target "main.cpp"
       Then I should see the "unit" dynamic test block partial
       And I add the "unit" dynamic text block field
       And I click the "Create Test" button
@@ -143,7 +143,7 @@ Feature: Create a new test case
       When I create a new test with type "unit"
       And with the name "test1"
       And with the points "10"
-      And with the target "target1.cpp"
+      And with the target "main.cpp"
       Then I should see the "unit" dynamic test block partial
       And I add the "unit" dynamic text block field
       And I click the "Create Test" button
@@ -152,8 +152,8 @@ Feature: Create a new test case
   Rule: Test blocks must prompt user for correct fields
     Background:
       Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n     |
       And the assignment contains no tests
       And I am logged in as an "instructor"
       And I am on the "Assignment Management" page for "assignment1"
@@ -163,7 +163,7 @@ Feature: Create a new test case
       When I create a new test with type "<type>"
       And with the name "test1"
       And with the points "10"
-      And with the target "target1.cpp"
+      And with the target "main.cpp"
       Then I should see the "<type>" dynamic test block partial
       And I add the "<type>" dynamic text block field
       And I click the "Create Test" button
@@ -184,8 +184,8 @@ Feature: Create a new test case
   Rule: Script tests blocks must have a script path
     Background:
       Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
       And the assignment contains no tests
       And I am logged in as an "instructor"
       And I am on the "Assignment Management" page for "assignment1"

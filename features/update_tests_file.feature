@@ -6,8 +6,8 @@ Feature: Regenerate .tests file on test creation/update/deletion
   @javascript
   Scenario Outline: Create a valid unit test for empty assignment
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
+      | assignment_name | repository_name   | files_to_submit                            |
+      | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\ncode.cpp\n |
     And the assignment contains no tests
     And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"
@@ -29,8 +29,8 @@ Feature: Regenerate .tests file on test creation/update/deletion
   @javascript
   Scenario Outline: Create a valid unit test for non-empty assignment
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
+      | assignment_name | repository_name   | files_to_submit                            |
+      | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\ncode.cpp\n |
     And the assignment contains one test
     And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"
@@ -46,14 +46,14 @@ Feature: Regenerate .tests file on test creation/update/deletion
 
     Examples:
       | type      | name  | points | target   | test_code                                               |
-      | unit      | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));EXPECT_FALSE(is_prime(867)); |
+      | unit      | test3 | 1      | code.cpp | EXPECT_TRUE(is_prime(3));EXPECT_FALSE(is_prime(867));   |
       | unit      | test4 | 1      | code.cpp | EXPECT_TRUE(is_even(64));                               |
 
   @javascript
   Scenario Outline: Delete a unit test
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
+      | assignment_name | repository_name   | files_to_submit                  |
+      | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
     And the assignment contains "<number_of_tests>" tests
     And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"

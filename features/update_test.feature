@@ -7,8 +7,8 @@ Feature: Update an existing test case
     Scenario: Test type cannot be updated
         Given I am logged in as an "instructor"
         Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
         Given I am on the "Assignment Management" page for "assignment1"
         And I have created a test case of type "approved_includes"
         When I view the test
@@ -18,8 +18,8 @@ Feature: Update an existing test case
     Scenario Outline: Update an existing test case
         Given I am logged in as an "instructor"
         Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
         Given I am on the "Assignment Management" page for "assignment1"
         And I have created a test case of type "<type>"
         When I update the test case with valid input
@@ -40,8 +40,8 @@ Feature: Update an existing test case
     Scenario Outline: Update an existing test case with invalid input
         Given I am logged in as an "instructor"
         Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
         Given I am on the "Assignment Management" page for "assignment1"
         And I have created a test case of type "<type>"
         When I update the test case with invalid input
