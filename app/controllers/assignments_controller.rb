@@ -44,7 +44,8 @@ class AssignmentsController < ApplicationController
 
   # POST /assignments or /assignments.json
   def create
-    @assignment = Assignment.new(assignment_params)
+    modified_params = assignment_params.merge(files_to_submit: files_string_to_jsonb(assignment_params[:files_to_submit]))
+    @assignment = Assignment.new(modified_params)
     github_token = session[:github_token]
 
     respond_to do |format|
@@ -175,6 +176,12 @@ class AssignmentsController < ApplicationController
 
   private
 
+  def files_string_to_jsonb(files_string)
+    return [] if files_string.nil? || files_string.empty?
+    files_string = files_string.gsub("\\n", "\n")
+    { files_to_submit: files_string.split("\n").map(&:strip).reject(&:empty?) }
+  end
+
   def handle_assignment_save
     if @assignment.save
       # Update GitHub permissions
@@ -209,7 +216,7 @@ class AssignmentsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def assignment_params
-    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url)
+    params.require(:assignment).permit(:assignment_name, :repository_name, :repository_url, :files_to_submit)
   end
 
     def update_github_permissions(assignment)
