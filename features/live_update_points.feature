@@ -20,7 +20,7 @@ Feature: Live update for points
 
     @javascript
     Scenario Outline: Verify the points editor icon functionality and live updates
-        Then I should see a point editor next to each test
+        Then I should see a points editor and test name for each test in their respective test groupings
         When I click on the point editor for "<Test Name>"
         And I enter "<points>" in the text field
         And I click outside the text field or press Enter

@@ -27,7 +27,6 @@ Then("I should not be able to update grouping name in the test group") do
 end
 
 Then("I should see a point editor next to each test") do
-    puts page.html
     within(".test-list") do
         all(".test-card").each do |test_card|
         expect(test_card).to have_selector(".points-input")
