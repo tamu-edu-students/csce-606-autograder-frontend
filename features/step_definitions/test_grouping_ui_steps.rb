@@ -29,7 +29,7 @@ end
 Then("I should see a point editor next to each test") do
     within(".test-list") do
         all(".test-card").each do |test_card|
-        expect(test_card).to have_selector(".edit-button")
+        expect(test_card).to have_selector(".points-input")
         end
     end
 end
