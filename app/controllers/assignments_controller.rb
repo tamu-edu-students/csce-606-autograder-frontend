@@ -177,7 +177,7 @@ class AssignmentsController < ApplicationController
   private
 
   def files_string_to_jsonb(files_string)
-    return [] if files_string.nil? || files_string.empty?
+    return { files_to_submit: [] } if files_string.nil? || files_string.empty?
     files_string = files_string.gsub("\\n", "\n")
     { files_to_submit: files_string.split("\n").map(&:strip).reject(&:empty?) }
   end
