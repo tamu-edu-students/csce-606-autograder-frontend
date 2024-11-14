@@ -67,10 +67,14 @@
                     <% end %>
                 </div>
                 <div>
+					
                     <%= form.label :target %>
-                    <%= form.text_field :target, class: "form-control", id: "test_target", readonly: true %>
-					<div id="target-file-tree-dropdown" class="dropdown-content" style="display: none;">
-					</div>
+                    <%= form.select :target,
+						options_for_select(
+							@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
+							@test.target),
+						{ class:"form-control",
+						include_blank: 'Select a target file' } %>
                 </div>
                 <div class="d-flex">
                     <div class="w-50 d-flex align-items-center">

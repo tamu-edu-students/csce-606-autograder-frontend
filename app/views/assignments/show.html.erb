@@ -1,8 +1,8 @@
 <%= stylesheet_link_tag 'assignment_show', media: 'all' %>
-<div class="assignment-title">
-  <%= link_to 'Add New Test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary' %>
+<div class="assignment-title container">
+  <%= link_to 'Add New Test', assignment_path(@assignment, test_id: nil), class: 'btn btn-primary mx-2' %>
   <h1><%= @assignment.assignment_name %></h1>
-  <%= link_to 'Export to Gradescope', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-success export-to-gradescope' %>
+  <%= link_to 'Export to Gradescope', create_and_download_zip_assignment_path(@assignment), class: 'btn btn-success export-to-gradescope mx-2' %>
 </div>
 <!-- Display tests for the assignment -->
 <div class="container" data-assignment-id="<%= @assignment.id %>">
