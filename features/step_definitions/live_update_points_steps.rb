@@ -1,8 +1,13 @@
-Then('I should see a points editor next to the test name for {string}') do |test_name|
-    puts page.html
-
-    expect(page).to have_selector('.test-info', text: test_name)
-    expect(page).to have_selector('.points-editor', text: 'pts.')
+Then("I should see a points editor and test name for each test in their respective test groupings") do
+    # Loop through each `.test-info` element in the DOM
+    all('.test-info').each do |test_info|
+      # Check for the presence of a test name link within `.test-info`
+      expect(test_info).to have_css('a.text-link', text: /\d+\) Test_\w+_\d+/) # Regex to match names like "1) Test_BF_1"
+      
+      # Check for the presence of the points editor form
+      expect(test_info).to have_css('form.inline-form')
+      expect(test_info).to have_css('input.points-input')
+    end
   end
   
   # Simulate clicking on the points editor and entering points
