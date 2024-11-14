@@ -4,7 +4,6 @@ Given("I am logged in as a (instructor|TA)") do |role|
 end
 
   Given('I am on the "Assignment Management" page for {string}') do |assignment_name|
-
     @assignment = Assignment.find_or_create_by!(assignment_name: assignment_name)
     FileItem = Struct.new(:name, :path, :type, :children)
     stub_request(:get, "https://api.github.com/repos/AutograderFrontend/#{@assignment.repository_name}/contents/tests/c++")

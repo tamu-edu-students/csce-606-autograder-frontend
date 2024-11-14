@@ -9,4 +9,3 @@ class ChangeIncludeInTests < ActiveRecord::Migration[6.0]
     add_column :tests, :include, :text
   end
 end
-
