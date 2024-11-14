@@ -8,7 +8,6 @@ Feature: Live update for points
             | assignment_name | repository_name   |
             | assignment1     | assignment1 |
         And I am logged in as an "instructor"
-        And I am on the "Assignment Management" page for "assignment1"
         And the following test case groupings exist for "assignment1":
             | grouping_name       |
             | Basic Functionality |
@@ -17,6 +16,7 @@ Feature: Live update for points
             |Test Name              | Grouping Name       |
             |Test_BF_1              | Basic Functionality |
             |Test_EC_1              | Edge Cases          |
+        And I am on the "Assignment Management" page for "assignment1"
 
     @javascript
     Scenario Outline: Verify the points editor icon functionality and live updates
