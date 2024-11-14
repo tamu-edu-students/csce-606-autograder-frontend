@@ -24,6 +24,7 @@ Then("I should see a points editor and test name for each test in their respecti
           input = test_card.find('.points-input')
           input.click
           input.set(points)
+          page.execute_script("arguments[0].dispatchEvent(new Event('change', { 'bubbles': true }))", input.native)
           break
         end
       end
