@@ -11,7 +11,7 @@ Then("I should see a points editor and test name for each test in their respecti
   end
   
   # Simulate clicking on the points editor and entering points
-  When('I click on the points editor for {string}') do |test_name|
+  When('I click on the point editor for {string}') do |test_name|
     test_row = find('.test-info', text: test_name)
     test_row.find('.points-input').click
   end
