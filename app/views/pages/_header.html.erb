@@ -1,28 +1,38 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <%= link_to "Autograder Frontend", assignments_path, class: "navbar-brand", data: { turbo: false } %>
+<!-- Full-width Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-light w-100">
+  <div class="container">
+    <!-- Logo and Title -->
+    <%= link_to assignments_path, class: "navbar-brand d-flex align-items-center", data: { turbo: false } do %>
+      <img src="<%= asset_path 'Autograder2.png' %>" alt="Logo" class="logo me-2">
+      <span class="navbar-title mx-3">Autograder Frontend</span>
+    <% end %>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <!-- Toggle button for small screens -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <% if logged_in? %>  <!-- Only show when logged in -->
-        <li class="nav-item">
-          <%= link_to "Course Dashboard", assignments_path, class: "nav-link", data: { turbo: false } %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Manage Users", users_path, class: "nav-link", data: { turbo: false } %>
-        </li>
-      <% end %>
-    </ul>
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto mx-2">
+        <% if logged_in? %>
+          <li class="nav-item">
+            <%= link_to "Course Dashboard", assignments_path, class: "nav-link", data: { turbo: false } %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Manage Users", users_path, class: "nav-link", data: { turbo: false } %>
+          </li>
+        <% end %>
+      </ul>
 
-    <ul class="navbar-nav ms-auto">
-      <% if logged_in? %>
-        <li class="nav-item">
-          <%= link_to "Logout", logout_path, method: :delete, class: "nav-link" %>
-        </li>
-      <% end %>
-    </ul>
+      <!-- Right-side Links -->
+      <ul class="navbar-nav ms-auto">
+        <% if logged_in? %>
+          <li class="nav-item">
+            <%= link_to "Logout", logout_path, method: :delete, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   </div>
 </nav>

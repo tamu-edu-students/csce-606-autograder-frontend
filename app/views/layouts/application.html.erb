@@ -20,10 +20,11 @@
   </head>
   <body>
       
-    <div class = 'container'>
-      <%= render 'pages/header' %>
+  <%= render 'pages/header' %>
+    <div >
+      
 
-      <div>
+      <div style="text-align: center">
         <br/>
         <% flash.each do |key, value| %>
           <div class="alert alert-<%= key %>"><%= value %></div>
