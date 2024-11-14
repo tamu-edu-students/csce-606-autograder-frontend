@@ -128,7 +128,7 @@ Given('the assignment contains {string} tests') do |string|
       name: "test#{i}",
       target: "main.cpp",
       points: 10.0,
-      test_block: {code: 'EXPECT_EQ(1, 1);'},
+      test_block: { code: 'EXPECT_EQ(1, 1);' },
     )
   end
 end

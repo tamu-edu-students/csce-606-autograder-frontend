@@ -5,16 +5,16 @@ Given(/^I am logged in as an instructor$/) do
 
   Given('I have created a test case of type {string}') do |test_type|
     test_block = case test_type
-      when 'approved_includes' then {approved_includes: ['iostream', 'vector']}
-      when 'compile' then {file_paths: ['file1']}
-      when 'memory_errors' then {file_paths: ['file1', 'file2']}
-      when 'coverage' then {main_path: 'main.cpp', source_paths: ['source1.cpp']}
-      when 'performance' then {code: 'EXPECT_EQ(1, 1);'}
-      when 'unit' then {code: 'EXPECT_EQ(1, 1);'}
-      when 'i_o' then {input_path: 'input.txt', output_path: 'output.txt'}
-      when 'memory_errors' then {file_paths: ['file1', 'file2']}
-      when 'script' then {script_path: 'script.sh'}
-      else raise "Unknown test type: #{test_type}"
+    when 'approved_includes' then { approved_includes: [ 'iostream', 'vector' ] }
+    when 'compile' then { file_paths: [ 'file1' ] }
+    when 'memory_errors' then { file_paths: [ 'file1', 'file2' ] }
+    when 'coverage' then { main_path: 'main.cpp', source_paths: [ 'source1.cpp' ] }
+    when 'performance' then { code: 'EXPECT_EQ(1, 1);' }
+    when 'unit' then { code: 'EXPECT_EQ(1, 1);' }
+    when 'i_o' then { input_path: 'input.txt', output_path: 'output.txt' }
+    when 'memory_errors' then { file_paths: [ 'file1', 'file2' ] }
+    when 'script' then { script_path: 'script.sh' }
+    else raise "Unknown test type: #{test_type}"
     end
 
     Test.create!(
