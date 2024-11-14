@@ -83,6 +83,7 @@ class Assignment < ActiveRecord::Base
       self.local_repository_path,
       true
     )
+    init_run_autograder_script
   end
 
   def generate_tests_file
