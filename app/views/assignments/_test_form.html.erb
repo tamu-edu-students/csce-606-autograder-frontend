@@ -1,23 +1,23 @@
-<%= form_with model: [@assignment, @test], local: true do |form| %>
-  <div class="container-fluid test-editor">
-    <div class="row mb-3 right-column">
-      <div class="col-md-6">
-        <%= form.label :name, "Test Name" %>
-        <%= form.text_field :name, class:"form-control" %>
-      </div>
+<%= form_with model: [@assignment, @test], local: true,  html: { 'data-new-record': !@test.persisted? } do |form| %>
+    <div class="container-fluid test-editor">
+      <div class="row mb-3 right-column">
+        <div class="col-md-6">
+            <label for="test_name">Test Name<span style="color: red;"> *</span></label>
+            <%= form.text_field :name, class:"form-control", id: "test_name" %>
+        </div>
 
-      <div class="col-md-6 d-flex align-items-center justify-content-end">
+        <div class="col-md-6 d-flex align-items-center justify-content-end">
         <% if @test.persisted? %>
           <div class="delete-actions">
             <%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger me-2" %>
           </div>
         <% end %>
 
-        <div class="form-actions">
-          <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class:"btn btn-primary" %>
+				<div class="form-actions">
+                    <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class:"btn btn-primary", id: @test.persisted? ? "update_test_button" : "create_test_button" %>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
     <hr>
 
@@ -32,21 +32,21 @@
         <%= form.text_field :position, class:"form-control" %>
       </div>
 
-      <div class="col-md-4">
-        <%= form.label :points %>
-        <%= form.number_field :points, class:"form-control" %>
-      </div>
-    </div>
+			<div class="col-md-4 form-group">
+            <label for="test_points">Points<span style="color: red;"> *</span></label>
+            <%= form.number_field :points, class:"form-control", id: "test_points" %>
+          </div>
+		</div>
 
     <hr>
 
     <div class="row mb-3">
-      <div class="col-md-4">
-        <%= form.label :test_type, "Test Type" %>
-        <% if @test.persisted? %>
-          <%= form.text_field :test_type, class: "form-control", readonly: true %>
-        <% else %>
-          <%= form.select :test_type, options_for_select(
+    <div class="col-md-4">
+      <label for="test_type">Test Type<span style="color: red;"> *</span></label>
+      <% if @test.persisted? %>
+        <%= form.text_field :test_type, class: "form-control", readonly: true %>
+      <% else %>
+        <%= form.select :test_type, options_for_select(
             [['coverage', 'coverage'],
             ['compile', 'compile'],
             ['approved_includes', 'approved_includes'],
@@ -57,32 +57,41 @@
             ['script', 'script']],
             @test.test_type),
             { include_blank: 'Please select a test type',
-            class: "form-control"},
-              onchange: "loadTestPartial(this.value)"  %>
+            class: "form-control"}, id: "test_type",
+            onchange: "loadTestPartial(this.value)" %>
+      <% end %>
+    </div>
+    <div class="col-md-4">
+      <label for="test_target">Target
+        <% if @test.persisted? %>
+          <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>
+            <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+          <% end %>
+        <% else %>
+          <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
         <% end %>
-      </div>
-
-      <div class="col-md-4">
-        <%= form.label :target %>
+      </label>
+      <% if @test.persisted? %>
         <%= form.select :target,
-          options_for_select(
-            @assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
-            @test.target),
-          { class:"form-control",
-            include_blank: 'Select a target file' } %>
+            options_for_select(@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] }, @test.target),
+            { class: "form-control", include_blank: 'Select a target file' } %>
+      <% else %>
+        <%= form.select :target,
+            options_for_select(@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] }, @test.target),
+            { class: "form-control", id: "test_target", include_blank: 'Select a target file' } %>
+      <% end %>
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+      <div class="form-check me-3">
+        <%= form.check_box :show_output, class: "form-check-input" %>
+        <%= form.label :show_output, class: "form-check-label" %>
       </div>
-
-      <div class="col-md-4 d-flex align-items-center">
-        <div class="form-check me-3">
-          <%= form.check_box :show_output, class: "form-check-input" %>
-          <%= form.label :show_output, class: "form-check-label" %>
-        </div>
-        <div class="form-check">
-          <%= form.check_box :skip, class: "form-check-input" %>
-          <%= form.label :skip, class: "form-check-label" %>
-        </div>
+      <div class="form-check">
+        <%= form.check_box :skip, class: "form-check-input" %>
+        <%= form.label :skip, class: "form-check-label" %>
       </div>
     </div>
+  </div>
 
     <div class="row mb-3">
       <div class="col-md-12">
@@ -119,3 +128,5 @@
     </div>
   </div>
 <% end %>
+
+

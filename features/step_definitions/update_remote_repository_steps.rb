@@ -35,12 +35,16 @@
 
   Given("the following assignments exist:") do |table|
     table.hashes.each do |hash|
+      files = hash['files_to_submit']&.split("\n")&.map(&:strip)&.reject(&:empty?) || []
+
       @assignment = Assignment.create!(
         assignment_name: hash['assignment_name'],
         repository_name: hash['repository_name'],
-        files_to_submit: { files_to_submit: hash['files_to_submit'].split("\n").map(&:strip).reject(&:empty?) })
+        files_to_submit: { files_to_submit: files }
+      )
     end
   end
+
 
   Given("{string} has write access to the {string} repository") do |name, repo_name|
     @current_user = User.find_by(name: name)
