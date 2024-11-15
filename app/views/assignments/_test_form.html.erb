@@ -1,52 +1,51 @@
-<%= form_with model: [@assignment, @test], local: true do |form| %>
-	<div data-controller="file-selection" 
+<%= form_with model: [@assignment, @test], local: true,  html: { 'data-new-record': !@test.persisted? } do |form| %>
+    <div data-controller="file-selection" 
 		data-file-selection-assignment-id-value="<%= @assignment.id %>"
 		data-file-selection-tree-value="<%= @file_tree.to_json %>"
-		class="form-grid w-100">
-        <div class="d-flex form-group justify-content-between">
-            <div class="w-50">
-                <%= form.label :name, "Test Name" %>
-                <%= form.text_field :name, class:"form-control" %>
-            </div>
-
-			<div class="d-flex align-items-center">
-				<% if @test.persisted? %>
-					<div class="delete-actions\">
-						<%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger" %>
-					</div>
-				<% end %>
-
-				<div class="form-actions">
-					<%= form.submit @test.persisted? ? "Update Test" : "Create Test" , class:"btn btn-primary"%>
-				</div>
-			</div>
+    class="container-fluid test-editor">
+      <div class="row mb-3 right-column">
+        <div class="col-md-6">
+            <label for="test_name">Test Name<span style="color: red;"> *</span></label>
+            <%= form.text_field :name, class:"form-control", id: "test_name" %>
         </div>
 
-		<hr>
+        <div class="col-md-6 d-flex align-items-center justify-content-end">
+          <% if @test.persisted? %>
+            <div class="delete-actions">
+              <%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger me-2" %>
+            </div>
+          <% end %>
 
-		<div class="justify-content-between d-flex">
-			<div class="form-group">
-				<%= form.label :test_grouping_position, "Grouping Number" %>
-				<%= form.text_field :test_grouping_position, class: "form-control" %>
-			</div>
+          <div class="form-actions">
+              <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class:"btn btn-primary", id: @test.persisted? ? "update_test_button" : "create_test_button" %>
+          </div>
+        </div>
+      </div>
 
-			<div class="form-group">
-				<%= form.label :position, "Test Number" %>
-				<%= form.text_field :position , class:"form-control"%>
-			</div>
+    <hr>
 
-			<div class="form-group">
-				<%= form.label :points %>
-				<%= form.number_field :points, class:"form-control" %>
-			</div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <%= form.label :test_grouping_position, "Grouping Number" %>
+        <%= form.text_field :test_grouping_position, class: "form-control" %>
+      </div>
+
+      <div class="col-md-4">
+        <%= form.label :position, "Test Number" %>
+        <%= form.text_field :position, class:"form-control" %>
+      </div>
+
+			<div class="col-md-4 form-group">
+            <label for="test_points">Points<span style="color: red;"> *</span></label>
+            <%= form.number_field :points, class:"form-control", id: "test_points" %>
+          </div>
 		</div>
 
-		<hr>
+    <hr>
 
-        <div class="d-flex">
-            <div class="form-group align-items-center justify-content-space-evenly">
-                <div>
-                	<%= form.label :test_type, "Test Type" %>
+        <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="test_type">Test Type<span style="color: red;"> *</span></label>
                     <% if @test.persisted? %>
                     	<%= form.text_field :test_type, class: "form-control", readonly: true %>
                     <% else %>
@@ -61,78 +60,91 @@
 							['script', 'script']],
 							@test.test_type),
 							{ include_blank: 'Please select a test type',
-							class: "form-control"},
+							class: "form-control"}, id: "test_type",
 							data: { action: "change->file-selection#initializeDropdowns" }, 
 							onchange: "if (this.value) { loadTestPartial(this.value); } else { window.location.href = '#{assignment_path(@assignment)}'; }" %>
                     <% end %>
                 </div>
-                <div>
-					
-                    <%= form.label :target %>
-                    <%= form.select :target,
-						options_for_select(
-							@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
-							@test.target),
-						{ class:"form-control",
-						include_blank: 'Select a target file' } %>
-                </div>
-                <div class="d-flex">
-                    <div class="w-50 d-flex align-items-center">
-                        <%= form.check_box :show_output %>
-                        <%= form.label :show_output, class: 'ml-2' %>
+                <div class="col-md-4">
+      <label for="test_target">Target
+        <% if @test.persisted? %>
+          <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>
+            <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+          <% end %>
+        <% else %>
+          <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+        <% end %>
+      </label>
+      <% if @test.persisted? %>
+        <%= form.select :target,
+            options_for_select(@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] }, @test.target),
+            { class: "form-control", include_blank: 'Select a target file' } %>
+      <% else %>
+        <%= form.select :target,
+            options_for_select(@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] }, @test.target),
+            { class: "form-control", id: "test_target", include_blank: 'Select a target file' } %>
+      <% end %>
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+                    <div class="form-check me-3"> 
+                        <%= form.check_box :show_output, class: "form-check-input" %>
+                        <%= form.label :show_output, class: "form-check-label" %>
                     </div>
-                    <div class="w-50 d-flex align-items-center">
-                        <%= form.check_box :skip %>
-                        <%= form.label :skip, class: 'ml-2' %>
+                    <div class="form-check">
+                        <%= form.check_box :skip, class: "form-check-input" %>
+                        <%= form.label :skip, class: "form-check-label %>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group justify-content-space-evenly h-100">
-				<div class="flex-grow-1 h-100">
-					<%= form.label :include, 'Provided Files' %>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                  <%= form.label :include, 'Provided Files' %>
+                  <!-- Button to open the dropdown -->
+                  <div id="include-file-dropdown" class="dropdown">
+                    <button class="btn btn-secondary" type="button" id="includeDropdownMenuButton" aria-expanded="false">
+                      Please select files to be provided
+                      <span id="dropdownArrow" class="arrow">▼</span>
+                    </button>
+                    
+                    <!-- Dropdown menu containing the file tree -->
+                    <div id="include-file-tree-dropdown" class="dropdown-content" aria-labelledby="includeDropdownMenuButton">
+                      <!-- File tree will be rendered here by JavaScript -->
+                    </div>
+                  </div>
 
-					<!-- Button to open the dropdown -->
-					<div id="include-file-dropdown" class="dropdown">
-						<button class="btn btn-secondary" type="button" id="includeDropdownMenuButton" aria-expanded="false">
-							Please select files to be provided
-							<span id="dropdownArrow" class="arrow">▼</span>
-						</button>
-						
-						<!-- Dropdown menu containing the file tree -->
-						<div id="include-file-tree-dropdown" class="dropdown-content" aria-labelledby="includeDropdownMenuButton">
-							<!-- File tree will be rendered here by JavaScript -->
-						</div>
+                  <!-- Hidden field to store the selected file paths -->
+                  <%= form.hidden_field :include, value: (@test.include || []).to_json, id: 'test_include', class: 'file-selection-field' %>
+                </div>
 					</div>
-					
-					<!-- Hidden field to store the selected file paths -->
-					<%= form.hidden_field :include, value: (@test.include || []).to_json, id: 'test_include', class: 'file-selection-field' %>
-				</div>
-			</div>
-        </div>
 
-		<div class="d-flex justify-content-between">
-			<div class="form-group">
-				<%= form.label :timeout %>
-				<%= form.number_field :timeout, class:"form-control" %>
-			</div>
-			<div class="field form-group">
-				<%= form.label :visibility, 'Gradescope Visibility' %>
-				<%= form.select :visibility, options_for_select(
-					[['Hidden', 'hidden'],
-					['After Due Date', 'after_due_date'],
-					['After Published', 'after_published'],
-					['Visible', 'visible']], @test.visibility || 'visible'),
-					class:"form-control" %>
-			</div>
-		</div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <%= form.label :timeout, "Timeout" %>
+              <div class="input-group">
+                <%= form.number_field :timeout, class: "form-control", placeholder: "0 seconds", id: "timeout-field", style: "max-width: 100px; text-align: right;" %>
+                <span class="input-group-text timeout-label">Seconds</span>
+              </div>
+            </div>
 
-        <hr>
+            <div class="col-md-6">
+              <%= form.label :visibility, 'Gradescope Visibility' %>
+              <%= form.select :visibility, options_for_select(
+                [['Hidden', 'hidden'],
+                ['After Due Date', 'after_due_date'],
+                ['After Published', 'after_published'],
+                ['Visible', 'visible']], @test.visibility || 'visible'), class: "form-control" %>
+            </div>
+    </div>
 
-        <div id="dynamic-test-block-container">
-            <% if @test.test_type.present? %>
-            <%= render "assignments/test_blocks/#{@test.test_type}", form: form , test: @test %>
-            <% end %>
-        </div>
-	</div>
+    <hr>
+
+    <div id="dynamic-test-block-container">
+      <% if @test.test_type.present? %>
+        <%= render "assignments/test_blocks/#{@test.test_type}", form: form, test: @test %>
+      <% end %>
+    </div>
+  </div>
 <% end %>
+
+

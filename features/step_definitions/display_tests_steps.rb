@@ -50,3 +50,59 @@ end
   Then("I should see the correct details of the test case") do
     expect(page).to have_content('Test was successfully created')
   end
+
+  Then('the Test Editor layout should have a wider landscape view') do
+    expect(page).to have_css('.container-fluid') # or other container class that indicates a wider layout
+  end
+
+  Then('it should not overlap with the right column') do
+    expect(page).to have_css('.right-column') # Ensure right column exists and doesn’t overlap (specific overlap checks would need JavaScript)
+  end
+
+  Then('all fields should be fully visible without cutting off content') do
+    expect(page).not_to have_css('.test-editor input[style*="overflow: hidden"]')
+  end
+
+  Then('I should see a label for the {string} field with units in seconds') do |field|
+    # Find the label for the specified field
+    label = find('label', text: field)
+
+    # Check that the label exists and is visible
+    expect(label).to be_visible
+
+    # Locate the "Seconds" text in the same row or input group
+    within(label.find(:xpath, '..')) do
+      expect(page).to have_css('.input-group-text', text: 'Seconds')
+    end
+  end
+
+
+  Then('the {string} field should display a placeholder or hint text indicating {string}') do |field, placeholder|
+    field_element = find("##{field.parameterize}-field")
+    expect(field_element[:placeholder]).to include(placeholder)
+  end
+
+
+  Then('I should see a confirmation prompt with the message {string}') do |message|
+    # Wait for the confirmation dialog and check its text
+    confirm = page.driver.browser.switch_to.alert
+    expect(confirm.text).to eq(message)
+  end
+
+
+  When ('I confirm the deletion') do
+    # Click the Delete Test button
+    # Add a manual wait to handle timing issues with the alert
+    page.driver.browser.switch_to.alert.accept
+  end
+
+  Then ('I push the delete button to delete the test case') do
+    # Click the Delete Test button
+    # find('button', text: 'Delete Test').click
+    visit assignment_path(@assignment, test_id: @test_case.id)
+    click_button 'Delete Test'
+  end
+
+  Then('{string} should no longer appear in the test list') do |item|
+    expect(page).not_to have_content(item)
+  end

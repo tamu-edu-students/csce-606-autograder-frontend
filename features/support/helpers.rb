@@ -5,11 +5,6 @@ def fill_test_block(test_type)
       click_button "Add Approved Includes"
       fill_in 'Enter Approved Includes', with: 'file2', match: :first
     when 'compile'
-      # File selection
-
-      # fill_in 'Enter Compile Path', with: 'file1'
-      # click_button 'Add Compile Path'
-      # fill_in 'Enter Compile Path', with: 'file2', match: :first
       steps %(
         And I click on "compile"
         And I expand the "io_tests" directory
@@ -19,13 +14,7 @@ def fill_test_block(test_type)
           | tests/c++/io_tests    | output.txt     |
           | tests/c++/io_tests    | readme.txt     |
       )
-
     when 'coverage'
-      fill_in 'Enter Main Path', with: 'main'
-      # fill_in 'Enter Source Path', with: 'source1'
-      # click_button 'Add Source Path'
-      # fill_in 'Enter Source Path', with: 'source2', match: :first
-
       steps %(
         And I click on "source-paths"
         And I expand the "io_tests" directory
@@ -43,10 +32,6 @@ def fill_test_block(test_type)
       fill_in 'Enter Input Path', with: 'input'
       fill_in 'Enter Output Path', with: 'output'
     when 'memory_errors'
-      # fill_in 'Enter Memory Errors Path', with: 'file1'
-      # click_button 'Add Memory Errors Path'
-      # fill_in 'Enter Memory Errors Path', with: 'file2', match: :first
-
       steps %(
         And I click on "memory_errors"
         And I expand the "io_tests" directory
