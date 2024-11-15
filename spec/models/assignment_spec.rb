@@ -214,7 +214,7 @@ RSpec.describe Assignment, type: :model do
         allow(Octokit::Client).to receive(:new).and_return(client)
         allow(client).to receive(:add_deploy_key).and_return(true)
 
-      assignment.send(:assignment_repo_init, 'test_token')
+      assignment.send(:assignment_repo_init, 'test_token', user)
 
       expect(assignment).to have_received(:create_repo_from_template)
       expect(assignment).to have_received(:clone_repo_to_local)
@@ -427,7 +427,7 @@ RSpec.describe Assignment, type: :model do
 
   describe '#init_run_autograder_script' do
     let(:local_repository_path) { 'assignment-path' }
-    let(:files_to_submit) { { 'files_to_submit' => ['main.cpp', 'helper.cpp', 'helper.h'] } }
+    let(:files_to_submit) { { 'files_to_submit' => [ 'main.cpp', 'helper.cpp', 'helper.h' ] } }
     let(:run_autograder_path) { File.join(local_repository_path, 'run_autograder') }
     let(:original_file_content) do
       <<~SCRIPT
@@ -461,10 +461,11 @@ RSpec.describe Assignment, type: :model do
       allow(File).to receive(:join).with(local_repository_path, 'run_autograder').and_return(run_autograder_path)
       allow(File).to receive(:read).with(run_autograder_path).and_return(original_file_content)
       allow(File).to receive(:open).with(run_autograder_path, 'w').and_yield(double('file', write: true))
+      allow(assignment).to receive(:push_changes_to_github).and_return(true)
     end
 
     it 'replaces files_to_submit with new files in the file content' do
-      assignment.send(:init_run_autograder_script)
+      assignment.send(:init_run_autograder_script, 'test_token', user)
       expect(File.read(run_autograder_path)).to eq(expected_file_content)
     end
   end
