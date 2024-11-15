@@ -8,3 +8,8 @@ Rails.start();
 import "@hotwired/turbo-rails";
 import "controllers";
 
+import { initializeFormValidation } from "controllers/form_validation";
+// Attach the event listeners
+document.addEventListener("turbo:load", initializeFormValidation);
+document.addEventListener("turbo:frame-render", initializeFormValidation);
+
