@@ -11,12 +11,14 @@ Then("I should see a points editor and test name for each test in their respecti
   end
   
   When('I click on the point editor for {string} and enter {string} in the text field') do |test_name, points|
+
     test = Test.find_by(name: test_name)
     test2 = Test.find_by(name: "Test_EC_1")
     within('.test-grouping-list') do
       # First, find all test cards and iterate through them
       all('.test-card').each do |test_card|
         # Find the link within the test card
+        puts "oks"
         link = test_card.find('.test-info a.text-link') 
         # The link text includes position number, so we need to check if it contains our test name
         if link.text.include?("#{test.position}) #{test_name}")

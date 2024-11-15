@@ -8,7 +8,6 @@ end
     # mkdrir_p
     FileUtils.mkdir_p(File.join(@assignment.local_repository_path))
     visit assignment_path(@assignment)
-
     expect(page).to have_content(@assignment.assignment_name)
   end
 

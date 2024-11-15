@@ -5,8 +5,8 @@ Feature: Live update for points
 
     Background: Assignments in the GitHub organization
         Given the following assignments exist:
-            | assignment_name | repository_name   |
-            | assignment1     | assignment1 |
+            | assignment_name | repository_name   | files_to_submit                  |
+            | assignment1     | assignment1       | main.cpp\nhelper.cpp\nhelper.h\n |
         And I am logged in as an "instructor"
         And the following test case groupings exist for "assignment1":
             | grouping_name       |
