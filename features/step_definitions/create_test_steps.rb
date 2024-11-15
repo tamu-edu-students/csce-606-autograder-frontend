@@ -91,7 +91,7 @@ When("with the target {string}") do |target|
     if all_fields_filled
       page.evaluate_script("document.getElementById('create_test_button').disabled = false")
     end
-  end  
+  end
 end
 
 Then('I should not see any missing attribute error messages') do

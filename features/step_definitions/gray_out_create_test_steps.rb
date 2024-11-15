@@ -46,7 +46,7 @@ When("I clear the {string} field") do |field|
 end
 
 Then("I should see the asterisk on target field based on test type {string}") do |test_type|
-  asterisk_visible = ["compile", "memory_errors", "script"].exclude?(test_type)
+  asterisk_visible = [ "compile", "memory_errors", "script" ].exclude?(test_type)
   asterisk = find("#target-asterisk", visible: asterisk_visible)
   expect(asterisk).to be_visible if asterisk_visible
 end
