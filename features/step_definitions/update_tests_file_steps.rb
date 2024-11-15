@@ -94,10 +94,10 @@ end
 Then('the .tests file should contain both properly formatted tests') do |table|
   table.hashes.each do |test|
     expected = "/*\n" +
-    "@name: name\n" +
+    "@name: unit_test\n" +
     "@points: 10.0\n" +
     "@test_type: unit\n" +
-    "@target: target.cpp\n" +
+    "@target: main.cpp\n" +
     "@number: 1\n" +
     "*/\n" +
     "<test>\n" +
@@ -122,14 +122,14 @@ end
 
 Given('the assignment contains {string} tests') do |string|
   for i in 1..string.to_i
-    visit assignment_path(@assignment)
-    click_link('Add New Test')
-    select "unit", from: 'Test Type'
-    fill_in 'Name', with: "test#{i}"
-    fill_in 'Points', with: 10
-    fill_in 'Target', with: 'target.cpp'
-    fill_in 'Enter Unit', with: 'EXPECT_EQ(1, 1);'
-    click_button "Create Test"
+    Test.create!(
+      assignment: @assignment,
+      test_type: "unit",
+      name: "test#{i}",
+      target: "main.cpp",
+      points: 10.0,
+      test_block: { code: 'EXPECT_EQ(1, 1);' },
+    )
   end
 end
 

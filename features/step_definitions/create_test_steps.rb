@@ -80,7 +80,9 @@ When('with the points {string}') do |points|
 end
 
 When('with the target {string}') do |target|
-  fill_in 'Target', with: target
+  unless target.nil? || target.empty?
+    select target, from: 'Target'
+  end
 end
 
 Then('I should not see any missing attribute error messages') do
@@ -144,4 +146,8 @@ end
 
 Given('the test block contains the fields {string} and {string}') do |field1, field2|
   expect(page).to have_content('Test block')
+end
+
+Then('the {string} dropdown should contain the following options:') do |dropdown, table|
+  expect(page).to have_select(dropdown, options: table.raw.flatten)
 end

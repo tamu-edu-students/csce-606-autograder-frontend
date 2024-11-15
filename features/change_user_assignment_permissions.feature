@@ -5,15 +5,15 @@ Feature: Manage user access for each assignment
 
   Background:
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
-      | assignment2     | assignment-2-repo |
-      | assignment3     | assignment-3-repo |
+      | assignment_name | repository_name   | files_to_submit                  |
+      | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
+      | assignment2     | assignment-2-repo | main.cpp\nhelper.cpp\nhelper.h\n |
+      | assignment3     | assignment-3-repo | main.cpp\nhelper.cpp\nhelper.h\n |
     And the following users exist in assignment permissions:
-      | name     | role       | 
-      | alice    | ta         | 
+      | name     | role       |
+      | alice    | ta         |
       | bob      | ta         |
-      | charlie  | instructor | 
+      | charlie  | instructor |
     And the following permissions exist:
       | user     | assignment         | role          |
       | alice    | assignment-1-repo  | no-permission |

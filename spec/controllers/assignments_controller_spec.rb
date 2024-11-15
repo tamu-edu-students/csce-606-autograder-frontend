@@ -4,7 +4,8 @@ RSpec.describe AssignmentsController, type: :controller do
   let(:valid_attributes) do
     {
       assignment_name: 'Test Assignment',
-      repository_name: 'test-repository'
+      repository_name: 'test-repository',
+      files_to_submit: "main.cpp\nhelper.cpp\nhelper.h\n"
     }
   end
 
@@ -115,6 +116,12 @@ end
       end
 
       it 'redirects to the created assignment' do
+        post :create, params: { assignment: valid_attributes }
+        expect(response).to redirect_to(Assignment.last)
+      end
+
+      it 'no files to submit' do
+        valid_attributes[:files_to_submit] = nil
         post :create, params: { assignment: valid_attributes }
         expect(response).to redirect_to(Assignment.last)
       end

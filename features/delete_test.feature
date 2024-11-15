@@ -6,8 +6,8 @@ Feature: Delete a test case
     @javascript
     Scenario: Delete a test case
         Given the following assignments exist:
-        | assignment_name | repository_name   |
-        | assignment1     | assignment-1-repo |
+        | assignment_name | repository_name   | files_to_submit                  |
+        | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n |
         Given I am logged in as an "instructor"
         Given I am on the "Assignment Management" page for "assignment1"
         And I have created a test case of type "<type>"
