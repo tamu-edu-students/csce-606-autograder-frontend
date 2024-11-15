@@ -2,8 +2,8 @@ Feature: File Selection from Nested Dropdown in Test Form
 
   Background:
     Given the following assignments exist:
-      | assignment_name | repository_name   |
-      | assignment1     | assignment-1-repo |
+      | assignment_name | repository_name   | files_to_submit                   |
+      | assignment1     | assignment-1-repo | main.cpp\nhelper.cpp\nhelper.h\n  |
     And I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
 
@@ -16,7 +16,7 @@ Feature: File Selection from Nested Dropdown in Test Form
   Scenario: Selecting multiple files from different subdirectories
     When I click on "include"
     And I expand the "io_tests" directory
-    And I select the following files:
+    And I select the following files in "include" dropdown:
       | Directory             | File           |
       | tests/c++/io_tests    | input.txt      |
       | tests/c++/io_tests    | output.txt     |

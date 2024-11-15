@@ -63,17 +63,17 @@ def check_test_block(type)
     within('#approved-includes-container', wait: 10) do
       expect(page).to have_selector("input[name='test[test_block][approved_includes][]']", visible: true)
     end
-    #expect(page).to have_button("Add Approved Includes")
+    # expect(page).to have_button("Add Approved Includes")
   when 'compile'
     within('#compile-file-container', wait: 10) do
       expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
     end
-    #expect(page).to have_button("Add Compile Path")
+    # expect(page).to have_button("Add Compile Path")
   when 'memory_errors'
     within('#memory-errors-container', wait: 10) do
       expect(page).to have_selector("input[name='test[test_block][file_paths][]']", visible: true)
     end
-    #expect(page).to have_button("Add Memory Errors Path")
+    # expect(page).to have_button("Add Memory Errors Path")
   when 'i_o'
     expect(page).to have_selector("input[name='test[test_block][input_path]']", visible: true, wait: 10)
     expect(page).to have_selector("input[name='test[test_block][output_path]']", visible: true)
@@ -82,7 +82,7 @@ def check_test_block(type)
     within('#source-paths-container') do
       expect(page).to have_selector("input[name='test[test_block][source_paths][]']", visible: true)
     end
-    #expect(page).to have_button("Add Source Path")
+    # expect(page).to have_button("Add Source Path")
   when 'performance'
     expect(page).to have_selector("textarea[name='test[test_block][code]']", visible: true, wait: 10)
   when 'unit'
