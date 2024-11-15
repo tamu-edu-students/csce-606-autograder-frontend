@@ -68,3 +68,18 @@
 .file label:hover {
   background-color: #f5f5f5;
 }
+
+/* Hide the default dropdown arrow */
+.custom-dropdown-toggle::after {
+  display: none;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.rotated {
+  transform: rotate(180deg);
+}
+

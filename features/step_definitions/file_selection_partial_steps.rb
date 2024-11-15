@@ -24,6 +24,29 @@ Then("I should see a nested file structure dropdown") do
   end
 end
 
+And("each file should have a checkbox beside its name") do
+  within('#include-file-tree-dropdown') do
+    # Explicitly scope to the first .file-tree within the dropdown
+    within(find('.file-tree', match: :first)) do
+      # Iterate over each file item in the file tree
+      all('li.file.file-item').each do |file_item|
+        # Ensure each file has a checkbox
+        expect(file_item).to have_css('label input[type="checkbox"].file-checkbox', visible: true)
+
+        # Optionally, ensure the checkbox is next to the file name
+        label = file_item.find('label')
+        expect(label).to have_css('input[type="checkbox"].file-checkbox')
+        expect(label.text).not_to be_empty # Ensure the label contains the file name
+      end
+    end
+  end
+end
+
+When("I click on the Includes file-tree dropdown") do
+  find('#include-file-dropdown').click
+  expect(page).to have_css('#include-file-tree-dropdown', visible: true, wait: 5)
+end
+
 When("I expand the {string} directory") do |dir_name|
     # within("#include-file-tree-dropdown") do
     #   find("li", text: dir_name).click
@@ -75,4 +98,24 @@ Then(/^the include field should display the selected file paths$/) do
   end
 
   expect(displayed_file_paths).to match_array(selected_file_paths)
+end
+
+Then('the Includes attribute for {string} should be saved as a list of selected file paths') do |test_name|
+  # Find the test case by its name
+  test = Test.find_by(name: test_name)
+
+  # Ensure the test exists
+  expect(test).not_to be_nil
+
+  # Expected list of files selected in the 'include' dropdown
+  expected_files = [
+    'tests/c++/io_tests/output.txt',
+    'tests/c++/io_tests/input.txt'
+  ]
+
+  # Parse the include attribute if it's stored as a JSON string
+  actual_files = JSON.parse(test.include || '[]')
+
+  # Verify the include attribute matches the expected list
+  expect(actual_files).to match_array(expected_files)
 end
