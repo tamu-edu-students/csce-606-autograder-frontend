@@ -40,69 +40,58 @@
 
     <hr>
 
-        <div class="row mb-3 d-flex">
-            <div class="col-md-4 form-group align-items-center justify-content-space-evenly">
-            <div>
-            <label for="test_type">Test Type<span style="color: red;"> *</span></label>
-                <% if @test.persisted? %>
-                    <%= form.text_field :test_type, class: "form-control", readonly: true %>
-                <% else %>
-                    <%= form.select :test_type, options_for_select(
-                        [['coverage', 'coverage'],
-                        ['compile', 'compile'],
-                        ['approved_includes', 'approved_includes'],
-                        ['memory_errors', 'memory_errors'],
-                        ['unit', 'unit'],
-                        ['i_o', 'i_o'],
-                        ['performance', 'performance'],
-                        ['script', 'script']],
-                        @test.test_type),
-                        { include_blank: 'Please select a test type',
-                        class: "form-control"}, id: "test_type",
-                        onchange: "loadTestPartial(this.value)" %>
-                <% end %>
-            </div>
-
-                <div class="col-md-4" >
-				
-                <label for="test_target">Target
-                    <% if @test.persisted? %>
-                        <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>
-                            <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
-                        <% end %>
-                    <% else %>
-                        <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
-                    <% end %>
-                </label>
-                
-                <% if @test.persisted? %>
-                        <%= form.select :target,
-                    options_for_select(
-                        @assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
-                        @test.target),
-                    { class:"form-control",
-                    include_blank: 'Select a target file' } %>
-                <% else %>
-                        <%= form.select :target,
-                    options_for_select(
-                        @assignment.files_to_submit["files_to_submit"].map { |file| [file, file] },
-                        @test.target),
-                    { class:"form-control", id: "test_target",
-                    include_blank: 'Select a target file' } %>
-                <% end %>
-            </div>
-
-            <div class="col-md-4 d-flex align-items-center">
-            <div class="form-check me-3">
-              <%= form.check_box :show_output, class: "form-check-input" %>
-              <%= form.label :show_output, class: "form-check-label" %>
-            </div>
-            <div class="form-check">
-              <%= form.check_box :skip, class: "form-check-input" %>
-              <%= form.label :skip, class: "form-check-label" %>
-            </div>
-          </div>
-        </div>
+    <div class="row mb-3">
+    <div class="col-md-4">
+      <label for="test_type">Test Type<span style="color: red;"> *</span></label>
+      <% if @test.persisted? %>
+        <%= form.text_field :test_type, class: "form-control", readonly: true %>
+      <% else %>
+        <%= form.select :test_type, options_for_select(
+            [['coverage', 'coverage'],
+            ['compile', 'compile'],
+            ['approved_includes', 'approved_includes'],
+            ['memory_errors', 'memory_errors'],
+            ['unit', 'unit'],
+            ['i_o', 'i_o'],
+            ['performance', 'performance'],
+            ['script', 'script']],
+            @test.test_type),
+            { include_blank: 'Please select a test type',
+            class: "form-control"}, id: "test_type",
+            onchange: "loadTestPartial(this.value)" %>
+      <% end %>
+    </div>
+    <div class="col-md-4">
+      <label for="test_target">Target
+        <% if @test.persisted? %>
+          <% unless ["compile", "memory_errors", "script"].include?(@test.test_type) %>
+            <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+          <% end %>
+        <% else %>
+          <span id="target-asterisk" style="color: red; margin-left: 2px;"> *</span>
+        <% end %>
+      </label>
+      <% if @test.persisted? %>
+        <%= form.select :target,
+            options_for_select(@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] }, @test.target),
+            { class: "form-control", include_blank: 'Select a target file' } %>
+      <% else %>
+        <%= form.select :target,
+            options_for_select(@assignment.files_to_submit["files_to_submit"].map { |file| [file, file] }, @test.target),
+            { class: "form-control", id: "test_target", include_blank: 'Select a target file' } %>
+      <% end %>
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+      <div class="form-check me-3">
+        <%= form.check_box :show_output, class: "form-check-input" %>
+        <%= form.label :show_output, class: "form-check-label" %>
+      </div>
+      <div class="form-check">
+        <%= form.check_box :skip, class: "form-check-input" %>
+        <%= form.label :skip, class: "form-check-label" %>
+      </div>
+    </div>
+  </div>
 
     <div class="row mb-3">
       <div class="col-md-12">
