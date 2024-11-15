@@ -11,6 +11,7 @@ Before do
   allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return('philipritchey/autograded-assignment-template')
   allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return('AutograderFrontend')
   allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
+  allow_any_instance_of(Assignment).to receive(:init_run_autograder_script)
 end
 
 After do
@@ -62,12 +63,13 @@ Then('I should see {string} in {string}') do |deploy_key, base_path|
   expect(File.exist?(File.join(base_path, deploy_key))).to be true
 end
 
-Given('I create an assignment with the name {string} and the repository {string}') do |assignment_name, repository_name|
+Given('I create an assignment with the name {string} and the repository {string} and files {string}') do |assignment_name, repository_name, files|
   steps %(
     Given I am logged in as an "instructor" named "alice"
     When I click the "Create Assignment" button
     And I fill in "Assignment name" with "#{assignment_name}"
     And I fill in "Repository name" with "#{repository_name}"
+    And I add "#{files}" to the "Approved files" field
     And I click the "Submit" button
   )
 end
@@ -98,6 +100,14 @@ Then('I should see the "Approved files" text area') do
 end
 
 When('I add {string} to the "Approved files" field') do |approved_files|
+  expected_files = approved_files.gsub(/\\n/, ' ').split.map(&:strip).reject(&:empty?).join(" ")
+  allow(Git).to receive(:clone) do |url, path|
+    FileUtils.mkdir_p(path)
+    run_autograder_path = File.join(path, "run_autograder")
+    File.open(run_autograder_path, "w") do |file|
+      file.write("files_to_submit=( #{expected_files} )")
+    end
+  end
   fill_in 'assignment[files_to_submit]', with: approved_files
 end
 
