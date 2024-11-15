@@ -1,5 +1,16 @@
-When('I click on {string} link') do |assignment_name|
-    find('a', text: assignment_name).click
+When('I click on {string} link') do |repository_name|
+  @assignment = Assignment.find_or_create_by!(repository_name: repository_name)
+  FileItem = Struct.new(:name, :path, :type, :children)
+  stub_request(:get, "https://api.github.com/repos/AutograderFrontend/#{@assignment.repository_name}/contents/tests/c++")
+  .with(
+    headers: {
+    'Accept'=>'application/vnd.github.v3+json',
+    'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    'Content-Type'=>'application/json',
+    'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+  })
+  .to_return(status: 200, body: [], headers: {})
+    find('a', text: repository_name).click
   end
 
 Then('I should be redirected to the Assignment page for {string}') do |assignment_name|

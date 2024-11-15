@@ -6,6 +6,9 @@
          class="form-control" 
          placeholder="Enter Input Path" 
          value="<%= test&.test_block&.dig('input_path') %>">
+  <div id="input-file-tree-dropdown" class="dropdown-content" style="display: none;">
+    <!-- Tree will be rendered here -->
+  </div>
 </div>
 
 <div class="form-group mt-5">
@@ -16,6 +19,9 @@
          class="form-control" 
          placeholder="Enter Output Path" 
          value="<%= test&.test_block&.dig('output_path') %>">
+  <div id="output-file-tree-dropdown" class="dropdown-content" style="display: none;">
+    <!-- Tree will be rendered here -->
+  </div>
 </div>
 
 

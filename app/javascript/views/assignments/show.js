@@ -4,6 +4,7 @@
       .then(response => response.text())
       .then(html => {
         document.getElementById("dynamic-test-block-container").innerHTML = html;
+        window.initializeDropdowns();
       })
       .catch(error => console.error('Error loading test partial:', error));
   }

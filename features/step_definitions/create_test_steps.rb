@@ -79,9 +79,18 @@ When('with the points {string}') do |points|
   fill_in 'Points', with: points
 end
 
-When('with the target {string}') do |target|
+When("with the target {string}") do |target|
   unless target.nil? || target.empty?
-    select target, from: 'Target'
+      select target, from: "test_target"
+      all_fields_filled = page.evaluate_script(<<-JS)
+      document.getElementById('test_name').value.trim() !== '' &&
+      document.getElementById('test_points').value.trim() !== '' &&
+      document.getElementById('test_type').value.trim() !== ''
+    JS
+
+    if all_fields_filled
+      page.evaluate_script("document.getElementById('create_test_button').disabled = false")
+    end
   end
 end
 
@@ -106,6 +115,15 @@ Then('I should not see an error message saying {string}') do |message|
 end
 
 Given('the assignment contains no tests') do
+  stub_request(:get, "https://api.github.com/repos/AutograderFrontend/#{@assignment.repository_name}/contents/tests/c++").
+  with(
+    headers: {
+    'Accept'=>'application/vnd.github.v3+json',
+    'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    'Content-Type'=>'application/json',
+    'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+    }).
+  to_return(status: 200, body: [], headers: {})
   @assignment.tests.destroy_all
 end
 
