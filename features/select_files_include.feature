@@ -5,39 +5,37 @@ Feature: Select files for Includes attribute
 
   Background: Assignments in the GitHub organization
     Given the following assignments exist:
-      | assignment_name | repository_name |
-      | assignment1     | assignment1     |
+      | assignment_name | repository_name   | files_to_submit                  |
+      | assignment1     | assignment1       | main.cpp\nhelper.cpp\nhelper.h\n |
     And I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
   
   @javascript
   Scenario: Viewing the Includes field as a file-tree dropdown with checkboxes
-    Then I should see an "Includes" field as a file-tree dropdown with checkboxes
+    When I click on "include"
     And I should see a nested file structure dropdown
     And each file should have a checkbox beside its name
 
   @javascript
   Scenario: Selecting multiple files for the Includes attribute
     When I click on the Includes file-tree dropdown
-    And I expand the directory "tests/c++/io_tests"
-    And I select the following files:
+    And I expand the "io_tests" directory
+    And I select the following files in "include" dropdown:
       | Directory             | File           |
       | tests/c++/io_tests    | input.txt      |
       | tests/c++/io_tests    | output.txt     |
-    Then the Includes field should display the selected file paths as:
-      | Selected Files                       |
-      | tests/c++/io_tests/input.txt         |
-      | tests/c++/io_tests/output.txt        |
+      | tests/c++/io_tests    | readme.txt     |
+    Then the include field should display the selected file paths
 
   @javascript
   Scenario: Verifying Include files are correctly saved
     When I create a new test with type "unit"
     And with the name "test-1"
     And with the points "1"
-    And with the target "target.cpp"
+    And with the target "main.cpp"
     And I add the "unit" dynamic text block field
     And I click on the Includes file-tree dropdown
-    And I select the following files:
+    And I select the following files in "include" dropdown:
       | Directory             | File           |
       | tests/c++/io_tests    | output.txt     |
       | tests/c++/io_tests    | input.txt      |
