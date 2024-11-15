@@ -1,30 +1,35 @@
-/* Wrapper around the search input and the clear button */
-.search-container {
+/* Container to match table's full width */
+.search-bar-container {
+    width: 80%; /* Ensure it spans full width of its parent */
     display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-    border: none;
-    margin: auto;
+    flex-direction: column;
+    align-items: left;
+    justify-content: left;
+    text-align: left;
+    margin: 20px auto;
 }
 
 .search-input-wrapper {
-    display: flex;             /* Use flexbox for horizontal layout */
-    align-items: center;      /* Center align items vertically */
-    max-width: 400px;
-    border: none;  /* Add border around the entire input area */
-    border-radius: 5px;       /* Rounded corners */
-    padding: 2px;             /* Padding inside the wrapper */
+    display: flex;
+    align-items: center;
+    width: 100%; /* Full width of parent container */
+    padding: 2px;
     margin-bottom: 30px;
+    position: relative;
 }
 
-/* Styling for the input field */
+/* Styling for the input field to expand fully */
 .search-input {
     flex-grow: 1;
-    padding: 10px;
+    width: 100%; /* Full width within the wrapper */
+    padding: 10px 40px 10px 10px;
     border: 2px solid black;
-    border-radius: 8px 8px 8px 8px;
+    border-radius: 8px;
     outline: none;
     font-size: 16px;
+    text-align: left; /* Ensures text starts from the left */
+    direction: ltr; /* Sets left-to-right typing direction */
+    unicode-bidi: plaintext; 
 }
 
 /* Styling for the clear button */
@@ -35,20 +40,22 @@
     cursor: pointer;
     padding: 5px;
     outline: none;
-    margin-right: 8px;
-    margin-left: -50px; /* Adjust to bring the cross button inside */
     color: black;
+    right: 200px;
+    top: 7px;
+    position: absolute
 }
 
 /* Styling for the search button */
 .search-button {
     padding: 10px 15px;
-    margin-left: 30px;
     background-color: blue;
     color: white;
     border: none;
     cursor: pointer;
     font-size: 16px;
+    margin-left: 10px;
+    margin-bottom: 10px;
 }
 
 .search-button:hover {

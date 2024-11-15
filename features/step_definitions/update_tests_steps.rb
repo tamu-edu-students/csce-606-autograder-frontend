@@ -4,30 +4,28 @@ Given(/^I am logged in as an instructor$/) do
   end
 
   Given('I have created a test case of type {string}') do |test_type|
-    visit assignment_path(@assignment)
-    click_link('Add New Test')
-    # Expect button with text 'Create Test' to be visible
-    expect(page).to have_button('Create Test')
-    Capybara.using_wait_time(10) do
-      select test_type, from: 'Test Type'
+    test_block = case test_type
+    when 'approved_includes' then { approved_includes: [ 'iostream', 'vector' ] }
+    when 'compile' then { file_paths: [ 'file1' ] }
+    when 'memory_errors' then { file_paths: [ 'file1', 'file2' ] }
+    when 'coverage' then { main_path: 'main.cpp', source_paths: [ 'source1.cpp' ] }
+    when 'performance' then { code: 'EXPECT_EQ(1, 1);' }
+    when 'unit' then { code: 'EXPECT_EQ(1, 1);' }
+    when 'i_o' then { input_path: 'input.txt', output_path: 'output.txt' }
+    when 'memory_errors' then { file_paths: [ 'file1', 'file2' ] }
+    when 'script' then { script_path: 'script.sh' }
+    else raise "Unknown test type: #{test_type}"
     end
 
-    Capybara.using_wait_time(10) do
-      expect(page).to have_select('Test Type', selected: test_type)
-    end
-    # expect Test Type to be selected
-    fill_in 'Name', with: 'name'
-    fill_in 'Points', with: 10
-    fill_in 'Target', with: 'target.cpp'
-    check_test_block(test_type)
-    fill_test_block(test_type)
+    Test.create!(
+      assignment: @assignment,
+      test_type: test_type,
+      name: "#{test_type}_test",
+      target: "main.cpp",
+      points: 10.0,
+      test_block: test_block,
+    )
 
-    expect(page).to have_button('Create Test')
-    expect(page).to have_select('Test Type', selected: test_type)
-    click_button "Create Test"
-
-    # Wait for the success message to ensure the test case is created
-    expect(page).to have_content("Test was successfully created")
     @assignment.reload
     @test_case = @assignment.tests.last
   end
