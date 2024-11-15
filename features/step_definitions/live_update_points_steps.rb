@@ -12,30 +12,55 @@ Then("I should see a points editor and test name for each test in their respecti
   
   When('I click on the point editor for {string} and enter {string} in the text field') do |test_name, points|
     test = Test.find_by(name: test_name)
-    test2 = Test.find_by(name: "Test_EC_1")
+  
+    # Ensure the test grouping list is present
+    expect(page).to have_css('.test-grouping-list', wait: 5)
+    puts "Test grouping list exists: #{page.has_css?('.test-grouping-list')}"
+  
     within('.test-grouping-list') do
-      # First, find all test cards and iterate through them
-      all('.test-card').each do |test_card|
-        # Find the link within the test card
-        link = test_card.find('.test-info a.text-link') 
-        # The link text includes position number, so we need to check if it contains our test name
+      test_cards = all('.test-card')
+      puts "Number of test cards: #{test_cards.size}"
+  
+      # Ensure there are test cards
+      expect(test_cards).not_to be_empty
+  
+      test_cards.each do |test_card|
+        link = test_card.find('.test-info a.text-link')
+  
         if link.text.include?("#{test.position}) #{test_name}")
-          # Once we find the right test card, click its points input and set the value
           input = test_card.find('.points-input')
           input.click
           input.set(points)
-          page.execute_script("arguments[0].dispatchEvent(new Event('change', { 'bubbles': true }))", input.native)
+  
+          # Dispatch events for Stimulus controller
+          page.execute_script(<<~JS, input.native)
+            arguments[0].value = '#{points}';
+            arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
+            arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+          JS
+  
+          # Verify input value
+          puts "Input value after setting: #{input.value}"
           break
         end
       end
     end
+  
+    # Verify backend update
+    updated_test = Test.find_by(name: test_name)
+    puts "Backend points value: #{updated_test.points}"
+    expect(updated_test.points.to_s).to eq(points.to_s)
   end
+  
   
   # Simulate clicking outside the input field or pressing Enter
   When('I click outside the text field or press Enter') do
+    
     find('#totalPoints').click
     # Add a small wait for AJAX
     sleep 0.5
+    page.evaluate_script('location.reload()')
+
   end
   
   # Verify that the points were updated correctly in the database
