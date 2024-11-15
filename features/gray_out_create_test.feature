@@ -4,8 +4,8 @@
   
   Background:
     Given the following assignments exist:
-      | assignment_name | repository_name |
-      | assignment1     | assignment1     |
+      | assignment_name | repository_name | files_to_submit                        |
+      | assignment1     | assignment1     | tests/unit_test.js \n tests/input.txt \n main.cpp  |
     And I am logged in as an "instructor"
     And I am on the "Assignment Management" page for "assignment1"
 
@@ -18,31 +18,31 @@
 
   @javascript
   Scenario Outline: "Create Test" becomes active when all required fields are filled
-    When I enter "<name>" in the "name" field
-    And I enter "<points>" in the "points" field
-    And I select "<type>" as the "type" type
-    And I enter "<target>" in the "target" field
+    When I create a new test with type "<type>"
+    And with the name "<name>"
+    And with the points "<points>"
+    And with the target "<target>"
     Then the "Create Test" button should be active
 
     Examples: All fields are required
       | name      | points | type          | target             |
-      | Test1    | 5.0    | unit          | tests/unit_test.js |
-      | Test2    | 2.5    | i_o           | tests/input.txt    |
+      | Test1    | 5.0    | unit          | main.cpp |
+      | Test2    | 2.5    | i_o           | main.cpp    |
 
     Examples: Target field not required for specific types
       | name      | points | type           | target |
-      | Compile_T | 3.0    | compile        |        |
-      | Memory_T  | 1.0    | memory_errors  |        |
-      | Script_T  | 4.0    | script         |        |
+      | Compile_T | 3.0    | compile        | Select a target file       |
+      | Memory_T  | 1.0    | memory_errors  |  Select a target file      |
+      | Script_T  | 4.0    | script         | Select a target file       |
 
 
 
  @javascript
 Scenario: Create Test button remains disabled until only some required fields are filled
-  When I enter "<name>" in the "name" field
-  And I enter "<points>" in the "points" field
-  And I select "<type>" as the "type" type
-  And I enter "<target>" in the "target" field
+  When I create a new test with type "<type>"
+  And with the name "<name>"
+  And with the points "<points>"
+  And with the target "<target>"
   Then the "Create Test" button should remain disabled
   Examples: 
     | name        | points | type                          | target   |
@@ -63,22 +63,22 @@ Scenario: Create Test button remains disabled until only some required fields ar
 
   @javascript
   Scenario: Create Test button becomes enabled when all required fields are filled
-    When I enter "<name>" in the "name" field
-    And I enter "<points>" in the "points" field
-    And I select "<type>" as the "type" type
-    And I enter "<target>" in the "target" field
+    When I create a new test with type "<type>"
+    And with the name "<name>"
+    And with the points "<points>"
+    And with the target "<target>"
     Then the "Create Test" button should be active
     Examples:
       | name     | points | type          | target             |
-      | Test1    | 5.0    | unit          | tests/unit_test.js |
-      | Test2    | 2.5    | i_o           | tests/input.txt    |
+      | Test1    | 5.0    | unit          | main.cpp |
+      | Test2    | 2.5    | i_o           | main.cpp    |
 
   @javascript
   Scenario: Create Test button becomes disabled when a required field is cleared
-    When I enter "<name>" in the "name" field
-    And I enter "<points>" in the "points" field
-    And I select "<type>" as the "type" type
-    And I enter "<target>" in the "target" field
+    When I create a new test with type "<type>"
+    And with the name "<name>"
+    And with the points "<points>"
+    And with the target "<target>"
     And I clear the "name" field
     Then the "Create Test" button should remain disabled
     Examples:
