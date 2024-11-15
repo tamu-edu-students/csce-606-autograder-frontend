@@ -2,21 +2,14 @@ Then("I should see an asterisk next to the {string} field") do |field|
   asterisk_element = find("label[for='test_#{field.downcase}'] span", visible: true)
   expect(asterisk_element).to have_content('*')
 end
-When("I enter {string} in the {string} field") do |value, field|
-  fill_in "test_#{field.downcase}", with: value
-end
-When("I select {string} as the {string} type") do |type, field|
-  select type, from: "test_#{field.downcase}"
-end
-When('I select target {string}') do |target|
-  unless target.nil? || target.empty?
-    select target, from: 'test_target'
+
+Then("the {string} button should be active") do |button_text|
+  Capybara.using_wait_time(5) do
+    button = find("input[type='submit'][value='#{button_text}']")
+    expect(button).not_to be_disabled
   end
 end
-Then("the {string} button should be active") do |button_text|
-  button = find("input[type='submit'][value='#{button_text}']")
-  expect(button).not_to be_disabled
-end
+
 Then("the {string} button should remain disabled") do |button_text|
   button = find("input[type='submit'][value='#{button_text}']")
   expect(button).to be_disabled
@@ -50,4 +43,10 @@ end
 
 When("I clear the {string} field") do |field|
   fill_in "test_#{field.downcase}", with: ""
+end
+
+Then("I should see the asterisk on target field based on test type {string}") do |test_type|
+  asterisk_visible = ["compile", "memory_errors", "script"].exclude?(test_type)
+  asterisk = find("#target-asterisk", visible: asterisk_visible)
+  expect(asterisk).to be_visible if asterisk_visible
 end

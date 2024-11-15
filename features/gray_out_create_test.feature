@@ -22,15 +22,16 @@
     And with the name "<name>"
     And with the points "<points>"
     And with the target "<target>"
-    Then the "Create Test" button should be active
-
+    Then I should see the asterisk on target field based on test type "<type>"
+    And the "Create Test" button should be active
+    
     Examples: All fields are required
-      | name      | points | type          | target             |
-      | Test1    | 5.0    | unit          | main.cpp |
+      | name      | points | type         | target      |
+      | Test1    | 5.0    | unit          | main.cpp    |
       | Test2    | 2.5    | i_o           | main.cpp    |
 
     Examples: Target field not required for specific types
-      | name      | points | type           | target |
+      | name      | points | type           | target                     |
       | Compile_T | 3.0    | compile        | Select a target file       |
       | Memory_T  | 1.0    | memory_errors  |  Select a target file      |
       | Script_T  | 4.0    | script         | Select a target file       |
@@ -70,8 +71,8 @@ Scenario: Create Test button remains disabled until only some required fields ar
     Then the "Create Test" button should be active
     Examples:
       | name     | points | type          | target             |
-      | Test1    | 5.0    | unit          | main.cpp |
-      | Test2    | 2.5    | i_o           | main.cpp    |
+      | Test1    | 5.0    | unit          | main.cpp           |
+      | Test2    | 2.5    | i_o           | main.cpp           |
 
   @javascript
   Scenario: Create Test button becomes disabled when a required field is cleared

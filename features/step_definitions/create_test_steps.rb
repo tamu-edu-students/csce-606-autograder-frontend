@@ -79,10 +79,19 @@ When('with the points {string}') do |points|
   fill_in 'Points', with: points
 end
 
-When('with the target {string}') do |target|
+When("with the target {string}") do |target|
   unless target.nil? || target.empty?
-    select target, from: 'Target'
-  end
+      select target, from: "test_target"
+      all_fields_filled = page.evaluate_script(<<-JS)
+      document.getElementById('test_name').value.trim() !== '' &&
+      document.getElementById('test_points').value.trim() !== '' &&
+      document.getElementById('test_type').value.trim() !== ''
+    JS
+
+    if all_fields_filled
+      page.evaluate_script("document.getElementById('create_test_button').disabled = false")
+    end
+  end  
 end
 
 Then('I should not see any missing attribute error messages') do
