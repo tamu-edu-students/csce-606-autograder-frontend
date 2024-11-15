@@ -1,5 +1,8 @@
 <%= form_with model: [@assignment, @test], local: true,  html: { 'data-new-record': !@test.persisted? } do |form| %>
-    <div class="container-fluid test-editor">
+    <div data-controller="file-selection" 
+		data-file-selection-assignment-id-value="<%= @assignment.id %>"
+		data-file-selection-tree-value="<%= @file_tree.to_json %>"
+    class="container-fluid test-editor">
       <div class="row mb-3 right-column">
         <div class="col-md-6">
             <label for="test_name">Test Name<span style="color: red;"> *</span></label>
@@ -7,17 +10,17 @@
         </div>
 
         <div class="col-md-6 d-flex align-items-center justify-content-end">
-        <% if @test.persisted? %>
-          <div class="delete-actions">
-            <%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger me-2" %>
-          </div>
-        <% end %>
-
-				<div class="form-actions">
-                    <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class:"btn btn-primary", id: @test.persisted? ? "update_test_button" : "create_test_button" %>
-                </div>
+          <% if @test.persisted? %>
+            <div class="delete-actions">
+              <%= button_to "Delete Test", assignment_test_path(@assignment, @test), method: :delete, data: { confirm: "Are you sure?", turbo: false }, class: "btn btn-danger me-2" %>
             </div>
+          <% end %>
+
+          <div class="form-actions">
+              <%= form.submit @test.persisted? ? "Update Test" : "Create Test", class:"btn btn-primary", id: @test.persisted? ? "update_test_button" : "create_test_button" %>
+          </div>
         </div>
+      </div>
 
     <hr>
 
@@ -97,6 +100,8 @@
       <div class="col-md-12">
         <%= form.label :include, 'Includes' %>
         <%= form.text_area :include, class:"form-control includes", placeholder: "Add .cpp or .h paths separated by spaces" %>
+        <div id="include-file-tree-dropdown" class="dropdown-content" style="display: none;">
+				</div>
       </div>
     </div>
 
