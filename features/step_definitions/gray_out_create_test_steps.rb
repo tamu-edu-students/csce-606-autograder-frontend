@@ -8,6 +8,11 @@ end
 When("I select {string} as the {string} type") do |type, field|
   select type, from: "test_#{field.downcase}"
 end
+When('I select target {string}') do |target|
+  unless target.nil? || target.empty?
+    select target, from: 'test_target'
+  end
+end
 Then("the {string} button should be active") do |button_text|
   button = find("input[type='submit'][value='#{button_text}']")
   expect(button).not_to be_disabled
