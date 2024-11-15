@@ -119,5 +119,3 @@ Then('the Includes attribute for {string} should be saved as a list of selected 
   # Verify the include attribute matches the expected list
   expect(actual_files).to match_array(expected_files)
 end
-
-
