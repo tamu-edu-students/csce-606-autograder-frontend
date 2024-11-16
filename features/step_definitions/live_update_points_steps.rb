@@ -58,7 +58,7 @@ Then("I should see a points editor and test name for each test in their respecti
   # Simulate clicking outside the input field or pressing Enter
   When('I click outside the text field or press Enter') do
     total_points_element = find('div[data-points-target="totalPoints"]')
-  
+
     # Click on the element
     total_points_element.click
     # Add a small wait for AJAX
