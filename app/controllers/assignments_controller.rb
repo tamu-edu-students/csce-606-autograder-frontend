@@ -32,6 +32,11 @@ class AssignmentsController < ApplicationController
     github_token = session[:github_token]
     @directory_structure = @assignment.fetch_directory_structure(github_token)
     @total_points = @test_groupings.sum { |tg| tg.tests.sum(:points) }
+    # Assign @files using the fetch_file_tree method
+    @file_tree = build_complete_tree(@assignment)
+  rescue Octokit::Error => e
+    flash[:alert] = "Could not retrieve file tree: #{e.message}"
+    @file_tree = []
   end
 
   # GET /assignments/new
@@ -48,10 +53,11 @@ class AssignmentsController < ApplicationController
     modified_params = assignment_params.merge(files_to_submit: files_string_to_jsonb(assignment_params[:files_to_submit]))
     @assignment = Assignment.new(modified_params)
     github_token = session[:github_token]
+    user = User.find(session[:user_id])
 
     respond_to do |format|
       if @assignment.save
-        @assignment.assignment_repo_init(github_token)
+        @assignment.assignment_repo_init(github_token, user)
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
         format.json { render :show, status: :created, location: @assignment }
       else
@@ -132,6 +138,7 @@ class AssignmentsController < ApplicationController
 
     render :index
   end
+
   def users
     @users = User.all
     @assignment = Assignment.find(params[:id])
@@ -176,6 +183,38 @@ class AssignmentsController < ApplicationController
   end
 
   private
+
+  def build_complete_tree(assignment)
+    github_token = session[:github_token]
+    client = Octokit::Client.new(access_token: github_token)
+    repo = "AutograderFrontend/#{assignment.repository_name}"
+
+    begin
+      fetch_directory_contents(client, repo, "tests/c++")
+    rescue Octokit::Error => e
+      Rails.logger.error "GitHub API Error: #{e.message}"
+      []
+    end
+  end
+
+  def fetch_directory_contents(client, repo, path)
+    contents = client.contents(repo, path: path)
+
+    contents.map do |item|
+      node = {
+        name: item.name,
+        path: item.path,
+        type: item.type
+      }
+
+      if item.type == "dir"
+        clean_path = item.path.gsub(/\s+/, "++")
+        node[:children] = fetch_directory_contents(client, repo, clean_path)
+      end
+
+      node
+    end
+  end
 
   def files_string_to_jsonb(files_string)
     return { files_to_submit: [] } if files_string.nil? || files_string.empty?

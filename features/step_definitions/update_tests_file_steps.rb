@@ -121,6 +121,15 @@ Then('the .tests file should contain both properly formatted tests') do |table|
 end
 
 Given('the assignment contains {string} tests') do |string|
+  stub_request(:get, "https://api.github.com/repos/AutograderFrontend/#{@assignment.repository_name}/contents/tests/c++").
+        with(
+          headers: {
+          'Accept'=>'application/vnd.github.v3+json',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Content-Type'=>'application/json',
+          'User-Agent'=>'Octokit Ruby Gem 9.1.0'
+          }).
+  to_return(status: 200, body: [], headers: {})
   for i in 1..string.to_i
     Test.create!(
       assignment: @assignment,
@@ -135,6 +144,7 @@ end
 
 When('I delete the {string} test') do |string|
   test = @assignment.tests.find_by(name: "test#{string.to_i+1}")
+  puts
   visit assignment_path(@assignment, test_id: test.id)
   click_button 'Delete Test'
 

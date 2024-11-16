@@ -24,6 +24,7 @@ RSpec.describe AssignmentsController, type: :controller do
   let!(:user2) { create(:user) }
   let!(:user3) { create(:user) }
   let(:client) { instance_double(Octokit::Client) }
+  let!(:specific_test) { create(:test, assignment: assignment, test_block: { code: 'Test code' }, test_type: 'unit') }
 
   before do
     allow(controller).to receive(:require_login).and_return(true)
@@ -42,45 +43,76 @@ RSpec.describe AssignmentsController, type: :controller do
     end
   end
 
-describe 'GET #show' do
-  let(:directory_structure) do
-    [
-      { name: "test_file.txt", type: "file" }
-    ]
-  end
+  describe 'GET #show' do
+    let(:assignment) { Assignment.create!(valid_attributes) }
+    let(:client_double) { instance_double(Octokit::Client) }
+    let(:directory_structure) do
+      [
+        { name: "test_file.txt", type: "file" }
+      ]
+    end
+    let(:mocked_file_tree) do
+      {
+        "tests" => {
+          "test_file.txt" => { name: "test_file.txt", path: "tests/test_file.txt", type: "file" },
+          "c++" => {
+            "test_file.txt" => { name: "test_file.txt", path: "tests/c++/test_file.txt", type: "file" }
+          }
+        }
+      }
+    end
 
-  before do
-    # Ensure assignment is created before any test groupings
-    @assignment = Assignment.create!(valid_attributes)
-    @test_grouping_1 = @assignment.test_groupings.create!(name: 'Test Grouping 1')
-    @test_grouping_2 = @assignment.test_groupings.create!(name: 'Test Grouping 2')
-    @test1 = @assignment.tests.create!(name: 'Test 1', points: 10.0, test_type: 'unit', target: 'target', test_block: { code: 'Test body' }, test_grouping_id: @test_grouping_1.id)
-    @test2 = @assignment.tests.create!(name: 'Test 2', points: 20.0, test_type: 'unit', target: 'target', test_block: { code: 'Test body' }, test_grouping_id: @test_grouping_2.id)
+    before do
+      allow(Octokit::Client).to receive(:new).and_return(client_double)
+      allow(client_double).to receive(:contents).with("AutograderFrontend/#{assignment.repository_name}", path: "tests")
+                                              .and_return([ { name: "test_file.txt", type: "file" } ])
+      allow_any_instance_of(AssignmentsController).to receive(:build_complete_tree).with(assignment).and_return(mocked_file_tree)
+      allow(assignment).to receive(:fetch_directory_structure).with(mock_github_token).and_return(directory_structure)
+    end
 
-    allow_any_instance_of(Assignment).to receive(:fetch_directory_structure).and_return(directory_structure)
-  end
+    it 'assigns @file_tree with the mocked file structure' do
+      get :show, params: { id: assignment.to_param }
+      expect(assigns(:file_tree)).to eq(mocked_file_tree)
+    end
 
-  it 'retrieves the directory structure from GitHub and assigns it to @directory_structure' do
-    get :show, params: { id: @assignment.to_param }
-    expect(assigns(:directory_structure)).to eq(directory_structure)
-  end
+    it 'retrieves the directory structure from GitHub and assigns it to @directory_structure' do
+      get :show, params: { id: assignment.to_param }
+      expect(assigns(:directory_structure)).to eq(directory_structure)
+    end
 
-  it 'assigns the test groupings to @test_groupings including associated tests' do
-    get :show, params: { id: @assignment.to_param }
-    expect(assigns(:test_groupings)).to include(@test_grouping_1, @test_grouping_2)
-    expect(assigns(:test_groupings).flat_map(&:tests)).to include(@test1, @test2)
-  end
+    it 'assigns @test to the selected test' do
+      allow(controller).to receive(:build_complete_tree).and_return([])
+      get :show, params: { id: assignment.id, test_id: specific_test.id }
+      expect(assigns(:test)).to eq(specific_test)
+    end
 
-  it 'returns a success response' do
-    get :show, params: { id: @assignment.to_param }
-    expect(response).to be_successful
-  end
+    it 'assigns @assignment' do
+      allow(controller).to receive(:build_complete_tree).and_return([])
+      get :show, params: { id: assignment.to_param }
+      expect(assigns(:assignment)).to eq(assignment)
+    end
 
-  it 'assigns the correct total points to @total_points' do
-    get :show, params: { id: @assignment.to_param }
-    expect(assigns(:total_points)).to eq(30.0)
+    it 'returns a success response' do
+      allow(controller).to receive(:build_complete_tree).and_return([])
+      get :show, params: { id: assignment.to_param }
+      expect(response).to be_successful
+    end
+
+    context 'when an Octokit::Error occurs' do
+      before do
+        allow_any_instance_of(AssignmentsController).to receive(:build_complete_tree).and_raise(Octokit::Error.new(response_status: 500, message: 'API error'))
+        get :show, params: { id: assignment.id }
+      end
+
+      it 'sets a flash alert' do
+        expect(flash[:alert]).to start_with('Could not retrieve file tree:')
+      end
+
+      it 'assigns an empty array to @file_tree' do
+        expect(assigns(:file_tree)).to eq([])
+      end
+    end
   end
-end
 
   describe 'GET #new' do
     it 'returns a success response' do
@@ -110,7 +142,7 @@ end
 
       it 'calls assignment_repo_init' do
         assignment = Assignment.new(valid_attributes)
-        expect(assignment).to receive(:assignment_repo_init).with(mock_github_token)
+        expect(assignment).to receive(:assignment_repo_init).with(mock_github_token, user)
         allow(Assignment).to receive(:new).and_return(assignment)
         post :create, params: { assignment: valid_attributes }
       end
@@ -413,6 +445,107 @@ end
         expect(flash[:alert]).to eq('Could not export assignment')
         expect(response).to redirect_to(assignment_path(assignment))
       end
+    end
+  end
+
+  describe 'build complete tree' do
+    describe 'when fetching directory contents is successful' do
+      let(:directory_contents) { [ 'file1.cpp', 'file2.cpp' ] }
+
+      before do
+        allow(controller).to receive(:fetch_directory_contents).and_return(directory_contents)
+      end
+
+      it 'fetches directory contents successfully' do
+        result = controller.send(:build_complete_tree, assignment)
+        expect(result).to eq(directory_contents)
+      end
+    end
+
+    context 'when there is a GitHub API error' do
+      before do
+        allow(controller).to receive(:fetch_directory_contents).and_raise(Octokit::Error.new(response_status: 500, message: 'Some error occurred'))
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'logs the error and returns an empty array' do
+        result = controller.send(:build_complete_tree, assignment)
+
+        expect(Rails.logger).to have_received(:error) do |message|
+          expect(message).to start_with("GitHub API Error:")
+        end
+        expect(result).to eq([])
+      end
+    end
+  end
+
+  describe 'fetch directory contents' do
+    let(:client) { instance_double('Client') }
+    let(:repo) { 'example_repo' }
+    let(:path) { 'tests/c++' }
+
+    let(:file_item) do
+      double(
+        name: 'file1.txt',
+        path: 'tests/c++/file1.txt',
+        type: 'file'
+      )
+    end
+
+    let(:dir_item) do
+      double(
+        name: 'dir1',
+        path: 'tests/c++/dir1',
+        type: 'dir'
+      )
+    end
+
+    let(:nested_file_item) do
+      double(
+        name: 'file2.txt',
+        path: 'tests/c++/dir1/file2.txt',
+        type: 'file'
+      )
+    end
+
+    before do
+      allow(client).to receive(:contents).with(repo, path: path).and_return([ file_item, dir_item ])
+      allow(client).to receive(:contents).with(repo, path: 'tests/c++/dir1').and_return([ nested_file_item ])
+    end
+
+    it 'returns directory contents with nested structure for directories' do
+      expected_result = [
+        {
+          name: 'file1.txt',
+          path: 'tests/c++/file1.txt',
+          type: 'file'
+        },
+        {
+          name: 'dir1',
+          path: 'tests/c++/dir1',
+          type: 'dir',
+          children: [
+            {
+              name: 'file2.txt',
+              path: 'tests/c++/dir1/file2.txt',
+              type: 'file'
+            }
+          ]
+        }
+      ]
+
+      result = controller.send(:fetch_directory_contents, client, repo, path)
+      expect(result).to eq(expected_result)
+    end
+
+    it 'encodes spaces in directory paths with ++' do
+      allow(dir_item).to receive(:path).and_return('tests/c /dir1') # Path with space
+      allow(client).to receive(:contents).with(repo, path: 'tests/c++/dir1').and_return([])
+
+      result = controller.send(:fetch_directory_contents, client, repo, path)
+      dir_node = result.find { |node| node[:type] == 'dir' }
+      expect(dir_node[:path]).to eq('tests/c /dir1')
+      expect(dir_node[:children]).to eq([])
     end
   end
 

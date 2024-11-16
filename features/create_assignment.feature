@@ -5,8 +5,8 @@ Feature: Create a new assignment
   organization from the autograded-assignment-template repository
 
   Scenario: Duplicate repository names should not be allowed
-    Given I create an assignment with the name "Homework 1" and the repository "csce-120-hw1"
-    When I create an assignment with the name "Homework 1" and the repository "csce-120-hw1"
+    Given I create an assignment with the name "Homework 1" and the repository "csce-120-hw1" and files "main.cpp\nhelper.cpp\nhelper.h\n"
+    When I create an assignment with the name "Homework 1" and the repository "csce-120-hw1" and files "main.cpp\nhelper.cpp\nhelper.h\n"
     Then I should see the error message "must be unique. This repository name is already taken."
 
   Scenario: TAs with read-only access should not see the "Create Assignment" button
@@ -14,4 +14,4 @@ Feature: Create a new assignment
     Then I should not see the "Create Assignment" button
 
 
-
+  

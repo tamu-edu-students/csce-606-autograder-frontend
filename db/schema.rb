@@ -72,7 +72,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_201410) do
     t.float "points"
     t.string "test_type"
     t.string "target"
-    t.text "include"
     t.integer "position"
     t.boolean "show_output"
     t.boolean "skip"
@@ -83,6 +82,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_201410) do
     t.datetime "updated_at", null: false
     t.json "test_block", default: {}
     t.integer "test_grouping_id", null: false
+    t.string "include"
     t.index ["assignment_id"], name: "index_tests_on_assignment_id"
     t.index ["test_grouping_id"], name: "index_tests_on_test_grouping_id"
   end

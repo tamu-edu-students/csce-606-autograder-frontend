@@ -57,7 +57,7 @@ Feature: Regenerate .tests file on test creation/update/deletion
     And the assignment contains "<number_of_tests>" tests
     And I am logged in as an "instructor" named "sam"
     And I am on the "Assignment Management" page for "assignment1"
-    When I delete the "<position>" test
+    When I delete the "<name>" test
     Then I should see a success message
     And the .tests file should contain the remaining "<remaining_tests>" tests
 
