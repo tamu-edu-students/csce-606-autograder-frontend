@@ -66,14 +66,26 @@ export default class extends Controller {
     // Initialize dropdown content based on selected paths
     this.initializeCheckedBoxes(this.targetField, this.targetDropdown);
     this.initializeCheckedBoxes(this.includeField, this.includeDropdown);
-    this.initializeCheckedBoxes(this.mainPathField, this.mainPathDropdown);
     this.initializeCheckedBoxes(this.sourcePathField, this.sourcePathDropdown);
     this.initializeCheckedBoxes(this.compilePathField, this.compilePathDropdown);
     this.initializeCheckedBoxes(this.memoryErrorsPathField, this.memoryErrorsPathDropdown);
-    this.initializeCheckedBoxes(this.inputPathField, this.inputPathDropdown);
-    this.initializeCheckedBoxes(this.outputPathField, this.outputPathDropdown);
     this.initializeCheckedBoxes(this.scriptPathField, this.scriptPathDropdown);
+    this.initializeRadioButtons(this.mainPathField, this.mainPathDropdown);
+    this.initializeRadioButtons(this.inputPathField, this.inputPathDropdown);
+    this.initializeRadioButtons(this.outputPathField, this.outputPathDropdown);
+    
   }
+
+  initializeRadioButtons(field, dropdown) {
+    if (field && field.value && dropdown) {
+      const selectedPath = field.value.trim();
+      const radios = dropdown.querySelectorAll(".file-radio");
+      radios.forEach(radio => {
+        radio.checked = radio.dataset.filePath === selectedPath;
+      });
+    }
+  }
+
 
   initializeCheckedBoxes(field, dropdown) {
     if (field && field.value && dropdown) {
