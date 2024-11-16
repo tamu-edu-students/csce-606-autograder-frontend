@@ -106,6 +106,7 @@ class TestsController < ApplicationController
   end
 
   def update_points
+    Rails.logger.info "Received params: #{params.inspect}"
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping = TestGrouping.find(params[:test_grouping_id])
     @test = Test.find(params[:id])
@@ -115,12 +116,13 @@ class TestsController < ApplicationController
       update_remote(current_user, auth_token)
 
       respond_to do |format|
-        format.html { redirect_to assignment_path(@assignment), notice: "Test points updated successfully." }
         format.json { render json: { success: true, points: @test.points } }
+        format.html { redirect_to assignment_path(@assignment), notice: "Test points updated successfully." }
       end
     else
       respond_to do |format|
         format.json { render json: { success: false, error: @test.errors.full_messages.join(", ") } }
+        format.html { redirect_to assignment_path(@assignment), alert: @test.errors.full_messages.join(", ") }
       end
     end
   end
