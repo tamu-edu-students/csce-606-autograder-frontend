@@ -26,14 +26,17 @@ Then("I should see a points editor and test name for each test in their respecti
     update_url = update_points_assignment_test_grouping_test_path(assignment, test_grouping, test)
     puts "Update URL: #{update_url}"
   
-    # Send a POST request with correctly formatted parameters
-    response = page.driver.post(update_url, 
-                                params: { test: { points: points } }.to_json, 
-                                headers: { 'Content-Type': 'application/json' })
+    # Send a POST request with the correct parameter structure
+    params = {
+      test: {
+        points: points.to_f
+      }
+    }
+    puts params
+    page.driver.post update_url, params
   
-    # Log the response for debugging
-    puts "Response Status: #{response.status}"
-    puts "Response Body: #{response.body}"
+    # Debugging information
+    puts "Response: #{response.inspect}"
   
     # Reload the test and verify the update
     test.reload
@@ -51,13 +54,13 @@ Then("I should see a points editor and test name for each test in their respecti
   
   
   
+  
   # Simulate clicking outside the input field or pressing Enter
   When('I click outside the text field or press Enter') do
     
     find('#totalPoints').click
     # Add a small wait for AJAX
     sleep 0.5
-    page.evaluate_script('location.reload()')
 
   end
   
