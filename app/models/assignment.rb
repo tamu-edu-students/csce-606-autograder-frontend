@@ -65,7 +65,7 @@ class Assignment < ActiveRecord::Base
       end
   end
 
-  def assignment_repo_init(github_token)
+  def assignment_repo_init(github_token, user)
     create_repo_from_template(github_token)
     clone_repo_to_local(github_token)
     create_and_add_deploy_key(
@@ -83,6 +83,7 @@ class Assignment < ActiveRecord::Base
       self.local_repository_path,
       true
     )
+    init_run_autograder_script(user, github_token)
   end
 
   def generate_tests_file
@@ -317,5 +318,18 @@ class Assignment < ActiveRecord::Base
 
       self.repository_name = repository_name
     end
+  end
+
+  def init_run_autograder_script(user, github_token)
+    run_autograder_path = File.join(local_repository_path, "run_autograder")
+    run_autograder_content = File.read(run_autograder_path)
+
+    files_to_submit_string = files_to_submit["files_to_submit"].join(" ")
+    run_autograder_content.gsub!(/files_to_submit=\([^\)]*\)/, "files_to_submit=( #{files_to_submit_string} )")
+
+    File.open(run_autograder_path, "w") do |file|
+      file.write run_autograder_content
+    end
+    push_changes_to_github(user, github_token)
   end
 end

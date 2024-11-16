@@ -142,7 +142,7 @@ RSpec.describe AssignmentsController, type: :controller do
 
       it 'calls assignment_repo_init' do
         assignment = Assignment.new(valid_attributes)
-        expect(assignment).to receive(:assignment_repo_init).with(mock_github_token)
+        expect(assignment).to receive(:assignment_repo_init).with(mock_github_token, user)
         allow(Assignment).to receive(:new).and_return(assignment)
         post :create, params: { assignment: valid_attributes }
       end

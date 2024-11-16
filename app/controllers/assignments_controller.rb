@@ -52,10 +52,11 @@ class AssignmentsController < ApplicationController
     modified_params = assignment_params.merge(files_to_submit: files_string_to_jsonb(assignment_params[:files_to_submit]))
     @assignment = Assignment.new(modified_params)
     github_token = session[:github_token]
+    user = User.find(session[:user_id])
 
     respond_to do |format|
       if @assignment.save
-        @assignment.assignment_repo_init(github_token)
+        @assignment.assignment_repo_init(github_token, user)
         format.html { redirect_to @assignment, notice: "Assignment was successfully created." }
         format.json { render :show, status: :created, location: @assignment }
       else

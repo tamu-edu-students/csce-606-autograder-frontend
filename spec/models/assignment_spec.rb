@@ -196,6 +196,7 @@ RSpec.describe Assignment, type: :model do
       # mock
       allow(assignment).to receive(:create_repo_from_template)
       allow(assignment).to receive(:clone_repo_to_local)
+      allow(assignment).to receive(:init_run_autograder_script)
 
       stub_request(:post, "https://api.github.com/repos/AutograderFrontend/test-repository/keys")
         .with(
@@ -213,10 +214,11 @@ RSpec.describe Assignment, type: :model do
         allow(Octokit::Client).to receive(:new).and_return(client)
         allow(client).to receive(:add_deploy_key).and_return(true)
 
-      assignment.send(:assignment_repo_init, 'test_token')
+      assignment.send(:assignment_repo_init, 'test_token', user)
 
       expect(assignment).to have_received(:create_repo_from_template)
       expect(assignment).to have_received(:clone_repo_to_local)
+      expect(assignment).to have_received(:init_run_autograder_script)
     end
   end
 
@@ -420,6 +422,51 @@ RSpec.describe Assignment, type: :model do
         expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
         expect(assignment.upload_file_to_repo(file, path, github_token)).to be false
       end
+    end
+  end
+
+  describe '#init_run_autograder_script' do
+    let(:local_repository_path) { 'assignment-path' }
+    let(:files_to_submit) { { 'files_to_submit' => [ 'main.cpp', 'helper.cpp', 'helper.h' ] } }
+    let(:run_autograder_path) { File.join(local_repository_path, 'run_autograder') }
+    let(:original_file_content) do
+      <<~SCRIPT
+        #!/usr/bin/env bash
+
+        # TODO: list files that student must submit
+        files_to_submit=( code.cpp code_tests.cpp code_interactive.cpp code.h )
+
+        #
+        # Provided by instructor
+        #
+        provided_files=( )
+      SCRIPT
+    end
+    let(:expected_file_content) do
+      <<~SCRIPT
+        #!/usr/bin/env bash
+
+        # TODO: list files that student must submit
+        files_to_submit=( main.cpp helper.cpp helper.h )
+
+        #
+        # Provided by instructor
+        #
+        provided_files=( )
+      SCRIPT
+    end
+    before do
+      allow(assignment).to receive(:local_repository_path).and_return(local_repository_path)
+      allow(assignment).to receive(:files_to_submit).and_return(files_to_submit)
+      allow(File).to receive(:join).with(local_repository_path, 'run_autograder').and_return(run_autograder_path)
+      allow(File).to receive(:read).with(run_autograder_path).and_return(original_file_content)
+      allow(File).to receive(:open).with(run_autograder_path, 'w').and_yield(double('file', write: true))
+      allow(assignment).to receive(:push_changes_to_github).and_return(true)
+    end
+
+    it 'replaces files_to_submit with new files in the file content' do
+      assignment.send(:init_run_autograder_script, 'test_token', user)
+      expect(File.read(run_autograder_path)).to eq(expected_file_content)
     end
   end
 end
