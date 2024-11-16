@@ -119,6 +119,7 @@ export default class extends Controller {
       }
     });
 
+    
     document.getElementById('includeDropdownMenuButton').addEventListener('click', (e) => {
       this.toggleDropdown(e);
       const arrow = document.getElementById("dropdownArrow");
@@ -128,50 +129,66 @@ export default class extends Controller {
     document.addEventListener("click", (e) => this.hideallDropdowns(e));
   }
 
-  renderTree(nodes, container) {
+  renderTree(nodes, container, isRadio = false) {
     if (!container) return;
-
-    const ul = document.createElement('ul');
-    ul.className = 'file-tree';
-
+  
+    const ul = document.createElement("ul");
+    ul.className = "file-tree";
+  
     nodes.forEach(node => {
-      const li = document.createElement('li');
+      const li = document.createElement("li");
       li.className = `${node.type} ${node.type}-item`;
-
-      if (node.type === 'dir') {
-        const span = document.createElement('span');
-        span.className = 'directory-name';
+  
+      if (node.type === "dir") {
+        const span = document.createElement("span");
+        span.className = "directory-name";
         span.textContent = node.name;
         span.dataset.path = node.path;
-        span.addEventListener('click', (e) => this.toggleDirectory(e));
-
+        span.addEventListener("click", e => this.toggleDirectory(e));
+  
         li.appendChild(span);
-
+  
         if (node.children && node.children.length > 0) {
-          const childContainer = document.createElement('ul');
-          childContainer.className = 'directory-children';
-          childContainer.style.display = 'none';
-          this.renderTree(node.children, childContainer);
+          const childContainer = document.createElement("ul");
+          childContainer.className = "directory-children";
+          childContainer.style.display = "none";
+  
+          // Recursively render child nodes
+          this.renderTree(node.children, childContainer, isRadio);
           li.appendChild(childContainer);
         }
       } else {
-        const label = document.createElement('label');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'file-checkbox';
-        checkbox.dataset.filePath = node.path;
-        checkbox.addEventListener('change', (e) => this.updateField(e));
-
-        label.appendChild(checkbox);
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+  
+        // Determine if this dropdown should use radio buttons
+        if (["input-file-tree-dropdown", "output-file-tree-dropdown", "main-path-file-tree-dropdown"].includes(container.id)) {
+          isRadio = true;
+        }
+  
+        input.type = isRadio ? "radio" : "checkbox";
+        input.className = isRadio ? "file-radio" : "file-checkbox";
+        input.dataset.filePath = node.path;
+  
+        // Assign a unique name to group radio buttons for this dropdown
+        if (isRadio) {
+          input.name = container.id + "-radio-group";
+        }
+  
+        input.addEventListener("change", e => this.updateField(e));
+  
+        label.appendChild(input);
         label.appendChild(document.createTextNode(node.name));
         li.appendChild(label);
       }
-
+  
       ul.appendChild(li);
     });
-
+  
     container.appendChild(ul);
   }
+  
+  
 
   toggleDirectory(event) {
     event.preventDefault();
@@ -235,58 +252,73 @@ export default class extends Controller {
 
   updateField(event) {
     console.log("Update field called");
-    const checkbox = event.target;
-    const dropdown = checkbox.closest('.dropdown-content');
-
+    const input = event.target; // Get the radio/checkbox input
+    const dropdown = input.closest('.dropdown-content'); // Find the parent dropdown
+  
     if (!dropdown) {
-        console.log("Dropdown not found");
-        return;
+      console.log("Dropdown not found");
+      return;
     }
-
+  
     const field = this.getFieldForDropdown(dropdown);
-
+  
     if (!field) {
-        console.log("Field not found");
-        return;
+      console.log("Field not found");
+      return;
     }
-
-    // Get existing paths as array
-    let selectedPaths;
-    if (field.id === "test_block_source_paths" || 
-        field.id === "test_block_mem_error_paths" || 
-        field.id === "test_block_compile_paths" ||
-        field.id === "test_include") {
+  
+    // Handle radio buttons for single selection
+    if (input.type === "radio") {
+      // Update the field value with the selected file path
+      field.value = input.dataset.filePath;
+  
+      // Deselect all other radio buttons in the dropdown
+      const radios = dropdown.querySelectorAll(".file-radio");
+      radios.forEach(radio => {
+        if (radio !== input) {
+          radio.checked = false;
+        }
+      });
+    } else {
+      // Handle checkboxes for multiple selections
+      let selectedPaths;
+      if (field.id === "test_block_source_paths" || 
+          field.id === "test_block_mem_error_paths" || 
+          field.id === "test_block_compile_paths" ||
+          field.id === "test_include") {
         // For these fields, keep them as arrays
         selectedPaths = field.value ? JSON.parse(field.value) : [];
-    } else {
+      } else {
         // For other fields, keep the previous logic
         selectedPaths = field.value ? field.value.split(',').map(path => path.trim()) : [];
-    }
-
-    if (checkbox.checked) {
+      }
+  
+      if (input.checked) {
         // Add new path if it's not already in the array
-        if (!selectedPaths.includes(checkbox.dataset.filePath)) {
-            selectedPaths.push(checkbox.dataset.filePath);
+        if (!selectedPaths.includes(input.dataset.filePath)) {
+          selectedPaths.push(input.dataset.filePath);
         }
-    } else {
+      } else {
         // Remove path if unchecked
-        selectedPaths = selectedPaths.filter(path => path !== checkbox.dataset.filePath);
-    }
-
-    // Update field value based on field type
-    if (field.id === "test_block_source_paths" || 
-        field.id === "test_block_mem_error_paths" || 
-        field.id === "test_block_compile_paths" ||
-        field.id === "test_include") {
+        selectedPaths = selectedPaths.filter(path => path !== input.dataset.filePath);
+      }
+  
+      // Update field value based on field type
+      if (field.id === "test_block_source_paths" || 
+          field.id === "test_block_mem_error_paths" || 
+          field.id === "test_block_compile_paths" ||
+          field.id === "test_include") {
         // Store it as a JSON string for the input field
         field.value = JSON.stringify(selectedPaths);
-    } else {
+      } else {
         // Join paths into a comma-separated string for other fields
         field.value = selectedPaths.join(', ');
+      }
     }
-
+  
     console.log("Field updated with:", field.value);
   }
+  
 
 
 
