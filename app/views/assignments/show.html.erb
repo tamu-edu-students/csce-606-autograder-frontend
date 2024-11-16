@@ -18,7 +18,8 @@
           <span class="plus-button">&#43;</span> <!-- Unicode plus sign -->
         </button>
       <% end %>
-          <div data-points-target="totalPoints" class="mb-2">Total Points: <span>0</span></div>
+          <div data-points-target="totalPoints" id="totalPoints" class="mb-2">Total Points: <span><%= @total_points %></span></div>
+
 
         <div class="test-grouping-list" data-controller="test_grouping_card">
           <% if @test_groupings.present? %>
