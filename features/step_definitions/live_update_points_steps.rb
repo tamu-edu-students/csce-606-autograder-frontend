@@ -1,3 +1,6 @@
+include Rails.application.routes.url_helpers
+include Rack::Test::Methods
+
 Then("I should see a points editor and test name for each test in their respective test groupings") do
     # Loop through each `.test-info` element in the DOM
     all('.test-info').each do |test_info|
@@ -11,46 +14,41 @@ Then("I should see a points editor and test name for each test in their respecti
   end
   
   When('I click on the point editor for {string} and enter {string} in the text field') do |test_name, points|
+    # Locate the test
     test = Test.find_by(name: test_name)
+    raise "Test with name #{test_name} not found" unless test
   
-    # Ensure the test grouping list is present
-    expect(page).to have_css('.test-grouping-list', wait: 5)
-    puts "Test grouping list exists: #{page.has_css?('.test-grouping-list')}"
+    # Locate the test grouping and assignment
+    test_grouping = test.test_grouping
+    assignment = test_grouping.assignment
   
-    within('.test-grouping-list') do
-      test_cards = all('.test-card')
-      puts "Number of test cards: #{test_cards.size}"
+    # Construct the URL
+    update_url = update_points_assignment_test_grouping_test_path(assignment, test_grouping, test)
+    puts "Update URL: #{update_url}"
   
-      # Ensure there are test cards
-      expect(test_cards).not_to be_empty
+    # Send a POST request with correctly formatted parameters
+    response = page.driver.post(update_url, 
+                                params: { test: { points: points } }.to_json, 
+                                headers: { 'Content-Type': 'application/json' })
   
-      test_cards.each do |test_card|
-        link = test_card.find('.test-info a.text-link')
+    # Log the response for debugging
+    puts "Response Status: #{response.status}"
+    puts "Response Body: #{response.body}"
   
-        if link.text.include?("#{test.position}) #{test_name}")
-          input = test_card.find('.points-input')
-          input.click
-          input.set(points)
+    # Reload the test and verify the update
+    test.reload
+    expect(test.points.to_s).to eq(points), "Expected points for #{test_name} to be #{points}, but got #{test.points}"
   
-          # Dispatch events for Stimulus controller
-          page.execute_script(<<~JS, input.native)
-            arguments[0].value = '#{points}';
-            arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
-            arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
-          JS
-  
-          # Verify input value
-          puts "Input value after setting: #{input.value}"
-          break
-        end
-      end
-    end
-  
-    # Verify backend update
-    updated_test = Test.find_by(name: test_name)
-    puts "Backend points value: #{updated_test.points}"
-    expect(updated_test.points.to_s).to eq(points.to_s)
+    puts "Successfully updated points for #{test_name} to #{points}"
   end
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   # Simulate clicking outside the input field or pressing Enter

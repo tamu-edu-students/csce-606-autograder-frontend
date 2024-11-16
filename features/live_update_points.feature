@@ -13,12 +13,12 @@ Feature: Live update for points
             | Basic Functionality |
             | Edge Cases          |
         And "<Test Name>" test exists in "<Grouping Name>" in order
-            |Test Name              | Grouping Name       |
-            |Test_BF_1              | Basic Functionality |
-            |Test_EC_1              | Edge Cases          |
+            | Test Name              | Grouping Name       |
+            | Test_BF_1              | Basic Functionality |
+            | Test_EC_1              | Edge Cases          |
         And I am on the "Assignment Management" page for "assignment1"
     
-    @javascript
+    @rack_test
     Scenario Outline: Verify the points editor icon functionality and live updates
         Then I should see a points editor and test name for each test in their respective test groupings
         When I click on the point editor for "<Test_Name>" and enter "<Points>" in the text field

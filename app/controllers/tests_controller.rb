@@ -106,6 +106,7 @@ class TestsController < ApplicationController
   end
 
   def update_points
+    Rails.logger.info "Received params: #{params.inspect}"
     @assignment = Assignment.find(params[:assignment_id])
     @test_grouping = TestGrouping.find(params[:test_grouping_id])
     @test = Test.find(params[:id])
