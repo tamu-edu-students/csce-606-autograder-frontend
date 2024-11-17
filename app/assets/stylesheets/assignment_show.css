@@ -180,3 +180,49 @@
   display: flex;
   align-items: center;
 }
+
+.test-card {
+  margin-bottom: 5px;
+}
+
+.test-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.text-link {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+  max-width: calc(100% - 100px); 
+}
+
+.points-editor {
+  flex-shrink: 0;
+  width: 95px; 
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.inline-form {
+  display: flex;
+  align-items: center;
+}
+
+.points-input {
+  width: 40px;
+  height: 25px;
+  text-align: right;
+  padding: 2px 5px;
+  margin-right: 2px;
+}
+
+.points-label {
+  width: 30px;
+  text-align: left;
+}

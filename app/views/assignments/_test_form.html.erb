@@ -88,25 +88,11 @@
                 { class: "form-control", id: "test_target", include_blank: 'Select a target file' } %>
                <% end %>
             </div>
-
-            <div class="col-md-4 d-flex align-items-center">
-                    <div class="form-check me-3"> 
-                        <%= form.check_box :show_output, class: "form-check-input" %>
-                        <%= form.label :show_output, class: "form-check-label" %>
-                    </div>
-                    <div class="form-check">
-                        <%= form.check_box :skip, class: "form-check-input" %>
-                        <%= form.label :skip, class: "form-check-label" %>
-                    </div>
-            </div>
-          </div>
-
-          <div class="row mb-3">
-              <div class="col-md-12">
+            <div class="col-md-4">
                 <%= form.label :include, 'Provided Files' %>
                 <!-- Button to open the dropdown -->
                 <div id="include-file-dropdown" class="dropdown">
-                  <button class="btn btn-secondary" type="button" id="includeDropdownMenuButton" aria-expanded="false">
+                  <button class="btn btn-secondary w-100" type="button" id="includeDropdownMenuButton" aria-expanded="false">
                     Please select files to be provided
                     <span id="dropdownArrow" class="arrow">▼</span>
                   </button>
@@ -121,9 +107,9 @@
                 <%= form.hidden_field :include, value: (@test.include || []).to_json, id: 'test_include', class: 'file-selection-field' %>
               </div>
           </div>
-
+          <br>
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-3">
               <%= form.label :timeout, "Timeout" %>
               <div class="input-group">
                 <%= form.number_field :timeout, class: "form-control", placeholder: "0 seconds", id: "timeout-field", style: "max-width: 100px; text-align: right;" %>
@@ -131,13 +117,24 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-3">
               <%= form.label :visibility, 'Gradescope Visibility' %>
               <%= form.select :visibility, options_for_select(
                 [['Hidden', 'hidden'],
                 ['After Due Date', 'after_due_date'],
                 ['After Published', 'after_published'],
                 ['Visible', 'visible']], @test.visibility || 'visible'), class: "form-control" %>
+            </div>
+
+            <div class="col-md-4 mt-3">
+              <div class="form-check form-check-inline">
+                <%= form.check_box :show_output, class: "form-check-input", id: "show-output-checkbox" %>
+                <%= form.label :show_output, "Show Output", class: "form-check-label", for: "show-output-checkbox" %>
+              </div>
+              <div class="form-check form-check-inline ms-3">
+                <%= form.check_box :skip, class: "form-check-input", id: "skip-checkbox" %>
+                <%= form.label :skip, "Skip", class: "form-check-label", for: "skip-checkbox" %>
+              </div>
             </div>
           </div>
 

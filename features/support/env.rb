@@ -31,6 +31,7 @@ Capybara.javascript_driver = :chrome
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: 'chromedriver.storage.googleapis.com')
 
+
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
 # your application behaves in the production environment, where an error page will
@@ -65,6 +66,15 @@ Before('not @javascript') do
   Cucumber::Rails::Database.before_non_js
   DatabaseCleaner.strategy = :transaction
 end
+
+Before('@rack_test') do
+  Capybara.current_driver = :rack_test
+end
+
+After('@rack_test') do
+  Capybara.use_default_driver
+end
+
 
 Before do
   DatabaseCleaner.start
