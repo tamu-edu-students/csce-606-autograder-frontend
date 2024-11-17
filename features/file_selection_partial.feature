@@ -21,4 +21,4 @@ Feature: File Selection from Nested Dropdown in Test Form
       | tests/c++/io_tests    | input.txt      |
       | tests/c++/io_tests    | output.txt     |
       | tests/c++/io_tests    | readme.txt     |
-    Then the include field should display the selected file paths
+    Then the "include" field should display the selected file paths
