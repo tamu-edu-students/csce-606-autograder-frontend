@@ -78,7 +78,6 @@ And(/^I select the following files in "(.*)" dropdown:$/) do |dropdown_type, tab
       page.execute_script("arguments[0].checked = true; arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", checkbox.native)
     end
   end
-  
 end
 
 
@@ -89,17 +88,17 @@ Then('the {string} field should display the selected file paths') do |field|
 
   # Determine the appropriate field based on the field name
   curr_field = case field
-               when "include"
+  when "include"
                  find("#test_include", visible: :all)
-               when "source_path"
+  when "source_path"
                  find("#test_block_source_paths", visible: :all)
-               when "compile_path"
+  when "compile_path"
                  find("#test_block_compile_paths", visible: :all)
-               when "memory_errors"
+  when "memory_errors"
                 find('#test_block_mem_error_paths', visible: :all)
-               else
+  else
                  raise "Unknown field: #{field}"
-               end
+  end
 
   # Get paths from selected checkboxes
   selected_file_paths = checkboxes.select(&:checked?).map { |checkbox| checkbox['data-file-path'] }
