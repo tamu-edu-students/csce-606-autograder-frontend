@@ -1,93 +1,93 @@
 
 Then("Clicking on {string} should render {string} type dropdown") do |field, selector |
   case field
-    when "include"
+  when "include"
       find('#include-file-dropdown').click
       expect(page).to have_css('#include-file-tree-dropdown', visible: true, wait: 5)
 
       within('#include-file-tree-dropdown') do
         file_items = all('li.file.file-item')
         expect(file_items).not_to be_empty
-        
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type=#{selector}]", visible: true)
         end
       end
-    when "source_path"
+  when "source_path"
       find('#test_block_source_paths').click
       expect(page).to have_css('#source-path-file-tree-dropdown', visible: true, wait: 5)
 
       within('#source-path-file-tree-dropdown') do
         file_items = all('li.file.file-item')
-        expect(file_items).not_to be_empty 
-        
+        expect(file_items).not_to be_empty
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type=#{selector}]", visible: true)
         end
       end
-    when "main_path"
+  when "main_path"
       find('#test_block_main_path').click
       expect(page).to have_css('#main-path-file-tree-dropdown', visible: true, wait: 5)
 
       within('#main-path-file-tree-dropdown') do
         file_items = all('li.file.file-item')
-        expect(file_items).not_to be_empty 
-        
+        expect(file_items).not_to be_empty
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type=#{selector}]", visible: true)
         end
       end
-    when "compile_path"
+  when "compile_path"
       find('#test_block_compile_paths').click
       expect(page).to have_css('#compile-file-tree-dropdown', visible: true, wait: 5)
 
       within('#compile-file-tree-dropdown') do
         file_items = all('li.file.file-item')
         expect(file_items).not_to be_empty
-        
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type=#{selector}]", visible: true)
         end
       end
-    when "memory_errors_path"
+  when "memory_errors_path"
       find('#test_block_mem_error_paths').click
       expect(page).to have_css('#mem-error-file-tree-dropdown', visible: true, wait: 5)
 
       within('#mem-error-file-tree-dropdown') do
         file_items = all('li.file.file-item')
         expect(file_items).not_to be_empty # Ensure file items exist
-        
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type=#{selector}]", visible: true)
         end
       end
-    when "input_path"
+  when "input_path"
       find('#test_block_input_path').click
       expect(page).to have_css('#input-file-tree-dropdown', visible: true, wait: 5)
 
       within('#input-file-tree-dropdown') do
         file_items = all('li.file.file-item')
         expect(file_items).not_to be_empty # Ensure file items exist
-        
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type=#{selector}]", visible: true)
         end
       end
-    when "output_path"
+  when "output_path"
       find('#test_block_output_path').click
       expect(page).to have_css('#output-file-tree-dropdown', visible: true, wait: 5)
 
       within('#output-file-tree-dropdown') do
         file_items = all('li.file.file-item')
         expect(file_items).not_to be_empty # Ensure file items exist
-        
+
         file_items.each do |file_item|
           expect(file_item).to have_css("input[type='radio']", visible: true)
         end
       end
-    else
+  else
       click_link link
-    end
+  end
 end
 
 When("We click on {string}") do |field|
