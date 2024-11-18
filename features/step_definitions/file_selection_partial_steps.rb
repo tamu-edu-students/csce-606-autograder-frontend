@@ -62,6 +62,7 @@ And(/^I select the following files in "(.*)" dropdown:$/) do |dropdown_type, tab
   when "compile" then "compile-file-tree-dropdown"
   when "source-paths" then "source-path-file-tree-dropdown"
   when "memory_errors" then "mem-error-file-tree-dropdown"
+  when "input_path" then "input-file-tree-dropdown"
   else raise "Unknown dropdown type: #{dropdown_type}"
   end
 
@@ -81,28 +82,42 @@ end
 
 
 
-Then(/^the include field should display the selected file paths$/) do
+Then('the {string} field should display the selected file paths') do |field|
   checkboxes = all("input[type='checkbox'][data-file-path]", visible: :all)
   sleep 0.5
 
-  include_field = find("#test_include", visible: :all)
+  # Determine the appropriate field based on the field name
+  curr_field = case field
+  when "include"
+                 find("#test_include", visible: :all)
+  when "source_path"
+                 find("#test_block_source_paths", visible: :all)
+  when "compile_path"
+                 find("#test_block_compile_paths", visible: :all)
+  when "memory_errors"
+                find('#test_block_mem_error_paths', visible: :all)
+  else
+                 raise "Unknown field: #{field}"
+  end
 
   # Get paths from selected checkboxes
   selected_file_paths = checkboxes.select(&:checked?).map { |checkbox| checkbox['data-file-path'] }
 
   # Parse the displayed file paths to remove extra quotes or brackets
   displayed_file_paths = begin
-    JSON.parse(include_field.value)  # Attempt to parse JSON format if present
+    JSON.parse(curr_field.value) # Attempt to parse JSON format if present
   rescue JSON::ParserError
-    include_field.value.split(",").map { |path| path.gsub(/["\[\]]/, '').strip }
+    curr_field.value.split(",").map { |path| path.gsub(/["\[\]]/, '').strip }
   end
 
   expect(displayed_file_paths).to match_array(selected_file_paths)
 end
 
+
 Then('the Includes attribute for {string} should be saved as a list of selected file paths') do |test_name|
   # Find the test case by its name
   test = Test.find_by(name: test_name)
+
 
   # Ensure the test exists
   expect(test).not_to be_nil
@@ -115,6 +130,7 @@ Then('the Includes attribute for {string} should be saved as a list of selected 
 
   # Parse the include attribute if it's stored as a JSON string
   actual_files = JSON.parse(test.include || '[]')
+
 
   # Verify the include attribute matches the expected list
   expect(actual_files).to match_array(expected_files)
