@@ -214,7 +214,7 @@ private
   
     # Add include parameter based on database adapter
     if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
-      base_params.push({ include: [] })  # Array for PostgreSQL
+      base_params.push(:include)  # Array for PostgreSQL
     else
       base_params.push(:include)         # Single value for SQLite
     end
