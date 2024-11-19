@@ -188,12 +188,11 @@ private
 
   # Only allow a list of trusted parameters through.
   def test_params
-    params.require(:test).permit(
+    base_params = [    # Change to array of permitted parameters
       :name,
       :points,
       :test_type,
       :target,
-      :include,
       :position,
       :show_output,
       :skip,
@@ -201,16 +200,25 @@ private
       :visibility,
       :assignment_id,
       :test_grouping_id,
-      test_block: [
+      { test_block: [  # Nested hash for test_block
         :main_path,
         :code,
         :input_path,
         :output_path,
         :script_path,
-        approved_includes: [],
-        file_paths: [],
-        source_paths: []
-      ]
-    )
+        { approved_includes: [] },
+        { file_paths: [] },
+        { source_paths: [] }
+      ]}
+    ]
+  
+    # Add include parameter based on database adapter
+    if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
+      base_params.push({ include: [] })  # Array for PostgreSQL
+    else
+      base_params.push(:include)         # Single value for SQLite
+    end
+  
+    params.require(:test).permit(*base_params)
   end
 end
