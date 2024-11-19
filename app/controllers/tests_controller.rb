@@ -34,7 +34,9 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @test = Test.new(test_params)
+    modified_params = test_params.dup
+    modified_params[:include] = include_string_to_jsonb(test_params[:include])[:include]
+    @test = Test.new(modified_params)
     set_test_grouping_id
     @assignment = Assignment.find(params[:assignment_id])
     @test.assignment = @assignment
@@ -216,9 +218,22 @@ private
     if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
       base_params.push(:include)  # Array for PostgreSQL
     else
-      base_params.push(:include)         # Single value for SQLite
+      base_params.push(:include)  # Single value for SQLite
     end
   
     params.require(:test).permit(*base_params)
+  end
+
+  def include_string_to_jsonb(include_string)
+    return { include: [] } if include_string.nil? || include_string.empty?
+
+    # Parse the string as JSON if it is a JSON-formatted array
+    begin
+      parsed_array = JSON.parse(include_string)
+      { include: parsed_array.is_a?(Array) ? parsed_array : [] }
+    rescue JSON::ParserError
+      # Fallback if not a valid JSON
+      { include: include_string.split(",").map(&:strip).reject(&:empty?) }
+    end  
   end
 end

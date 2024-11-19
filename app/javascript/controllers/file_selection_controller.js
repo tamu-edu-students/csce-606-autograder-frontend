@@ -31,7 +31,7 @@ export default class extends Controller {
     this.inputPathField = document.getElementById("test_block_input_path");
     this.outputPathField = document.getElementById("test_block_output_path");
     this.scriptPathField = document.getElementById("test_block_script_path");
-
+  
     // Dropdown containers
     this.targetDropdown = document.getElementById("target-file-tree-dropdown");
     this.includeDropdown = document.getElementById("include-file-tree-dropdown");
@@ -42,30 +42,30 @@ export default class extends Controller {
     this.inputPathDropdown = document.getElementById("input-file-tree-dropdown");
     this.outputPathDropdown = document.getElementById("output-file-tree-dropdown");
     this.scriptPathDropdown = document.getElementById("script-file-tree-dropdown");
-
+  
     // Render initial trees if available
     if (this.hasTreeValue) {
       [this.targetDropdown, this.includeDropdown, this.mainPathDropdown,
        this.sourcePathDropdown, this.compilePathDropdown, this.memoryErrorsPathDropdown,
        this.inputPathDropdown, this.outputPathDropdown, this.scriptPathDropdown
       ].forEach(dropdown => {
-        // Check if the dropdown is already populated with the tree
         if (dropdown) {
           dropdown.innerHTML = ""; // Clear existing nodes if you want to refresh
-
-          // Render the tree
           this.renderTree(this.treeValue, dropdown);
         }
       });
     }
-
-    this.includeDropdown.style.display = "none";
-
+  
+    // Adjust includeDropdown visibility
+    if (this.includeDropdown) {
+      this.includeDropdown.style.display = "none";
+    }
+  
     this.setupEventListeners();
-
+  
     // Initialize dropdown content based on selected paths
     this.initializeCheckedBoxes(this.targetField, this.targetDropdown);
-    this.initializeCheckedBoxes(this.includeField, this.includeDropdown);
+    this.initializeIncludeField(); // Separate handling for includeField
     this.initializeCheckedBoxes(this.sourcePathField, this.sourcePathDropdown);
     this.initializeCheckedBoxes(this.compilePathField, this.compilePathDropdown);
     this.initializeCheckedBoxes(this.memoryErrorsPathField, this.memoryErrorsPathDropdown);
@@ -73,8 +73,28 @@ export default class extends Controller {
     this.initializeRadioButtons(this.mainPathField, this.mainPathDropdown);
     this.initializeRadioButtons(this.inputPathField, this.inputPathDropdown);
     this.initializeRadioButtons(this.outputPathField, this.outputPathDropdown);
-    
   }
+
+  initializeIncludeField() {
+    if (!this.includeField || !this.includeDropdown) return;
+  
+    let selectedPaths;
+    try {
+      selectedPaths = JSON.parse(this.includeField.value || "[]");
+      if (!Array.isArray(selectedPaths)) {
+        selectedPaths = [];
+      }
+    } catch (e) {
+      selectedPaths = [];
+    }
+  
+    const checkboxes = this.includeDropdown.querySelectorAll('.file-checkbox');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = selectedPaths.includes(checkbox.dataset.filePath);
+    });
+  }
+  
+  
 
   initializeRadioButtons(field, dropdown) {
     if (field && field.value && dropdown) {
@@ -110,6 +130,7 @@ export default class extends Controller {
       
       const checkboxes = dropdown.querySelectorAll('.file-checkbox');
       checkboxes.forEach(checkbox => {
+        console.log(selectedPaths)
         if (selectedPaths.includes(checkbox.dataset.filePath)) {
           checkbox.checked = true;
         }
@@ -263,7 +284,6 @@ export default class extends Controller {
 
 
   updateField(event) {
-    console.log("Update field called");
     const input = event.target; // Get the radio/checkbox input
     const dropdown = input.closest('.dropdown-content'); // Find the parent dropdown
   
@@ -279,57 +299,36 @@ export default class extends Controller {
       return;
     }
   
-    // Handle radio buttons for single selection
-    if (input.type === "radio") {
-      // Update the field value with the selected file path
-      field.value = input.dataset.filePath;
-  
-      // Deselect all other radio buttons in the dropdown
-      const radios = dropdown.querySelectorAll(".file-radio");
-      radios.forEach(radio => {
-        if (radio !== input) {
-          radio.checked = false;
-        }
-      });
-    } else {
-      // Handle checkboxes for multiple selections
-      let selectedPaths;
-      if (field.id === "test_block_source_paths" || 
-          field.id === "test_block_mem_error_paths" || 
-          field.id === "test_block_compile_paths" ||
-          field.id === "test_include") {
-        // For these fields, keep them as arrays
-        selectedPaths = field.value ? JSON.parse(field.value) : [];
-      } else {
-        // For other fields, keep the previous logic
-        selectedPaths = field.value ? field.value.split(',').map(path => path.trim()) : [];
+    // Parse current field value as an array
+    let selectedPaths = [];
+    try {
+      selectedPaths = JSON.parse(field.value || "[]");
+      if (!Array.isArray(selectedPaths)) {
+        selectedPaths = [];
       }
-  
-      if (input.checked) {
-        // Add new path if it's not already in the array
-        if (!selectedPaths.includes(input.dataset.filePath)) {
-          selectedPaths.push(input.dataset.filePath);
-        }
-      } else {
-        // Remove path if unchecked
-        selectedPaths = selectedPaths.filter(path => path !== input.dataset.filePath);
-      }
-  
-      // Update field value based on field type
-      if (field.id === "test_block_source_paths" || 
-          field.id === "test_block_mem_error_paths" || 
-          field.id === "test_block_compile_paths" ||
-          field.id === "test_include") {
-        // Store it as a JSON string for the input field
-        field.value = JSON.stringify(selectedPaths);
-      } else {
-        // Join paths into a comma-separated string for other fields
-        field.value = selectedPaths.join(', ');
-      }
+    } catch (e) {
+      selectedPaths = [];
     }
   
-    console.log("Field updated with:", field.value);
+    // Add or remove file paths based on checkbox state
+    if (input.checked) {
+      if (!selectedPaths.includes(input.dataset.filePath)) {
+        selectedPaths.push(input.dataset.filePath);
+      }
+    } else {
+      selectedPaths = selectedPaths.filter(path => path !== input.dataset.filePath);
+    }
+  
+    // Update the field value directly as a JSON array
+    if (field.id === "test_include") {
+      field.value = JSON.stringify(selectedPaths); // Store as a JSON array
+    } else {
+      field.value = selectedPaths.join(', '); // Store as a comma-separated string for other fields
+    }
+  
+    console.log(`Updated field (${field.id}) with value:`, field.value);
   }
+  
   
 
 
