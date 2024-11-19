@@ -64,9 +64,11 @@ class TestsController < ApplicationController
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
     set_test_grouping_id
+    modified_params = test_params.dup
+    modified_params[:include] = include_string_to_jsonb(test_params[:include])[:include]
 
     respond_to do |format|
-      if @test.update(test_params)
+      if @test.update(modified_params)
         current_user, auth_token = current_user_and_token
         update_remote(current_user, auth_token)
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully updated." }
