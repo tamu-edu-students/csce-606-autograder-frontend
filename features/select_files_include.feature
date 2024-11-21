@@ -25,7 +25,7 @@ Feature: Select files for Includes attribute
       | tests/c++/io_tests    | input.txt      |
       | tests/c++/io_tests    | output.txt     |
       | tests/c++/io_tests    | readme.txt     |
-    Then the include field should display the selected file paths
+    Then the "include" field should display the selected file paths
 
   @javascript
   Scenario: Verifying Include files are correctly saved
