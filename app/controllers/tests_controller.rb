@@ -213,16 +213,16 @@ private
         { approved_includes: [] },
         { file_paths: [] },
         { source_paths: [] }
-      ]}
+      ] }
     ]
-  
+
     # Add include parameter based on database adapter
-    if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
+    if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
       base_params.push(:include)  # Array for PostgreSQL
     else
       base_params.push(:include)  # Single value for SQLite
     end
-  
+
     params.require(:test).permit(*base_params)
   end
 
@@ -236,6 +236,6 @@ private
     rescue JSON::ParserError
       # Fallback if not a valid JSON
       { include: include_string.split(",").map(&:strip).reject(&:empty?) }
-    end  
+    end
   end
 end

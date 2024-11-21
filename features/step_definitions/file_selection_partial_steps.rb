@@ -111,7 +111,7 @@ Then('the {string} field should display the selected file paths') do |field|
   end
 
   # expect(displayed_file_paths).to match_array(selected_file_paths)
-  
+
   # Check that at least one selected file path is displayed
   expect(displayed_file_paths & selected_file_paths).not_to be_empty,
     "Expected at least one of the selected file paths (#{selected_file_paths}) to be displayed, but got #{displayed_file_paths}."
@@ -137,4 +137,3 @@ Then('the Includes attribute for {string} should be saved as a list of selected 
   # Verify the include attribute matches the expected list
   expect(actual_files).to match_array(expected_files)
 end
-
