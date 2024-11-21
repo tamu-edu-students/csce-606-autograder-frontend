@@ -118,7 +118,6 @@ Then('the Includes attribute for {string} should be saved as a list of selected 
   # Find the test case by its name
   test = Test.find_by(name: test_name)
 
-
   # Ensure the test exists
   expect(test).not_to be_nil
 
@@ -128,10 +127,10 @@ Then('the Includes attribute for {string} should be saved as a list of selected 
     'tests/c++/io_tests/input.txt'
   ]
 
-  # Parse the include attribute if it's stored as a JSON string
-  actual_files = JSON.parse(test.include || '[]')
-
+  # Use test.include directly if it’s already an array
+  actual_files = test.include || []
 
   # Verify the include attribute matches the expected list
   expect(actual_files).to match_array(expected_files)
 end
+

@@ -286,9 +286,10 @@ class Assignment < ActiveRecord::Base
     # optional_attrs += "@include: #{include_list}\n"
 
     if test.include.present?
-      includes = test.include.is_a?(Array) ? test.include : []
-      optional_attrs += "@include: #{includes.join(' ')}\n"
+      include_list = test.include.is_a?(Array) ? test.include : []
+      optional_attrs += "@include: #{include_list.join(' ')}\n" unless include_list.empty?
     end
+  
 
     optional_attrs += "@number: #{test.position}\n" if test.position.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
