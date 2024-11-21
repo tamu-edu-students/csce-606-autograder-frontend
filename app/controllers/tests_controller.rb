@@ -204,6 +204,7 @@ private
       :visibility,
       :assignment_id,
       :test_grouping_id,
+      :include,
       { test_block: [  # Nested hash for test_block
         :main_path,
         :code,
@@ -215,13 +216,6 @@ private
         { source_paths: [] }
       ] }
     ]
-
-    # Add include parameter based on database adapter
-    if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
-      base_params.push(:include)  # Array for PostgreSQL
-    else
-      base_params.push(:include)  # Single value for SQLite
-    end
 
     params.require(:test).permit(*base_params)
   end
