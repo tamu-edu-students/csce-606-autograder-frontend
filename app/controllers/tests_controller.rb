@@ -34,7 +34,9 @@ class TestsController < ApplicationController
 
   # POST /tests or /tests.json
   def create
-    @test = Test.new(test_params)
+    modified_params = test_params.dup
+    modified_params[:include] = include_string_to_jsonb(test_params[:include])[:include]
+    @test = Test.new(modified_params)
     set_test_grouping_id
     @assignment = Assignment.find(params[:assignment_id])
     @test.assignment = @assignment
@@ -62,9 +64,11 @@ class TestsController < ApplicationController
     @assignment = Assignment.find(params[:assignment_id])  # Ensure @assignment is set
     @test = @assignment.tests.find(params[:id])            # Find the test within the assignment
     set_test_grouping_id
+    modified_params = test_params.dup
+    modified_params[:include] = include_string_to_jsonb(test_params[:include])[:include]
 
     respond_to do |format|
-      if @test.update(test_params)
+      if @test.update(modified_params)
         current_user, auth_token = current_user_and_token
         update_remote(current_user, auth_token)
         format.html { redirect_to assignment_path(@assignment), notice: "Test was successfully updated." }
@@ -188,12 +192,11 @@ private
 
   # Only allow a list of trusted parameters through.
   def test_params
-    params.require(:test).permit(
+    base_params = [    # Change to array of permitted parameters
       :name,
       :points,
       :test_type,
       :target,
-      :include,
       :position,
       :show_output,
       :skip,
@@ -201,16 +204,32 @@ private
       :visibility,
       :assignment_id,
       :test_grouping_id,
-      test_block: [
+      :include,
+      { test_block: [  # Nested hash for test_block
         :main_path,
         :code,
         :input_path,
         :output_path,
         :script_path,
-        approved_includes: [],
-        file_paths: [],
-        source_paths: []
-      ]
-    )
+        { approved_includes: [] },
+        { file_paths: [] },
+        { source_paths: [] }
+      ] }
+    ]
+
+    params.require(:test).permit(*base_params)
+  end
+
+  def include_string_to_jsonb(include_string)
+    return { include: [] } if include_string.nil? || include_string.empty?
+
+    # Parse the string as JSON if it is a JSON-formatted array
+    begin
+      parsed_array = JSON.parse(include_string)
+      { include: parsed_array.is_a?(Array) ? parsed_array : [] }
+    rescue JSON::ParserError
+      # Fallback if not a valid JSON
+      { include: include_string.split(",").map(&:strip).reject(&:empty?) }
+    end
   end
 end
