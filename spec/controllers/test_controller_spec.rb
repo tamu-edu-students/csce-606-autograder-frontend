@@ -231,4 +231,33 @@ RSpec.describe TestsController, type: :controller do
       end
     end
   end
+
+  describe "#include_string_to_jsonb" do
+  it "returns an empty include array for nil input" do
+    result = controller.send(:include_string_to_jsonb, nil)
+    expect(result).to eq({ include: [] })
+  end
+
+  it "returns an empty include array for empty string input" do
+    result = controller.send(:include_string_to_jsonb, "")
+    expect(result).to eq({ include: [] })
+  end
+
+  it "parses a valid JSON-formatted string into an array" do
+    result = controller.send(:include_string_to_jsonb, '["file1.h", "file2.h"]')
+    expect(result).to eq({ include: ["file1.h", "file2.h"] })
+  end
+
+  it "handles invalid JSON and splits the string by commas" do
+    result = controller.send(:include_string_to_jsonb, "file1.h, file2.h, file3.h")
+    expect(result).to eq({ include: ["file1.h", "file2.h", "file3.h"] })
+  end
+
+  it "removes empty entries from a comma-separated string" do
+    result = controller.send(:include_string_to_jsonb, "file1.h, , file2.h,,file3.h")
+    expect(result).to eq({ include: ["file1.h", "file2.h", "file3.h"] })
+  end
+end
+
+
 end
