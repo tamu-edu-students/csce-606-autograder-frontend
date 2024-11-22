@@ -85,7 +85,7 @@
   end
 
   When(/^I move "(.*)" group to after "(.*)" group$/) do |source_group, target_group|
-    # Fetch the IDs of the source and target groupings from the database
+  # Fetch the IDs of the source and target groupings from the database
   source_grouping = TestGrouping.find_by(name: source_group)
   target_grouping = TestGrouping.find_by(name: target_group)
 
@@ -108,11 +108,10 @@
   # Reload the data to ensure the order is updated
   TestGrouping.order(:position).reload
   end
-  
+
   Then(/^I should see "(.*)" group after "(.*)" group$/) do |source_group, target_group|
-    
   end
-  
+
 
 
 

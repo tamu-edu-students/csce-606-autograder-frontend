@@ -647,7 +647,7 @@ RSpec.describe AssignmentsController, type: :controller do
 
     context 'with valid grouping_ids' do
       it 'updates the positions of the test groupings' do
-        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [grouping3.id, grouping1.id, grouping2.id] }
+        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [ grouping3.id, grouping1.id, grouping2.id ] }
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq("message" => "Order updated successfully")
@@ -661,7 +661,7 @@ RSpec.describe AssignmentsController, type: :controller do
 
     context 'with an invalid grouping_id' do
       it 'returns a not found error for invalid grouping_id' do
-        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [grouping1.id, grouping2.id, -1] }
+        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [ grouping1.id, grouping2.id, -1 ] }
 
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to eq("error" => "Couldn't find TestGrouping with 'id'=-1")
@@ -674,12 +674,11 @@ RSpec.describe AssignmentsController, type: :controller do
       end
 
       it 'returns an unprocessable entity error' do
-        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [grouping1.id, grouping2.id] }
+        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [ grouping1.id, grouping2.id ] }
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)).to eq("error" => "Unexpected error")
       end
     end
   end
-
 end
