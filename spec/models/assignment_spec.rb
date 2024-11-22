@@ -20,6 +20,7 @@ RSpec.describe Assignment, type: :model do
     allow(ENV).to receive(:[]).with('GITHUB_TEMPLATE_REPO_URL').and_return('philipritchey/autograded-assignment-template')
     allow(ENV).to receive(:[]).with('GITHUB_COURSE_ORGANIZATION').and_return('AutograderFrontend')
     allow(ENV).to receive(:[]).with('ASSIGNMENTS_BASE_PATH').and_return('assignment-repos/')
+    allow(ENV).to receive(:[]).with('GITHUB_AUTOGRADER_CORE_REPO').and_return('autograder-core')
   end
 
   after do
@@ -198,21 +199,10 @@ RSpec.describe Assignment, type: :model do
       allow(assignment).to receive(:clone_repo_to_local)
       allow(assignment).to receive(:init_run_autograder_script)
 
-      stub_request(:post, "https://api.github.com/repos/AutograderFrontend/test-repository/keys")
-        .with(
-          body: "{\"read_only\":true,\"title\":\"Gradescope Deploy Key\",\"key\":\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGh73qHRllHRCY+yNjmBAkHEnZajBpGGDaAdhf6sNzUp gradescope\\n\"}",
-          headers: {
-            'Accept'=>'application/vnd.github.v3+json',
-            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization'=>'token test_token',
-            'Content-Type'=>'application/json',
-            'User-Agent'=>'Octokit Ruby Gem 9.1.0'
-          }
-        ).to_return(status: 200, body: "", headers: {})
-
-        client = double('OctokitClient')
-        allow(Octokit::Client).to receive(:new).and_return(client)
-        allow(client).to receive(:add_deploy_key).and_return(true)
+      client = double('OctokitClient')
+      allow(Octokit::Client).to receive(:new).and_return(client)
+      expect(client).to receive(:add_deploy_key).with('AutograderFrontend/test-repository', 'Gradescope Deploy Key', anything, read_only: true)
+      expect(client).to receive(:add_deploy_key).with('AutograderFrontend/autograder-core', 'Gradescope Deploy Key', anything, read_only: true)
 
       assignment.send(:assignment_repo_init, 'test_token', user)
 
