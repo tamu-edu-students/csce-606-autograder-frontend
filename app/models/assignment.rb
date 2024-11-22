@@ -68,6 +68,7 @@ class Assignment < ActiveRecord::Base
   def assignment_repo_init(github_token, user)
     create_repo_from_template(github_token)
     clone_repo_to_local(github_token)
+    # Create and add deploy key for the assignment repository
     create_and_add_deploy_key(
       github_token,
       self.repository_name,
@@ -75,12 +76,12 @@ class Assignment < ActiveRecord::Base
       self.local_repository_path,
       false
     )
-    # TODO: This should add the key to the auto-grader core repo
+    # Create and add deploy key for autograder core
     create_and_add_deploy_key(
       github_token,
-      self.repository_name,
+      ENV["GITHUB_AUTOGRADER_CORE_REPO"],
       ENV["GITHUB_COURSE_ORGANIZATION"],
-      self.local_repository_path,
+      ENV["ASSIGNMENTS_BASE_PATH"],
       true
     )
     init_run_autograder_script(user, github_token)
