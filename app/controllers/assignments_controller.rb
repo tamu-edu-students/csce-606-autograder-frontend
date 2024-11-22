@@ -18,6 +18,21 @@ class AssignmentsController < ApplicationController
     render json: { status: "success" }
   end
 
+  def update_test_grouping_order
+    test_grouping_ids = params[:grouping_ids]
+
+    # Update positions based on the order received
+    test_grouping_ids.each_with_index do |id, index|
+      TestGrouping.find(id).update(position: index + 1)
+    end
+
+    render json: { message: "Order updated successfully" }, status: :ok
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { error: e.message }, status: :not_found
+  rescue StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
   # GET /assignments or /assignments.json
   def index
     @assignments = Assignment.all

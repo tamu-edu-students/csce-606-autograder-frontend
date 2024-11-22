@@ -21,19 +21,19 @@
           <div data-points-target="totalPoints" id="totalPoints" class="mb-2">Total Points: <span><%= @total_points %></span></div>
 
 
-        <div class="test-grouping-list" data-controller="test_grouping_card">
+        <div class="test-grouping-list" id="test-grouping-list-<%= @assignment.id %>" data-controller="test_grouping_card" data-assignment-id="<%= @assignment.id %>">
           <% if @test_groupings.present? %>
             <% @test_groupings.sort_by(&:position).each do | test_grouping | %>
-              <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card mb-3">
-              <div class="test-grouping-title d-flex justify-content-between align-items-center"
-              data-action="click->test-grouping-#toggleTestGrouping"
-              data-test-grouping-id="<%= test_grouping.id %>">
-                  <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
-                  <span><%= "#{test_grouping.position}) #{test_grouping.name}" %></span>
+              <div id="test-grouping-card-<%= test_grouping.id %>" class="test-grouping-card mb-3" data-id="<%= test_grouping.id %>">
+                <div class="test-grouping-title d-flex justify-content-between align-items-center"
+                data-action="click->test-grouping-#toggleTestGrouping"
+                data-test-grouping-id="<%= test_grouping.id %>">
+                    <!-- Otherwise, show the test grouping name and the edit/delete buttons -->
+                    <span><%= "#{test_grouping.position}) #{test_grouping.name}" %></span>
 
-                  <!-- Delete Button -->
-                  <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button btn btn-sm btn-outline-danger" %>
-              </div>
+                    <!-- Delete Button -->
+                    <%= button_to "x", assignment_test_grouping_path(@assignment, test_grouping), method: :delete, remote: true, format: :js, class: "delete-button btn btn-sm btn-outline-danger" %>
+                </div>
 
               <div class="test-list mt-2 ps-2 border-start" 
                 id="test-list-<%= test_grouping.id %>" 
