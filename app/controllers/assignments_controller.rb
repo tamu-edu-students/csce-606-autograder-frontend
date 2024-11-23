@@ -1,5 +1,6 @@
 class AssignmentsController < ApplicationController
   include CollaboratorPermissions
+  include TestsHelper
   before_action :require_login
   before_action :set_assignment, only: %i[ show edit update destroy ]
 
@@ -10,13 +11,21 @@ class AssignmentsController < ApplicationController
 
   def update_order
     test_ids = params[:test_ids]
+    user, auth_token = current_user_and_token
+  
     test_ids.each_with_index do |id, index|
       test = Test.find(id)
-      test.update(position: index + 1)
-      Rails.logger.info("Updated Test ID: #{id} to Position: #{index + 1}")
+      if test.update(position: index + 1)
+        test.assignment.generate_tests_file
+        test.assignment.push_changes_to_github(user, auth_token)
+      end
     end
+  
     render json: { status: "success" }
   end
+  
+
+  
 
   def update_test_grouping_order
     test_grouping_ids = params[:grouping_ids]
@@ -27,6 +36,7 @@ class AssignmentsController < ApplicationController
     end
 
     render json: { message: "Order updated successfully" }, status: :ok
+
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found
   rescue StandardError => e
