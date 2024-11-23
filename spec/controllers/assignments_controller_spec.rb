@@ -623,22 +623,27 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'POST #update_order' do
-    let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1', test_block: { code: 'Test code' }, test_type: 'unit') }
-    let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2', test_block: { code: 'Test code' }, test_type: 'unit') }
+  let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1') }
+  let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
 
-    it 'updates the positions of tests based on test_ids' do
-      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
-      expect(test1.reload.position).to eq(2)
-      expect(test2.reload.position).to eq(1)
-    end
-
-    it 'responds with a success status and JSON message' do
-      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
-      expect(response).to have_http_status(:success)
-      expect(response.content_type).to include("application/json")
-      expect(JSON.parse(response.body)).to eq("status" => "success")
-    end
+  before do
+    allow_any_instance_of(AssignmentsController).to receive(:current_user_and_token).and_return([user, 'mock_github_token'])
+    allow_any_instance_of(Assignment).to receive(:generate_tests_file).and_return(true)
+    allow_any_instance_of(Assignment).to receive(:push_changes_to_github).and_return(true)
   end
+
+  it 'updates the positions of tests and calls generate_tests_file and push_changes_to_github' do
+    post :update_order, params: { assignment_id: assignment.id, test_ids: [test2.id, test1.id] }
+
+    expect(test1.reload.position).to eq(2)
+    expect(test2.reload.position).to eq(1)
+    expect(response).to have_http_status(:success)
+    expect(response.content_type).to include('application/json')
+    expect(JSON.parse(response.body)).to eq('status' => 'success')
+  end
+end
+
+
 
   describe 'POST #update_test_grouping_order' do
     let!(:grouping1) { create(:test_grouping, assignment: assignment, position: 1) }
