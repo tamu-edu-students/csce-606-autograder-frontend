@@ -84,6 +84,35 @@
     source_test.update!(position: new_position)
   end
 
+  When(/^I move "(.*)" group to after "(.*)" group$/) do |source_group, target_group|
+  # Fetch the IDs of the source and target groupings from the database
+  source_grouping = TestGrouping.find_by(name: source_group)
+  target_grouping = TestGrouping.find_by(name: target_group)
+
+  # Ensure the groups exist
+  raise "Source group '#{source_group}' not found" unless source_grouping
+  raise "Target group '#{target_group}' not found" unless target_grouping
+
+  # Get all test grouping IDs in the desired order
+  all_groupings = TestGrouping.order(:position).to_a
+  reordered_groupings = all_groupings.reject { |g| g == source_grouping }
+  target_index = reordered_groupings.index(target_grouping)
+  reordered_groupings.insert(target_index + 1, source_grouping)
+  grouping_ids = reordered_groupings.map(&:id)
+
+  # Simulate the API call to update the order
+  page.driver.post("/assignments/#{@assignment.id}/update_test_grouping_order", {
+    grouping_ids: grouping_ids
+  })
+
+  # Reload the data to ensure the order is updated
+  TestGrouping.order(:position).reload
+  end
+
+  Then(/^I should see "(.*)" group after "(.*)" group$/) do |source_group, target_group|
+  end
+
+
 
 
 

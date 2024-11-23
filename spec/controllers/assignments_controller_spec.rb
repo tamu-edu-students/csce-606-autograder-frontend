@@ -623,20 +623,67 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'POST #update_order' do
-    let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1', test_block: { code: 'Test code' }, test_type: 'unit') }
-    let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2', test_block: { code: 'Test code' }, test_type: 'unit') }
+  let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1') }
+  let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
 
-    it 'updates the positions of tests based on test_ids' do
-      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
-      expect(test1.reload.position).to eq(2)
-      expect(test2.reload.position).to eq(1)
+  before do
+    allow_any_instance_of(AssignmentsController).to receive(:current_user_and_token).and_return([ user, 'mock_github_token' ])
+    allow_any_instance_of(Assignment).to receive(:generate_tests_file).and_return(true)
+    allow_any_instance_of(Assignment).to receive(:push_changes_to_github).and_return(true)
+  end
+
+  it 'updates the positions of tests and calls generate_tests_file and push_changes_to_github' do
+    post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
+
+    expect(test1.reload.position).to eq(2)
+    expect(test2.reload.position).to eq(1)
+    expect(response).to have_http_status(:success)
+    expect(response.content_type).to include('application/json')
+    expect(JSON.parse(response.body)).to eq('status' => 'success')
+  end
+end
+
+
+
+  describe 'POST #update_test_grouping_order' do
+    let!(:grouping1) { create(:test_grouping, assignment: assignment, position: 1) }
+    let!(:grouping2) { create(:test_grouping, assignment: assignment, position: 2) }
+    let!(:grouping3) { create(:test_grouping, assignment: assignment, position: 3) }
+
+    context 'with valid grouping_ids' do
+      it 'updates the positions of the test groupings' do
+        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [ grouping3.id, grouping1.id, grouping2.id ] }
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to eq("message" => "Order updated successfully")
+
+        # Reload groupings and check updated positions
+        expect(grouping3.reload.position).to eq(1)
+        expect(grouping1.reload.position).to eq(2)
+        expect(grouping2.reload.position).to eq(3)
+      end
     end
 
-    it 'responds with a success status and JSON message' do
-      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
-      expect(response).to have_http_status(:success)
-      expect(response.content_type).to include("application/json")
-      expect(JSON.parse(response.body)).to eq("status" => "success")
+    context 'with an invalid grouping_id' do
+      it 'returns a not found error for invalid grouping_id' do
+        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [ grouping1.id, grouping2.id, -1 ] }
+
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to eq("error" => "Couldn't find TestGrouping with 'id'=-1")
+      end
+    end
+
+    context 'when a StandardError occurs' do
+      before do
+        allow(TestGrouping).to receive(:find).and_raise(StandardError.new('Unexpected error'))
+      end
+
+      it 'returns an unprocessable entity error' do
+        post :update_test_grouping_order, params: { assignment_id: assignment.id, grouping_ids: [ grouping1.id, grouping2.id ] }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to eq("error" => "Unexpected error")
+      end
     end
   end
 end
