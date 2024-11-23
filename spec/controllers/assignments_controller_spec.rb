@@ -627,13 +627,13 @@ RSpec.describe AssignmentsController, type: :controller do
   let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2') }
 
   before do
-    allow_any_instance_of(AssignmentsController).to receive(:current_user_and_token).and_return([user, 'mock_github_token'])
+    allow_any_instance_of(AssignmentsController).to receive(:current_user_and_token).and_return([ user, 'mock_github_token' ])
     allow_any_instance_of(Assignment).to receive(:generate_tests_file).and_return(true)
     allow_any_instance_of(Assignment).to receive(:push_changes_to_github).and_return(true)
   end
 
   it 'updates the positions of tests and calls generate_tests_file and push_changes_to_github' do
-    post :update_order, params: { assignment_id: assignment.id, test_ids: [test2.id, test1.id] }
+    post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
 
     expect(test1.reload.position).to eq(2)
     expect(test2.reload.position).to eq(1)

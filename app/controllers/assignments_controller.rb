@@ -12,7 +12,7 @@ class AssignmentsController < ApplicationController
   def update_order
     test_ids = params[:test_ids]
     user, auth_token = current_user_and_token
-  
+
     test_ids.each_with_index do |id, index|
       test = Test.find(id)
       if test.update(position: index + 1)
@@ -20,12 +20,12 @@ class AssignmentsController < ApplicationController
         test.assignment.push_changes_to_github(user, auth_token)
       end
     end
-  
+
     render json: { status: "success" }
   end
-  
 
-  
+
+
 
   def update_test_grouping_order
     test_grouping_ids = params[:grouping_ids]
