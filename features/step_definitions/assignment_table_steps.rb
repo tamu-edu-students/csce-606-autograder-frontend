@@ -1,6 +1,5 @@
 When('I click on {string} link') do |repository_name|
   @assignment = Assignment.find_or_create_by!(repository_name: repository_name)
-  FileItem = Struct.new(:name, :path, :type, :children)
   stub_request(:get, "https://api.github.com/repos/AutograderFrontend/#{@assignment.repository_name}/contents/tests/c++")
   .with(
     headers: {
