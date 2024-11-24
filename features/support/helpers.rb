@@ -93,3 +93,5 @@ def check_test_block(type)
     raise "Unknown test type: #{type}"
   end
 end
+
+FileItem = Struct.new(:name, :path, :type, :children)
