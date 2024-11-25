@@ -459,4 +459,122 @@ RSpec.describe Assignment, type: :model do
       expect(File.read(run_autograder_path)).to eq(expected_file_content)
     end
   end
+
+  describe '#generate_and_rename_zip' do
+    let(:assignment) { create(:assignment, repository_name: 'test-repository', assignment_name: 'Test Assignment') }
+    let(:github_token) { 'fake_github_token' }
+    let(:local_repository_path) { '/fake/local/repo/path' }
+    let(:original_zip_file) { File.join(local_repository_path, 'autograder.zip') }
+    let(:new_zip_filename) { "#{assignment.assignment_name}.zip" }
+    let(:renamed_zip_path) { File.join(local_repository_path, new_zip_filename) }
+
+    before do
+      allow(assignment).to receive(:local_repository_path).and_return(local_repository_path)
+    end
+
+    context 'when the local repository does not exist' do
+      before do
+        allow(Dir).to receive(:exist?).with(local_repository_path).and_return(false)
+        allow(assignment).to receive(:clone_repo_to_local).with(github_token)
+      end
+
+      it 'clones the repository to the local path' do
+        expect(assignment).to receive(:clone_repo_to_local).with(github_token)
+        assignment.generate_and_rename_zip(github_token)
+      end
+    end
+
+    context 'when the local repository exists' do
+      before do
+        allow(Dir).to receive(:exist?).with(local_repository_path).and_return(true)
+      end
+
+      it 'does not clone the repository again' do
+        expect(assignment).not_to receive(:clone_repo_to_local)
+        assignment.generate_and_rename_zip(github_token)
+      end
+    end
+
+    context 'when the local repository path is missing after cloning' do
+      before do
+        allow(Dir).to receive(:exist?).with(local_repository_path).and_return(false)
+        allow(assignment).to receive(:clone_repo_to_local).with(github_token)
+      end
+
+      it 'returns nil' do
+        result = assignment.generate_and_rename_zip(github_token)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when the repository exists and make command is executed' do
+      before do
+        allow(Dir).to receive(:exist?).with(local_repository_path).and_return(true)
+        allow(Dir).to receive(:chdir).with(local_repository_path).and_yield
+        allow_any_instance_of(Object).to receive(:system).with('make').and_return(true)
+      end
+
+      context 'when the ZIP file is successfully generated and renamed' do
+        before do
+          allow(File).to receive(:exist?).with(original_zip_file).and_return(true)
+          allow(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
+          allow(File).to receive(:exist?).with(renamed_zip_path).and_return(true)
+        end
+
+        it 'renames the ZIP file' do
+          expect(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
+          assignment.generate_and_rename_zip(github_token)
+        end
+
+        it 'returns the renamed ZIP file path' do
+          result = assignment.generate_and_rename_zip(github_token)
+          expect(result).to eq(renamed_zip_path)
+        end
+      end
+
+      context 'when the ZIP file is not found after generation' do
+        before do
+          allow(File).to receive(:exist?).with(original_zip_file).and_return(false)
+          allow(File).to receive(:exist?).with(renamed_zip_path).and_return(false)
+        end
+
+        it 'does not rename the ZIP file' do
+          expect(File).not_to receive(:rename)
+          assignment.generate_and_rename_zip(github_token)
+        end
+
+        it 'returns nil' do
+          result = assignment.generate_and_rename_zip(github_token)
+          expect(result).to be_nil
+        end
+      end
+
+      context 'when the renamed ZIP file is not found' do
+        before do
+          allow(File).to receive(:exist?).with(original_zip_file).and_return(true)
+          allow(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
+          allow(File).to receive(:exist?).with(renamed_zip_path).and_return(false)
+        end
+
+        it 'returns nil' do
+          result = assignment.generate_and_rename_zip(github_token)
+          expect(result).to be_nil
+        end
+      end
+    end
+
+    context 'when an error occurs' do
+      before do
+        allow(Dir).to receive(:exist?).with(local_repository_path).and_return(true)
+        allow(Dir).to receive(:chdir).with(local_repository_path).and_raise(StandardError, 'An error occurred')
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'logs the error and returns nil' do
+        result = assignment.generate_and_rename_zip(github_token)
+        expect(result).to be_nil
+        expect(Rails.logger).to have_received(:error).with('Error generating ZIP: An error occurred')
+      end
+    end
+  end
 end

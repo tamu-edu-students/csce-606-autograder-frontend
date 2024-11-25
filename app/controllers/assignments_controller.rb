@@ -117,36 +117,20 @@ class AssignmentsController < ApplicationController
   end
 
   def create_and_download_zip
-    # Find the assignment
     assignment = Assignment.find(params[:id])
 
-    # Use Dir.chdir to change directory and run make
-    Dir.chdir(assignment.local_repository_path) do
-      system("make")
-    end
+    # Perform the zip creation and fetch the file path
+    zip_file_path = assignment.generate_and_rename_zip(session[:github_token])
 
-    # The original zip file created by the make command
-    original_zip_file = File.join(assignment.local_repository_path, "autograder.zip")
-
-    # The new zip file name based on the assignment name
-    new_zip_filename = "#{assignment.assignment_name}.zip"
-
-    # Rename the autograder.zip to assignment_name.zip
-    renamed_zip_path = File.join(assignment.local_repository_path, new_zip_filename)
-
-    if File.exist?(original_zip_file)
-      File.rename(original_zip_file, renamed_zip_path)
-    end
-
-    # Check if the renamed ZIP file exists and send it as a download
-    if File.exist?(renamed_zip_path)
-      send_file renamed_zip_path, type: "application/zip", disposition: "attachment", filename: new_zip_filename
-      flash[:notice] = "#{new_zip_filename} downloaded successfully"
+    if zip_file_path
+      send_file zip_file_path, type: "application/zip", disposition: "attachment", filename: File.basename(zip_file_path)
+      flash[:notice] = "#{File.basename(zip_file_path)} downloaded successfully"
     else
       flash[:alert] = "Could not export assignment"
       redirect_to assignment_path(params[:id])
     end
   end
+
 
   def search
     if params[:query].present?

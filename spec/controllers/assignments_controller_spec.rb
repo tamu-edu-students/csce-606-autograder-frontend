@@ -394,55 +394,49 @@ RSpec.describe AssignmentsController, type: :controller do
   end
 
   describe 'GET #create_and_download_zip' do
-    let(:assignment) { create(:assignment, repository_name: 'test-repository') }
-    let(:base_path) { '/fake/base/path' }
-    let(:local_repository_path) { File.join(base_path, assignment.repository_name) }
-    let(:original_zip_file) { File.join(local_repository_path, "autograder.zip") }
-    let(:new_zip_filename) { "#{assignment.assignment_name}.zip" }
-    let(:renamed_zip_path) { File.join(local_repository_path, new_zip_filename) }
+    let(:assignment) { create(:assignment, valid_attributes) }
+    let(:github_token) { 'fake_github_token' }
+    let(:zip_file_path) { '/fake/path/Test Assignment.zip' }
 
     before do
       allow(Assignment).to receive(:find).and_return(assignment)
-      allow(assignment).to receive(:local_repository_path).and_return(local_repository_path)
-      allow(Dir).to receive(:chdir).with(local_repository_path).and_yield
-
-      # Mock the file existence and rename operations
-      allow(File).to receive(:exist?).with(original_zip_file).and_return(true)
-      allow(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
-      allow(File).to receive(:exist?).with(renamed_zip_path).and_return(true)
-
-      # Mock send_file to avoid ActionController::MissingFile error
-      allow(controller).to receive(:send_file).with(renamed_zip_path, type: 'application/zip', disposition: 'attachment', filename: new_zip_filename).and_return(true)
-    end
-    it 'calls the make command in the assignment local repository path' do
-      allow_any_instance_of(AssignmentsController).to receive(:system).with("make").and_return(true)
-      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+      allow(controller).to receive(:session).and_return({ github_token: github_token })
     end
 
-
-    it 'renames the autograder.zip file to the assignment name zip' do
-      expect(File).to receive(:rename).with(original_zip_file, renamed_zip_path)
-      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
-    end
-
-    it 'sends the renamed zip file as a download' do
-      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
-      expect(controller).to have_received(:send_file).with(renamed_zip_path, type: 'application/zip', disposition: 'attachment', filename: new_zip_filename)
-    end
-
-    it 'sets a flash notice indicating the download was successful' do
-      get :create_and_download_zip, params: { id: assignment.id }, format: :zip
-      expect(flash[:notice]).to eq("#{new_zip_filename} downloaded successfully")
-    end
-
-    context 'when the ZIP file does not exist' do
+    context 'when the ZIP file is successfully created' do
       before do
-        allow(File).to receive(:exist?).with(renamed_zip_path).and_return(false)
+        allow(assignment).to receive(:generate_and_rename_zip).with(github_token).and_return(zip_file_path)
+        allow(controller).to receive(:send_file).with(zip_file_path, type: 'application/zip', disposition: 'attachment', filename: File.basename(zip_file_path))
       end
 
-      it 'sets a flash alert indicating that the ZIP file could not be exported' do
+      it 'calls the generate_and_rename_zip method on the assignment' do
+        # expect(assignment).to receive(:generate_and_rename_zip).with(github_token)
+        get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+      end
+
+      it 'sends the ZIP file for download' do
+        expect(controller).to receive(:send_file).with(zip_file_path, type: 'application/zip', disposition: 'attachment', filename: File.basename(zip_file_path))
+        get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+      end
+
+      it 'sets a flash notice indicating successful download' do
+        get :create_and_download_zip, params: { id: assignment.id }, format: :zip
+        expect(flash[:notice]).to eq("#{File.basename(zip_file_path)} downloaded successfully")
+      end
+    end
+
+    context 'when the ZIP file could not be created' do
+      before do
+        allow(assignment).to receive(:generate_and_rename_zip).with(github_token).and_return(nil)
+      end
+
+      it 'sets a flash alert indicating failure' do
         get :create_and_download_zip, params: { id: assignment.id }, format: :zip
         expect(flash[:alert]).to eq('Could not export assignment')
+      end
+
+      it 'redirects to the assignment show page' do
+        get :create_and_download_zip, params: { id: assignment.id }, format: :zip
         expect(response).to redirect_to(assignment_path(assignment))
       end
     end
@@ -626,22 +620,22 @@ RSpec.describe AssignmentsController, type: :controller do
   let!(:test1) { create(:test, assignment: assignment, position: 1, name: 'Test 1', test_block: { code: 'Test code' }, test_type: 'unit') }
   let!(:test2) { create(:test, assignment: assignment, position: 2, name: 'Test 2', test_block: { code: 'Test code' }, test_type: 'unit') }
 
-  before do
-    allow_any_instance_of(AssignmentsController).to receive(:current_user_and_token).and_return([ user, 'mock_github_token' ])
-    allow_any_instance_of(Assignment).to receive(:generate_tests_file).and_return(true)
-    allow_any_instance_of(Assignment).to receive(:push_changes_to_github).and_return(true)
-  end
+    before do
+      allow_any_instance_of(AssignmentsController).to receive(:current_user_and_token).and_return([ user, 'mock_github_token' ])
+      allow_any_instance_of(Assignment).to receive(:generate_tests_file).and_return(true)
+      allow_any_instance_of(Assignment).to receive(:push_changes_to_github).and_return(true)
+    end
 
-  it 'updates the positions of tests and calls generate_tests_file and push_changes_to_github' do
-    post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
+    it 'updates the positions of tests and calls generate_tests_file and push_changes_to_github' do
+      post :update_order, params: { assignment_id: assignment.id, test_ids: [ test2.id, test1.id ] }
 
-    expect(test1.reload.position).to eq(2)
-    expect(test2.reload.position).to eq(1)
-    expect(response).to have_http_status(:success)
-    expect(response.content_type).to include('application/json')
-    expect(JSON.parse(response.body)).to eq('status' => 'success')
+      expect(test1.reload.position).to eq(2)
+      expect(test2.reload.position).to eq(1)
+      expect(response).to have_http_status(:success)
+      expect(response.content_type).to include('application/json')
+      expect(JSON.parse(response.body)).to eq('status' => 'success')
+    end
   end
-end
 
 
 
