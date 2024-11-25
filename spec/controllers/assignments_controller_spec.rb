@@ -440,7 +440,7 @@ RSpec.describe AssignmentsController, type: :controller do
         expect(response).to redirect_to(assignment_path(assignment))
       end
     end
-  end  
+  end
 
   describe 'build complete tree' do
     describe 'when fetching directory contents is successful' do

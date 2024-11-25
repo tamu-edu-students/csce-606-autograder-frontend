@@ -118,10 +118,10 @@ class AssignmentsController < ApplicationController
 
   def create_and_download_zip
     assignment = Assignment.find(params[:id])
-  
+
     # Perform the zip creation and fetch the file path
     zip_file_path = assignment.generate_and_rename_zip(session[:github_token])
-  
+
     if zip_file_path
       send_file zip_file_path, type: "application/zip", disposition: "attachment", filename: File.basename(zip_file_path)
       flash[:notice] = "#{File.basename(zip_file_path)} downloaded successfully"
@@ -130,7 +130,7 @@ class AssignmentsController < ApplicationController
       redirect_to assignment_path(params[:id])
     end
   end
-  
+
 
   def search
     if params[:query].present?
