@@ -135,6 +135,29 @@ class Assignment < ActiveRecord::Base
     end
   end
 
+  def generate_and_rename_zip(github_token)
+    # Ensure the repository is cloned locally
+    clone_repo_to_local(github_token) unless Dir.exist?(local_repository_path)
+
+    return nil unless Dir.exist?(local_repository_path)
+
+    # Run the `make` command inside the local repository
+    Dir.chdir(local_repository_path) { system("make") }
+
+    original_zip_file = File.join(local_repository_path, "autograder.zip")
+    new_zip_filename = "#{assignment_name}.zip"
+    renamed_zip_path = File.join(local_repository_path, new_zip_filename)
+
+    # Rename the ZIP file if it exists
+    File.rename(original_zip_file, renamed_zip_path) if File.exist?(original_zip_file)
+
+    # Return the path to the renamed file if it exists
+    File.exist?(renamed_zip_path) ? renamed_zip_path : nil
+  rescue StandardError => e
+    Rails.logger.error "Error generating ZIP: #{e.message}"
+    nil
+  end
+
   private
 
   def build_file_tree(contents, client, repo_path)
