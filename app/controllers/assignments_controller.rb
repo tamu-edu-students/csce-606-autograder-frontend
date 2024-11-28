@@ -177,10 +177,10 @@ class AssignmentsController < ApplicationController
     file = params[:file]
     path = params[:path]
     assignment = Assignment.find(params[:id])
-    github_token = session[:github_token]
+    user, auth_token = current_user_and_token
     if file && path && assignment
       # Use your existing GitHub integration logic to upload the file to the specified path
-      success = assignment.upload_file_to_repo(file, path, github_token)
+      success = assignment.upload_file_to_repo(file, path, user, auth_token)
       if success
         render json: { success: true }
       else

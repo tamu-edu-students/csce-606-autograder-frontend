@@ -117,17 +117,24 @@ class Assignment < ActiveRecord::Base
     end
   end
 
-  def upload_file_to_repo(file, path, github_token)
+  def upload_file_to_repo(file, path, user, github_token)
     return false unless file.respond_to?(:read) && path.present?
     client = Octokit::Client.new(access_token: github_token)
     repo = "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{repository_name}"
     file_content = file.read
 
     testsPath = "tests"
-    full_path = "#{testsPath}/#{path}/#{file.original_filename}"
+
+    local_file_path = Rails.root.join(self.local_repository_path, testsPath, path) # Adjust 'local_repo' to your repo location
+    FileUtils.mkdir_p(local_file_path) # Create directories if they don't exist
+  
+    # Save the file locally
+    local_file_path = File.join(local_file_path, file.original_filename)
+    File.open(local_file_path, "w") { |f| f.write(file_content) }
 
     begin
-      client.create_contents(repo, full_path, "Upload #{file.original_filename}", file_content)
+      commit_local_changes(self.local_repository_path, user)
+      sync_to_github(self.local_repository_path)
       true
     rescue Octokit::Error => e
       Rails.logger.error "GitHub API Error: #{e.message}"
