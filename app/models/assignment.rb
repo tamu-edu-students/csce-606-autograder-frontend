@@ -74,16 +74,16 @@ class Assignment < ActiveRecord::Base
       self.repository_name,
       ENV["GITHUB_COURSE_ORGANIZATION"],
       self.local_repository_path,
-      false
-    )
-    # Create and add deploy key for autograder core
-    create_and_add_deploy_key(
-      github_token,
-      ENV["GITHUB_AUTOGRADER_CORE_REPO"],
-      ENV["GITHUB_COURSE_ORGANIZATION"],
-      ENV["ASSIGNMENTS_BASE_PATH"],
       true
     )
+    # # Create and add deploy key for autograder core
+    # create_and_add_deploy_key(
+    #   github_token,
+    #   ENV["GITHUB_AUTOGRADER_CORE_REPO"],
+    #   ENV["GITHUB_COURSE_ORGANIZATION"],
+    #   ENV["ASSIGNMENTS_BASE_PATH"],
+    #   true
+    # )
     init_run_autograder_script(user, github_token)
   end
 
@@ -204,17 +204,18 @@ class Assignment < ActiveRecord::Base
       git.push("origin", "main") # Push to the remote repository's main branch
   end
 
-  def create_and_add_deploy_key(github_token, repository_name, organization, dest_path, autograder_core = false)
+  def create_and_add_deploy_key(github_token, repository_name, organization, dest_path, autograder_core = true)
     # Define paths
-    key_prefix = autograder_core ? "autograder_core_" : ""
     key_dir = File.join(dest_path, "secrets")
-    key_path = File.join(dest_path, "secrets", "#{key_prefix}deploy_key")
+    key_path = File.join(dest_path, "secrets", "deploy_key")
+    key_path2 = File.join(dest_path, "secrets", "autograder_core_deploy_key")
 
     puts "Creating deploy key under #{key_path}"
     FileUtils.mkdir_p(key_dir)
     # Step 1: Generate SSH key
     begin
       stdout, stderr, status = Open3.capture3("ssh-keygen", "-t", "ed25519", "-C", "gradescope", "-f", key_path, "-N", "")
+      stdout2, stderr2, status2 = Open3.capture3("ssh-keygen", "-t", "ed25519", "-C", "gradescope", "-f", key_path2, "-N", "")
 
       if status.success?
         puts "Key generated successfully."
@@ -230,6 +231,7 @@ class Assignment < ActiveRecord::Base
     end
     begin
       public_key_content = File.read("#{key_path}.pub")
+      public_key_content2 = File.read("#{key_path2}.pub")
     rescue StandardError => e
       puts "Failed to read public key: #{e.message}"
       return
@@ -237,6 +239,7 @@ class Assignment < ActiveRecord::Base
     begin
       client = Octokit::Client.new(access_token: github_token)
       client.add_deploy_key("#{organization}/#{repository_name}", "Gradescope Deploy Key", public_key_content, read_only: true)
+      client.add_deploy_key("#{organization}/#{ENV["GITHUB_AUTOGRADER_CORE_REPO"]}", "Gradescope Deploy Key", public_key_content2, read_only: true)
     rescue Octokit::Error => e
       puts "Failed to add deploy key to GitHub: #{e.response_body[:message]}"
       return
