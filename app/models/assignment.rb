@@ -127,7 +127,7 @@ class Assignment < ActiveRecord::Base
 
     local_file_path = Rails.root.join(self.local_repository_path, testsPath, path) # Adjust 'local_repo' to your repo location
     FileUtils.mkdir_p(local_file_path) # Create directories if they don't exist
-  
+
     # Save the file locally
     local_file_path = File.join(local_file_path, file.original_filename)
     File.open(local_file_path, "w") { |f| f.write(file_content) }

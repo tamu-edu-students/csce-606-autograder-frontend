@@ -551,9 +551,9 @@ RSpec.describe AssignmentsController, type: :controller do
     let(:github_token) { 'mock_github_token' }
 
     before do
-      allow(controller).to receive(:current_user_and_token).and_return([user, 'mock_github_token'])
+      allow(controller).to receive(:current_user_and_token).and_return([ user, 'mock_github_token' ])
       allow(controller).to receive(:session).and_return({ user_id: user.id })
-    end 
+    end
 
     context 'when file upload is successful' do
       before do
@@ -561,19 +561,19 @@ RSpec.describe AssignmentsController, type: :controller do
         allow_any_instance_of(Assignment).to receive(:upload_file_to_repo)
         .with(instance_of(ActionDispatch::Http::UploadedFile), 'tests', user, github_token)
         .and_return(true)
-      end 
+      end
 
       it 'calls upload_file_to_repo with correct parameters' do
         expect_any_instance_of(Assignment).to receive(:upload_file_to_repo)
         .with(instance_of(ActionDispatch::Http::UploadedFile), 'tests', user, github_token)
         post :upload_file, params: valid_params
-      end 
+      end
 
       it 'returns a success response with JSON' do
         post :upload_file, params: valid_params
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({ 'success' => true })
-      end 
+      end
     end
 
     context 'when file upload fails' do
@@ -581,7 +581,7 @@ RSpec.describe AssignmentsController, type: :controller do
         allow_any_instance_of(Assignment).to receive(:upload_file_to_repo)
         .with(instance_of(ActionDispatch::Http::UploadedFile), 'tests', user, github_token)
         .and_return(false)
-      end 
+      end
 
       it 'returns an error response with JSON' do
         post :upload_file, params: valid_params

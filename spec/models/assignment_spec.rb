@@ -369,22 +369,22 @@ RSpec.describe Assignment, type: :model do
     let(:github_token) { 'test_github_token' }
     let(:path) { 'folder1' }
     let(:user) { instance_double('User', name: 'testuser', email: 'test-email@test.net') }
-    let(:git) { instance_double('Git::Base') } 
+    let(:git) { instance_double('Git::Base') }
     let(:file_content) { 'Test file content' }
-    
+
     let(:local_repository_path) { 'assignment-repos/test_repo' }
-    
+
     before do
-      allow(file).to receive(:read).and_return(file_content) 
-      allow(FileUtils).to receive(:mkdir_p) 
-      allow(File).to receive(:open)  
+      allow(file).to receive(:read).and_return(file_content)
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(File).to receive(:open)
 
-      
+
       allow(Git).to receive(:init).and_return(git)
-      allow(git).to receive(:config)  
-      allow(git).to receive(:push)  
+      allow(git).to receive(:config)
+      allow(git).to receive(:push)
 
-      
+
       allow(assignment).to receive(:local_repository_path).and_return(local_repository_path)
     end
 
@@ -414,10 +414,10 @@ RSpec.describe Assignment, type: :model do
         allow(git).to receive(:commit).and_raise(Octokit::Error.new(message: "GitHub API Error"))
         allow(Rails.logger).to receive(:error)
       end
-    
+
       it 'logs the error and returns false' do
         expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
-    
+
         expect(assignment.upload_file_to_repo(file, path, user, github_token)).to be false
       end
     end
