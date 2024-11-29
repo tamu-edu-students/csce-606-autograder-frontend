@@ -11,14 +11,21 @@ class AssignmentsController < ApplicationController
 
   def update_order
     test_ids = params[:test_ids]
+    assignment = nil
     user, auth_token = current_user_and_token
 
     test_ids.each_with_index do |id, index|
-      test = Test.find(id)
-      if test.update(position: index + 1)
-        test.assignment.generate_tests_file
-        test.assignment.push_changes_to_github(user, auth_token)
-      end
+      test = Test.find(id).update(position: index + 1)
+    end
+
+    if test_ids.present?
+      first_test_id = test_ids.first
+      test = Test.find(first_test_id) # Find the test grouping
+    
+      # Retrieve the associated assignment
+      assignment = test.assignment
+      assignment.generate_tests_file
+      assignment.push_changes_to_github(user, auth_token)
     end
 
     render json: { status: "success" }
@@ -29,10 +36,22 @@ class AssignmentsController < ApplicationController
 
   def update_test_grouping_order
     test_grouping_ids = params[:grouping_ids]
+    assignment = nil
+    user, auth_token = current_user_and_token
 
     # Update positions based on the order received
     test_grouping_ids.each_with_index do |id, index|
       TestGrouping.find(id).update(position: index + 1)
+    end
+
+    if test_grouping_ids.present?
+      first_grouping_id = test_grouping_ids.first
+      test_grouping = TestGrouping.find(first_grouping_id) # Find the test grouping
+    
+      # Retrieve the associated assignment
+      assignment = test_grouping.assignment
+      assignment.generate_tests_file
+      assignment.push_changes_to_github(user, auth_token)
     end
 
     render json: { message: "Order updated successfully" }, status: :ok

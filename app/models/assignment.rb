@@ -93,8 +93,10 @@ class Assignment < ActiveRecord::Base
 
     file_path = File.join(directory_path, "code.tests")
     File.open(file_path, File::WRONLY | File::CREAT | File::TRUNC) do |file|
-      tests.each do |test|
-        file.puts format_test(test)
+      test_groupings.order(:position).each do |grouping| # Order groupings by position
+        grouping.tests.order(:position).each do |test| # Order tests by position within each grouping
+          file.puts format_test(test)
+        end
       end
     end
   end
@@ -303,7 +305,7 @@ class Assignment < ActiveRecord::Base
     test = "/*\n" +
     "@name: #{test.name}\n" +
     "@points: #{test.points.to_f}\n" +
-    "@test_type: #{test.test_type}\n" +
+    "@type: #{test.test_type}\n" +
     "#{format_optional_attributes(test)}" +
     "*/\n" +
     "<test>\n" +
@@ -325,7 +327,7 @@ class Assignment < ActiveRecord::Base
     end
 
 
-    optional_attrs += "@number: #{test.position}\n" if test.position.present?
+    optional_attrs += "@number: #{test.test_grouping.position}.#{test.position}\n" if test.position.present?
     optional_attrs += "@show_output: #{test.show_output}\n" if test.show_output.present?
     optional_attrs += "@skip: #{test.skip}\n" if test.skip.present?
     optional_attrs += "@timeout: #{test.timeout}\n" if test.timeout.present?
