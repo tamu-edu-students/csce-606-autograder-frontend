@@ -368,52 +368,61 @@ RSpec.describe Assignment, type: :model do
     let(:file) { fixture_file_upload('spec/fixtures/test_file.txt', 'text/plain') }
     let(:github_token) { 'test_github_token' }
     let(:path) { 'folder1' }
-    let(:client) { instance_double(Octokit::Client) }
-    let(:repo_name) { "#{ENV['GITHUB_COURSE_ORGANIZATION']}/#{assignment.repository_name}" }
+    let(:user) { instance_double('User', name: 'testuser', email: 'test-email@test.net') }
+    let(:git) { instance_double('Git::Base') } 
     let(:file_content) { 'Test file content' }
-
+    
+    let(:local_repository_path) { 'assignment-repos/test_repo' }
+    
     before do
-      allow(Octokit::Client).to receive(:new).and_return(client)
-      allow(file).to receive(:read).and_return(file_content)
+      allow(file).to receive(:read).and_return(file_content) 
+      allow(FileUtils).to receive(:mkdir_p) 
+      allow(File).to receive(:open)  
+
+      
+      allow(Git).to receive(:init).and_return(git)
+      allow(git).to receive(:config)  
+      allow(git).to receive(:push)  
+
+      
+      allow(assignment).to receive(:local_repository_path).and_return(local_repository_path)
     end
 
     context 'when the file upload is successful' do
       before do
-        allow(client).to receive(:create_contents).with(
-          repo_name,
-          "tests/#{path}/#{file.original_filename}",
-          "Upload #{file.original_filename}",
-          file_content
-        ).and_return(success: true)
+        allow(git).to receive(:commit).and_return(true)
+        allow(assignment).to receive(:sync_to_github).and_return(true)
       end
 
       it 'uploads the file to the specified path in the GitHub repo' do
-        expect(assignment.upload_file_to_repo(file, path, github_token)).to be true
+        expect(assignment.upload_file_to_repo(file, path, user, github_token)).to be true
       end
     end
 
     context 'when file or path parameters are missing' do
       it 'returns false if file is missing' do
-        expect(assignment.upload_file_to_repo(nil, path, github_token)).to be false
+        expect(assignment.upload_file_to_repo(nil, path, user, github_token)).to be false
       end
 
       it 'returns false if path is missing' do
-        expect(assignment.upload_file_to_repo(file, nil, github_token)).to be false
+        expect(assignment.upload_file_to_repo(file, nil, user, github_token)).to be false
       end
     end
 
     context 'when a GitHub API error occurs' do
       before do
-        allow(client).to receive(:create_contents).and_raise(Octokit::Error.new(message: 'GitHub API Error'))
+        allow(git).to receive(:commit).and_raise(Octokit::Error.new(message: "GitHub API Error"))
         allow(Rails.logger).to receive(:error)
       end
-
+    
       it 'logs the error and returns false' do
         expect(Rails.logger).to receive(:error).with(/GitHub API Error/)
-        expect(assignment.upload_file_to_repo(file, path, github_token)).to be false
+    
+        expect(assignment.upload_file_to_repo(file, path, user, github_token)).to be false
       end
     end
   end
+
 
   describe '#init_run_autograder_script' do
     let(:local_repository_path) { 'assignment-path' }
