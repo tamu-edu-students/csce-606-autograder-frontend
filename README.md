@@ -41,8 +41,6 @@ Lastly, your organization must contain a fork of the **Autograder Core repositor
 4. You may optionally change the repository name, but you must then make sure that your `GITHUB_AUTOGRADER_CORE_REPO` environment variable (discussed below in the Heroku setup documentation) matches the new name.  
 5. Click **“Create fork”**.  
 
----
-
 ### Optional Steps:  
 
 #### Assign an organization role:  
@@ -70,7 +68,6 @@ Lastly, your organization must contain a fork of the **Autograder Core repositor
 5. To delete a role, to the right of the role, click **NUMBER roles**. Then click **Remove**.  
 6. In the pop-up window, click **Remove**.  
 
----
 
 ## Setting up Heroku App:  
 
@@ -110,16 +107,12 @@ heroku login
 ```  
 This will open a browser window for you to log in.  
 
----
-
 #### Create a Heroku Application:  
 In your Rails project directory, create a new Heroku app:  
 ```bash
 heroku create <app-name>
 ```  
 > **NOTE**: If you don’t provide `<app-name>`, Heroku will generate a random name for your app.  
-
----
 
 #### Change the Stack:  
 The application requires Git to be installed in the Heroku environment for functionality like cloning the repository to local.  
@@ -132,11 +125,9 @@ The application requires Git to be installed in the Heroku environment for funct
 - To ensure that Git is installed, execute the command:  
   ```bash
   heroku run "git --version"
-  ```  
+  ```
+
 ---
-
-The document continues as needed...
-
 
 # Test Documentation
 
