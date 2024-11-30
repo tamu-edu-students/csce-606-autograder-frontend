@@ -81,7 +81,7 @@ class Assignment < ActiveRecord::Base
       github_token,
       ENV["GITHUB_AUTOGRADER_CORE_REPO"],
       ENV["GITHUB_COURSE_ORGANIZATION"],
-      ENV["ASSIGNMENTS_BASE_PATH"],
+      self.local_repository_path,
       true
     )
     init_run_autograder_script(user, github_token)
