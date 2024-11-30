@@ -1,7 +1,8 @@
 # Autograder Frontend for CSCE 120 Autograder Core-Compatible Repositories
 
-A management system for creating and maintaining autograders compatible with [Dr. Philip Ritchey's (Texas A&M University Dept. CSE) autograder system](https://github.com/philipritchey/autograder-core).
+A management system for creating and maintaining autograders compatible with [Dr. Philip Ritchey's (Texas A&M University Dept. of CSE) autograder system](https://github.com/philipritchey/autograder-core).
 
+Documentation
 - [Setting up a Deployment](#setting-up-a-deployment)
 - [Setting up a Development Environment](#setting-up-a-development-environment)
 - [Setting up a Testing Environment](#setting-up-a-testing-environment)
@@ -24,7 +25,7 @@ Links
 
 This application will streamline the process of creating auto-graded assignments by providing a GUI to generate new assignment GitHub repositories and interactively create new tests. All the GitHub repositories need to be created under the organization for the course.
 
-## Creating the Organization:  
+## Creating a GitHub Organization:  
 First, you need to have a GitHub account. Go to your GitHub account and follow these steps:  
 1. In the upper-right corner of any page on GitHub, click your profile photo, then click **Settings**.  
 2. In the "Access" section of the sidebar, click **Organizations**.  
