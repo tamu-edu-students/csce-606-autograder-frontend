@@ -1,6 +1,6 @@
 # Autograder Frontend for CSCE 120 Autograder Core-Compatible Repositories
 
-A management system for creating and maintaining autograders compatible with [Dr. Philip Ritchey's (Texas A&M University Dept. of CSE) autograder system](https://github.com/philipritchey/autograder-core).
+A management system for creating and maintaining autograders compatible with [**@philipritchey**](https://github.com/philipritchey/autograder-core/commits?author=philipritchey)'s [autograder system](https://github.com/philipritchey/autograder-core).
 
 Documentation
 - [Setting up a Deployment](#setting-up-a-deployment)
