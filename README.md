@@ -1,4 +1,11 @@
-# Autograder Frontend for CSCE 120 Autograder Core-Compatible Repos
+# Autograder Frontend for CSCE 120 Autograder Core-Compatible Repositories
+
+A management system for creating and maintaining autograders compatible with [Dr. Philip Ritchey's (Texas A&M University Dept. CSE) autograder system](https://github.com/philipritchey/autograder-core).
+
+- [Setting up a Deployment](#setting-up-a-deployment)
+- [Setting up a Development Environment](#setting-up-a-development-environment)
+- [Setting up a Testing Environment](#setting-up-a-testing-environment)
+- [Contact the Development Team](#contact-the-development-team)
 
 Links
 - [Code Climate](https://codeclimate.com/github/tamu-edu-students/csce-606-autograder-frontend)
@@ -495,8 +502,7 @@ It is also a good idea for you to get acquainted with the models and controllers
   Handles user-related operations.  
   Includes actions for viewing users, managing user assignments.
 
-
-# Test Documentation
+# Setting up a Testing Environment
 
 Our application employs a robust testing framework comprising the following tools:
 
@@ -526,4 +532,18 @@ To execute the test suite, use the following command:
 ```bash
 bundle exec rspec && bundle exec cucumber
 ```
+
+# Contact the Development Team 
+
+For any inquiries, concerns, or feedback related to the development, testing, deployment, or usage of this application, please reach out to our team. You may also create a [GitHub Issue](https://github.com/tamu-edu-students/csce-606-autograder-frontend/issues/new).
+
+## Team Contact Information  
+
+- **Md Hasan Al Banna**: [mdhasanalbanna@tamu.edu](mailto:mdhasanalbanna@tamu.edu)  
+- **Riddhi Ghate**: [riddhighate.07@tamu.edu](mailto:riddhighate.07@tamu.edu)  
+- **Ryan Gonzalez (Last Scrum Master)**: [gonzalezpear@tamu.edu](mailto:gonzalezpear@tamu.edu)  
+- **Qinyao Hou**: [yaoya2618@tamu.edu](mailto:yaoya2618@tamu.edu)  
+- **Saksham Mehta**: [saksham19@tamu.edu](mailto:saksham19@tamu.edu)  
+- **Mainak Sarkar**: [masarkar@tamu.edu](mailto:masarkar@tamu.edu)  
+- **Max Smith**: [maxsmith271346@tamu.edu](mailto:maxsmith271346@tamu.edu)  
 
