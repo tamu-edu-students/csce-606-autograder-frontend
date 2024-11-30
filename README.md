@@ -507,16 +507,17 @@ It is also a good idea for you to get acquainted with the models and controllers
 
 Our application employs a robust testing framework comprising the following tools:
 
-- **RSpec**: For developing unit tests.
-- **Cucumber**: For acceptance testing.
-- **Capybara**: Facilitates automated front-end testing.
-- **Selenium/Chrome**: Used as a JavaScript driver for some tests.
-- **WebMock**: Stubs HTTP requests in our test suite.
-- **SimpleCov**: Measures both line and branch coverage to ensure > 90% test coverage.
+- [**RSpec**](https://github.com/rspec/rspec-rails): For developing unit tests.
+- [**Cucumber**](https://github.com/rspec/rspec-rails): For acceptance testing.
+- [**Capybara**](https://github.com/rspec/rspec-rails): Facilitates automated front-end testing.
+- [**Selenium**](https://github.com/rspec/rspec-rails)/[**Chrome**](https://developer.chrome.com/docs/chromedriver/get-started): Used as a JavaScript driver for some tests.
+- [**WebMock**](https://developer.chrome.com/docs/chromedriver/get-started): Stubs HTTP requests in our test suite.
+- [**SimpleCov**](https://developer.chrome.com/docs/chromedriver/get-started): Measures both line and branch coverage to ensure > 90% test coverage.
+- [**RuboCop**](https://github.com/rubocop/rubocop): Static code analysis and code formatting.
 
 ## File Organization
-- **RSpec tests** are located under the `/spec` directory.
-- **Cucumber feature and step files** are located under the `/features` directory.
+- **RSpec tests** are located under the [`/spec`](https://github.com/tamu-edu-students/csce-606-autograder-frontend/tree/main/spec) directory.
+- **Cucumber feature and step files** are located under the [`/features`](https://github.com/tamu-edu-students/csce-606-autograder-frontend/tree/main/features) directory.
 
 ## Step 1: Install Chromium WebDriver
 
