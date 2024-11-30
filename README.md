@@ -13,6 +13,7 @@ Links
 - [Heroku Deployment](https://csce-606-autograder-frontend-9219bed98016.herokuapp.com/)
 - [GitHub Projects](https://github.com/orgs/tamu-edu-students/projects/67/views/2)
 - [Team Working Agreement](https://github.com/tamu-edu-students/csce-606-autograder-frontend/blob/main/team_working_agreement.md)
+- [Presentation and Demonstration Video](https://youtu.be/UnagZO023T8)
 
 ---
 
@@ -245,13 +246,13 @@ heroku config:unset GITHUB_USERNAME
 You can edit config vars from your app’s **Settings** tab in the Heroku Dashboard.
 
 #### Currently, we have the following variables:
-- **GITHUB_TEMPLATE_REPO_URL**: `philipritchey/autograded-assignment-template`  
+- **`GITHUB_TEMPLATE_REPO_URL`**: `philipritchey/autograded-assignment-template`  
   [This is the template based on which the professor will create the assignment.]
-- **GITHUB_COURSE_ORGANIZATION**: `AutograderFrontend`  
+- **`GITHUB_COURSE_ORGANIZATION`**: `AutograderFrontend`  
   (The way code is setup, keep the same organization name even if you are creating a new one.)
-- **ASSIGNMENTS_BASE_PATH**: `/app/assignment-repos/`  
+- **`ASSIGNMENTS_BASE_PATH`**: `/app/assignment-repos/`  
   [This is the base path where the assignments will be cloned.]
-- **GITHUB_AUTOGRADER_CORE_REPO**: `autograder-core`
+- **`GITHUB_AUTOGRADER_CORE_REPO`**: `autograder-core`
 
 ---
 
