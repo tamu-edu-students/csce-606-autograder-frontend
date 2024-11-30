@@ -245,13 +245,13 @@ heroku config:unset GITHUB_USERNAME
 You can edit config vars from your app’s **Settings** tab in the Heroku Dashboard.
 
 #### Currently, we have the following variables:
-- **GITHUB_TEMPLATE_REPO_URL**: `philipritchey/autograded-assignment-template`  
+- **`GITHUB_TEMPLATE_REPO_URL`**: `philipritchey/autograded-assignment-template`  
   [This is the template based on which the professor will create the assignment.]
-- **GITHUB_COURSE_ORGANIZATION**: `AutograderFrontend`  
+- **`GITHUB_COURSE_ORGANIZATION`**: `AutograderFrontend`  
   (The way code is setup, keep the same organization name even if you are creating a new one.)
-- **ASSIGNMENTS_BASE_PATH**: `/app/assignment-repos/`  
+- **`ASSIGNMENTS_BASE_PATH`**: `/app/assignment-repos/`  
   [This is the base path where the assignments will be cloned.]
-- **GITHUB_AUTOGRADER_CORE_REPO**: `autograder-core`
+- **`GITHUB_AUTOGRADER_CORE_REPO`**: `autograder-core`
 
 ---
 
