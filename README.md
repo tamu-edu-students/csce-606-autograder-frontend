@@ -19,13 +19,13 @@ Links
 # Setting up a Deployment
 
 ## Prerequisites:
-- Heroku Account  
-- GitHub Organization  
-- GitHub OAuth Credentials  
+- [Create a GitHub Organization](##create-a-github-organization)
+- [Set up a Heroku App](##set-up-a-heroku-app) 
+- [Connect the Application with GitHub OAuth](##Connect-the-Application-with-GitHub-OAuth)
 
 This application will streamline the process of creating auto-graded assignments by providing a GUI to generate new assignment GitHub repositories and interactively create new tests. All the GitHub repositories need to be created under the organization for the course.
 
-## Creating a GitHub Organization:  
+## Create a GitHub Organization:  
 First, you need to have a GitHub account. Go to your GitHub account and follow these steps:  
 1. In the upper-right corner of any page on GitHub, click your profile photo, then click **Settings**.  
 2. In the "Access" section of the sidebar, click **Organizations**.  
@@ -77,7 +77,7 @@ Lastly, your organization must contain a fork of the **Autograder Core repositor
 6. In the pop-up window, click **Remove**.  
 
 
-## Setting up Heroku App:  
+## Set up a Heroku App:  
 
 ### To create a Heroku application, we first need a Heroku account.  
 
