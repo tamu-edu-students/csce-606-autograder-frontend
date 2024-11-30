@@ -126,8 +126,375 @@ The application requires Git to be installed in the Heroku environment for funct
   ```bash
   heroku run "git --version"
   ```
+## Connecting the database to Heroku App
+
+Once the application is created on Heroku, we need to connect the database to the application.
+
+All apps on Heroku use the PostgreSQL database. For Ruby/Rails apps to do so, they must include the `pg` gem. However, we don't want to use this gem while developing, since we're using SQLite for that.  
+Make sure that the `Gemfile` has the following two configurations:
+
+```ruby
+group :production do
+    gem 'pg' # for Heroku deployment
+end
+
+group :development, :test do
+    gem 'sqlite3'
+end
+```
+
+Run `bundle install` to download the dependencies.  
+Once the gem is installed, the PostgreSQL database plan needs to be attached as an add-on to the application. The database can be added on through the Heroku CLI or Heroku interface.
+
+### Heroku CLI:
+
+For the current load, Heroku’s `essential-0` plan is sufficient. The Essential-0 plan for Heroku Postgres is a production-grade database plan that offers 1GB of storage and a connection limit of 20.  
+Run the following command to add the `essential-0` plan to your Heroku app:
+
+```bash
+heroku addons:create heroku-postgresql:essential-0
+```
+
+This creates a more robust database suitable for production use with increased storage and performance.
+
+### Heroku Interface:
+
+1. **Log In to the Heroku Dashboard**
+   - Go to Heroku Dashboard.
+   - Log in with your Heroku credentials.
+2. **Select your application that we created earlier**
+   - Locate and click on your application in the list of apps on the dashboard.
+3. **Navigate to the Resources Tab**
+   - Once on your app's page, click the **Resources** tab in the top menu.
+   - This tab shows all the add-ons currently attached to your app.
+4. **Search for the Add-on**
+   - In the Add-ons section, type the name of the add-on you want to attach, such as Heroku Postgres.
+   - Select Heroku Postgres from the dropdown list.
+5. **Select the Plan**
+   - A pop-up will appear asking you to choose a plan. Select `Essential-0` (or your desired plan).
+   - Confirm your choice by clicking the Submit or Provision button.
+6. **Verify the Add-on**
+   - After provisioning, the new add-on will appear in the Add-ons section of the Resources tab.
+   - You can click on the add-on’s name to open its management dashboard for further configuration and monitoring.
+
+**NOTE:** The provisioning might take some time, so wait for a few minutes or check the progress on Heroku Dashboard.  
+
+Heroku will automatically set the `DATABASE_URL` environment variable for your app once the add-on is attached.  
+To verify that the environment variable is setup, run the command:
+
+```bash
+heroku config
+```
+
+Look for an entry like this:
+
+```
+DATABASE_URL: postgres://username:password@hostname:port/dbname
+```
+
+To verify on Heroku interface, navigate to the **Settings** tab and click **Reveal Config Vars**. You should see the key `DATABASE_URL` with the correct URL value. (Check the **Edit Config Vars** section to know more.)  
+
+Once the database is attached to the application, we need to configure it for production. To do this, add the following part in `config/database.yml`:
+
+```yaml
+production:
+    <<: *default
+    database: <%= ENV['DATABASE_URL'] %>
+```
+
+## Set Config Variable in Heroku
+
+You can manage config variables via Heroku CLI or through the interface.
+
+#### Using the Heroku CLI:
+The `heroku config` commands of the Heroku CLI make it easy to manage your app’s config vars.
+
+- To view current config values:
+
+```bash
+heroku config
+```
+
+This command shows all current config values. You can also query specific values:
+
+```bash
+heroku config:get GITHUB_USERNAME
+```
+
+- To set a config variable, use:
+
+```bash
+heroku config:set GITHUB_USERNAME=joesmith
+```
+
+- To remove a config variable:
+
+```bash
+heroku config:unset GITHUB_USERNAME
+```
+
+#### Through the Heroku Dashboard Interface:
+You can edit config vars from your app’s **Settings** tab in the Heroku Dashboard.
+
+#### Currently, we have the following variables:
+- **GITHUB_TEMPLATE_REPO_URL**: `philipritchey/autograded-assignment-template`  
+  [This is the template based on which the professor will create the assignment.]
+- **GITHUB_COURSE_ORGANIZATION**: `AutograderFrontend`  
+  (The way code is setup, keep the same organization name even if you are creating a new one.)
+- **ASSIGNMENTS_BASE_PATH**: `/app/assignment-repos/`  
+  [This is the base path where the assignments will be cloned.]
+- **GITHUB_AUTOGRADER_CORE_REPO**: `autograder-core`
 
 ---
+
+## Deploying the Application:
+
+Before deploying the application, there are certain prerequisites:
+
+### A Procfile:
+1. If the Procfile is not present, create a file named “Procfile” with no extension.
+2. Generate a puma config file if it does not exist using the command:
+
+```bash
+bundle exec puma --config config/puma.rb
+```
+
+3. Ensure that the Procfile contains the following line that executes the Puma web server:
+
+```plaintext
+web: bundle exec puma -C config/puma.rb
+```
+
+### Add a Secret Key Base:
+Generate and add the secret key base to the application:
+
+```bash
+heroku config:set SECRET_KEY_BASE=$(rails secret)
+```
+
+### Deployment:
+
+Follow these steps to deploy the application:
+
+1. In your project directory, execute the command `heroku login` to connect to Heroku.
+2. Add Heroku as a remote to your Git repository:
+
+```bash
+heroku git:remote -a <heroku-app-name>
+```
+
+3. Verify that Heroku is added to the remote by executing:
+
+```bash
+git remote
+```
+
+4. Push your changes to Heroku:
+
+```bash
+git push heroku main
+```
+
+## Post Deployment:
+
+Once the changes are pushed to `heroku main`, complete the following post-deployment tasks:
+
+1. **Migrations**  
+   Run database migrations:
+
+```bash
+heroku run rails db:migrate
+```
+
+2. **Seed the Database**  
+   If needed, seed the database:
+
+```bash
+heroku run rails db:seed
+```
+
+3. **Restart Dynos**  
+   Restart Heroku dynos:
+
+```bash
+heroku restart
+```
+
+4. **Verify the App**  
+   Verify that the app is running correctly:
+
+```bash
+heroku open
+```
+
+## Connect the Application with GitHub OAuth:
+
+### Get OAuth Credentials:
+Create an OAuth app:
+
+1. Go to your GitHub account settings.
+2. Navigate to **Developer settings** > **OAuth apps** > **New OAuth App**.
+3. Provide the following details:
+   - **Application name**: Your app’s name.
+   - **Homepage URL**: The full URL to your app (e.g., `https://your-heroku-app.herokuapp.com`).
+   - **Authorization callback URL**: `https://your-heroku-app.herokuapp.com/auth/github/callback`.
+
+4. Click **Register application**.  
+
+After registering, you'll receive a `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`. Add these as environment variables in Heroku.
+
+## Troubleshooting:
+
+If some functionality is not working correctly on the deployed application, check the Heroku logs to find the root cause:
+
+```bash
+heroku logs --tail
+```
+
+# Setting up a Development Environment
+
+## Step-0: Clone our project repository from [here](https://github.com/tamu-edu-students/csce-606-autograder-frontend).
+
+### Installing the necessary software packages:
+The Ruby version used for the development of our application is `3.3.2`. If your Ruby version is different, we recommend matching ours to avoid any conflicts with dependencies. You may follow the steps given [here](https://github.com/tamu-edu-students/hw-ruby-intro) for installing Ruby.
+
+- If `rails` is not present already, to install it, do this:  
+  ```bash
+  gem install rails
+  ```
+
+- If `bundler` is not present already, to install it, do this:  
+  ```bash
+  gem install bundler
+  ```
+
+- If Heroku Command Line (CLI) tool is not present already, to install it, follow the instructions [here](https://devcenter.heroku.com/articles/heroku-cli#install-with-ubuntu-debian-apt-get).
+
+- Check the `ruby`, `rails`, `bundler` and `heroku CLI` versions using the following:  
+  ```bash
+  ruby -v && rails -v && bundle -v && heroku -v
+  ```
+
+- Install `pkg-config` using this command:  
+  ```bash
+  sudo apt-get update && sudo apt-get install pkg-config
+  ```
+
+## Running migrations and creating the database table for development:
+The migration files are already present under the `db/migrate` folder. So, no need to create any new migration files.
+
+To apply the migration and create the database table for development, simply run:  
+```bash
+rails db:migrate
+```
+
+## Installation of Gemfiles
+Next, let us install the necessary gems:  
+All the gems needed are already present in the `Gemfile`. So, no need to add other gems.
+
+To install all the Gem files, simply run:  
+```bash
+bundle install
+```
+
+## Setting up OAuth Application
+Now, we need to create and register an OAuth app under your personal account or under any organization you have administrative access to. Here, you should open it under the organization.
+
+**Currently, GitHub only allows for a single callback URL, so a second OAuth Application should be made to work with the development environment.**
+
+1. In the upper-right corner of any page on GitHub, click your profile photo, then click **Settings**.
+2. In the left sidebar, click **Developer settings**.
+3. In the left sidebar, click **OAuth apps**.
+4. Click **New OAuth App**. (If you haven't created an app before, this button will say, "Register a new application.")
+5. In **Application name**, type the name of your app.
+6. In **Homepage URL**, type the full URL to your local app's website:  
+   ```
+   http://127.0.0.1:3000/
+   ```
+7. In **Authorization callback URL**, type the callback URL of your local app.  
+   For example:  
+   ```
+   http://127.0.0.1:3000/auth/github/callback
+   ```
+   **NOTE**: Ensure that the callback URL is configured in `routes.rb`.
+8. If your OAuth app will use the device flow to identify and authorize users, click **Enable Device Flow**. For more information about the device flow, see [Authorizing OAuth apps] (https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow).
+
+After registering the OAuth, you will get a `GITHUB_CLIENT_ID`, and you will need to generate a `GITHUB_CLIENT_SECRET`.
+
+## How to run the application locally during development:
+1. Attach these two lines to `config/local_env.yml`:
+   ```yaml
+   GITHUB_CLIENT_ID: "<GITHUB_CLIENT_ID_OAUTH>"
+   GITHUB_CLIENT_SECRET: "<GITHUB_CLIENT_SECRET_OAUTH>"
+   ```
+
+2. Now run `rails server` on your terminal, and visit `http://127.0.0.1:3000/`, to visit the homepage of the local version of the application.
+
+**Caution**:  
+Do not push the `local_env.yml` file containing the additions of `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` information to the main repository (this should already be added to your `.gitignore`). These two values were included in the `local_env.yml` file just to allow you to run `rails server` and test the app during development.
+
+## Verification of Routes and Controller Actions (Optional)
+You may survey the application routes currently present to get a better idea of which controller action gets called when a certain URI is fetched:
+
+- **Run Rails Routes Command**: Use the following command in your terminal to list all defined routes:  
+  ```bash
+  rails routes
+  ```
+## Models and Controllers (Optional)
+It is also a good idea for you to get acquainted with the models and controllers present within our application before you start the development. A brief introduction is provided as follows:
+
+### Models
+- **ApplicationRecord**:  
+  Base class for all models.  
+  Provides shared functionality for ActiveRecord models.
+
+- **Assignment**:  
+  Represents assignments in the application.
+
+- **Permission**:  
+  Represents permissions associated with users or assignments.  
+  Used for managing access control.
+
+- **TestGrouping**:  
+  Represents groupings of tests within assignments.  
+  Used for organizing related tests.
+
+- **Test**:  
+  Represents individual tests associated with assignments or groupings.
+
+- **User**:  
+  Represents an application user.
+
+### Controllers
+- **ApplicationController**:  
+  Base controller for all other controllers.  
+  Handles shared functionality such as authentication and error handling.
+
+- **AssignmentsController**:  
+  Manages operations related to assignments.  
+  Includes actions for viewing assignments, updating users assigned to an assignment, searching assignments, managing directory structures.
+
+- **PagesController**:  
+  Manages redirection to Assignments page for logged-in users.  
+  Includes actions for redirecting to assignments for a logged-in user.
+
+- **SessionsController**:  
+  Manages user sessions.  
+  Includes actions for logging in via GitHub, handling login failures, and logging out.  
+  Verifies organizational membership during login.
+
+- **TestGroupingsController**:  
+  Manages groupings of tests.  
+  Includes actions for creating and deleting test groupings.
+
+- **TestsController**:  
+  Manages individual tests.  
+  Includes actions for configuring test metadata.
+
+- **UsersController**:  
+  Handles user-related operations.  
+  Includes actions for viewing users, managing user assignments.
+
 
 # Test Documentation
 
@@ -144,8 +511,6 @@ Our application employs a robust testing framework comprising the following tool
 - **RSpec tests** are located under the `/spec` directory.
 - **Cucumber feature and step files** are located under the `/features` directory.
 
----
-
 ## Step 1: Install Chromium WebDriver
 
 To allow Capybara to use the Chrome driver, install it using the following command:
@@ -153,8 +518,6 @@ To allow Capybara to use the Chrome driver, install it using the following comma
 ```bash
 sudo apt install chromium-chromedriver
 ```
-
----
 
 ## Step 2: Run the Tests
 
