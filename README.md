@@ -542,7 +542,7 @@ For any inquiries, concerns, or feedback related to the development, testing, de
 
 - **Md Hasan Al Banna**: [mdhasanalbanna@tamu.edu](mailto:mdhasanalbanna@tamu.edu)  
 - **Riddhi Ghate**: [riddhighate.07@tamu.edu](mailto:riddhighate.07@tamu.edu)  
-- **Ryan Gonzalez (Last Scrum Master)**: [gonzalezpear@tamu.edu](mailto:gonzalezpear@tamu.edu)  
+- **Ryan Gonzalez**: [gonzalezpear@tamu.edu](mailto:gonzalezpear@tamu.edu)  
 - **Qinyao Hou**: [yaoya2618@tamu.edu](mailto:yaoya2618@tamu.edu)  
 - **Saksham Mehta**: [saksham19@tamu.edu](mailto:saksham19@tamu.edu)  
 - **Mainak Sarkar**: [masarkar@tamu.edu](mailto:masarkar@tamu.edu)  
