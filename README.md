@@ -245,6 +245,9 @@ heroku config:unset GITHUB_USERNAME
 #### Through the Heroku Dashboard Interface:
 You can edit config vars from your app’s **Settings** tab in the Heroku Dashboard.
 
+![image](https://github.com/user-attachments/assets/3892baa5-98d7-4780-b91c-fc3cf685beea)
+
+
 #### Currently, we have the following variables:
 - **`GITHUB_TEMPLATE_REPO_URL`**: `philipritchey/autograded-assignment-template`  
   [This is the template based on which the professor will create the assignment.]
